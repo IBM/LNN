@@ -45,7 +45,7 @@ reference paper:
 ```
 
 
-[Docs]: https://ibm.github.io/LNN/index.html
+[Docs]: https://ibm.github.io/LNN/
 [Papers]: https://ibm.github.io/LNN/papers.html
 [Education]: https://ibm.github.io/LNN/education/education.html
 [API]: https://ibm.github.io/LNN/usage.html
