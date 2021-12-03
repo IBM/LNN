@@ -1,0 +1,316 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Moving AI Beyond its Narrow View of Intelligence &mdash; Logical Neural Networks  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Tutorials" href="../tutorials/tutorials.html" />
+    <link rel="prev" title="Understanding LNNs" href="blogs.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Logical Neural Networks
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Logical Neural Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../papers.html">Papers</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../education.html">Education</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="blogs.html">Understanding LNNs</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Moving AI Beyond its Narrow View of Intelligence</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#so-what-s-missing-in-today-s-ai">So what’s missing in today’s AI?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#why-a-logical-representation-is-important">Why a logical representation is important</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#logical-neural-networks-lnns">Logical Neural Networks (LNNs)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#references">References</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/tutorials.html">Tutorials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/examples.html">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../lnn/LNN.html">LNN Module</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Logical Neural Networks</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../education.html">Education</a> &raquo;</li>
+        
+          <li><a href="blogs.html">Understanding LNNs</a> &raquo;</li>
+        
+      <li>Moving AI Beyond its Narrow View of Intelligence</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../../_sources/education/blogs/moving_ai_beyond_its_narrow_view_of_intelligence.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="moving-ai-beyond-its-narrow-view-of-intelligence">
+<h1>Moving AI Beyond its Narrow View of Intelligence<a class="headerlink" href="#moving-ai-beyond-its-narrow-view-of-intelligence" title="Permalink to this headline">¶</a></h1>
+<blockquote>
+<div><p><em>We’ve all seen the headlines: “Machine Outsmarts Human”, but can a
+computational system truly be smart if it lacks the ability to explain itself
+- even to the very researchers that created it?</em></p>
+</div></blockquote>
+<p>Despite achieving accuracies that surpass human-level performance on narrowly
+defined tasks, today’s AI has become handicapped by the very methodology that
+brought it fame - Deep Learning. These deep neural structures owe their success
+to immense human ingenuity, by encoding knowledge of the world not into
+rules, but instead into a complex network of connected neurons within the
+model  architecture. This complexity mandates that researchers think
+abstractly about how the network behaves, guided by very few interpretable
+signals that characterise a model’s behavior.</p>
+<p><a class="reference external" href="https://xkcd.com/1838"><img src="https://www.macloo.com/ai/wp-content/uploads/2020/09/machine_learning_XKCD.png" alt="ML Systems" width="400" class="aligncenter"></a></p>
+<div class="section" id="so-what-s-missing-in-today-s-ai">
+<h2>So what’s missing in today’s AI?<a class="headerlink" href="#so-what-s-missing-in-today-s-ai" title="Permalink to this headline">¶</a></h2>
+<p>While “opaque box” models are all the rage right now, they still lack the “per-neuron” symbolic interpretability required for machine learning to generalise to broader tasks. By grounding each neuron’s behavior in an understandable way, researchers can change the way they engage with these complex architectures to be more principled. This also opens up the doors to using ML in regulated environments, where a deployed machine is required to justify its decision making in a way that people can understand. This is where IBM researchers come in. They have managed to merge the well-respected field of logic with neural backpropagation, allowing gradient decent to apply to hand-crafted and noisy knowledge of the world [<a class="reference external" href="#ref_1">1</a>].</p>
+</div>
+<div class="section" id="why-a-logical-representation-is-important">
+<h2>Why a logical representation is important<a class="headerlink" href="#why-a-logical-representation-is-important" title="Permalink to this headline">¶</a></h2>
+<p>Logical operations are arguably human-interpretable, constraining operations on
+inputs to behave in a manner that is both predictable and consistent with the
+type of gate being used. For example, if our knowledge of the world states
+the following:</p>
+<blockquote>
+<div><ol class="simple">
+<li><p>If it rains then the grass is wet</p></li>
+</ol>
+</div></blockquote>
+<p>We expect that any decision-making system should be able to apply logical rules
+such as modus ponens to our knowledge, i.e. reasoning that the grass is
+indeed wet when I know that it is raining - without needing to see a
+Bajillion examples first. Simply, the DL has no extrinsic
+knowledge, leveraging only a heap of correlations to learn that the two
+inputs may be strongly related. But honestly, how can we expect a DL system
+to conform to such knowledge without having an explicit handle on neurons
+within the hidden layers that encode information. While it is possible to
+encode such relations implicitly, there is a computational and therefore
+financial and environmental cost to building such systems - which should
+really not be there, since our network only needs 3 neurons to compute on
+such knowledge:</p>
+<img src="https://raw.githubusercontent.com/IBM/LNN/master/docsrc/source/education/blogs/raining_implies_wet.png" alt="It is raining Implies the grass is wet" width="320" class="aligncenter">
+<p>Logic also allows us to build high-level decision makers that can reason about
+outcomes given only partial information about the world. Lets add some more
+knowledge to our model:</p>
+<blockquote>
+<div><ol class="simple">
+<li><p>I need to walk on the grass to reach the rosebushes</p></li>
+<li><p>If the grass is wet then I should not walk on it without rubber boots on</p></li>
+</ol>
+</div></blockquote>
+<blockquote>
+<div><p>Goal: Trim the rosebushes</p>
+</div></blockquote>
+<p>Given only the following two pieces of information should be sufficient to know if I can reach my goal:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>It is raining</p></li>
+<li><p>I am not wearing rubber boots</p></li>
+</ul>
+</div></blockquote>
+<p>Without the ability to reason, even large models would fail to reach simple goals in an efficient manner [<a class="reference external" href="#ref_2">2</a>]. Using a logical system would therefore allow an agent to reason that it needs to make certain (interpretable) decisions in order to reach its goal.</p>
+</div>
+<div class="section" id="logical-neural-networks-lnns">
+<h2>Logical Neural Networks (LNNs)<a class="headerlink" href="#logical-neural-networks-lnns" title="Permalink to this headline">¶</a></h2>
+<p>LNNs are a mathematically follow a sound and complete extension to weighted real-valued logic [<a class="reference external" href="#ref_3">3</a>], offering a new class of NeuroSymbolic approaches according to Henry Kautz’s taxonomy [<a class="reference external" href="#ref_4">4</a>], namely <code class="docutils literal notranslate"><span class="pre">Neuro</span> <span class="pre">=</span> <span class="pre">Symbolic</span></code>. This framework offers a handful of novel features:</p>
+<p>Knowledge can embedded in a neural network via logical statements using specialised activations to compute logical operations.
+A 1-to-1 representation is used whereby each logical symbol is directly encoded by a single neuron, representing the network as an interpretable syntax tree.
+The LNN is also implemented using a dynamic graph representation where reasoning is computed via message passing algorithms, allowing new facts and rules to be added to the model on the fly.
+With this syntax tree, inferences such as modus ponens require facts at leaf nodes to be updated - facilitated by downward inferences, allowing the network to both handle missing inputs and verify consistent interaction between the rules and facts.
+This consistency checking allows LNNs to learn purely by self-supervision, while still allowing everybody’s favourite loss function to join the party.
+Using bounds to represent inputs allows the LNN to operate under the open world assumption, also allowing nuance by having ranges of inputs being plausible at a single neuron.
+Just like standard NNs, weights are attached to edges and learning via backprop caters to imperfect knowledge of the world.
+The system is also end-to-end differentiable, allowing LNNs to play nice with multiple DL systems simultaneously. These DL models can still do what they do best - act as function approximators of hierarchical features that output to a single node, but in this case, the node may be given as an input to an LNN and governed by the logic that is expected of its symbolic behaviour.</p>
+<p>With all this added functionality, LNNs offer a completely new class of learning-based approaches to the AI toolbox.</p>
+<p>As the modern economy moves towards embedding real-time computation into every aspect of life, so too will AI follow. The ability to generalise beyond narrow tasks requires deployed systems to simultaneously obey rules of inference while still being robust against an ocean of noisy, unstructured data. It stands to reason [get it?], that having a differentiable white-box model that acts as a symbolic decision-maker is needed for the next generational leap in the field of AI. Perhaps advances like these will move the scientific community forward; towards an intelligence that is both generalisable and understandable.</p>
+</div>
+<div class="section" id="references">
+<h2>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
+<ol class="simple">
+<li><p><a class="reference external" href="https://arxiv.org/abs/2006.13155">Logical Neural Networks</a><a name="ref_1"></a></p></li>
+<li><p><a class="reference external" href="https://arxiv.org/abs/2103.02363">Reinforcement Learning with External Knowledge by using Logical Neural Networks</a><a name="ref_2"></a></p></li>
+<li><p><a class="reference external" href="https://arxiv.org/abs/2008.02429">Foundations of Reasoning with Uncertainty via Real-valued Logics</a><a name="ref_3"></a></p></li>
+<li><p><a class="reference external" href="https://vimeo.com/389560858">Robert S. Engelmore Memorial Award Lecture: The Third AI Summer - Henry Kautz</a><a name="ref_4"></a></p></li>
+</ol>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="../tutorials/tutorials.html" class="btn btn-neutral float-right" title="Tutorials" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="blogs.html" class="btn btn-neutral float-left" title="Understanding LNNs" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2020, IBM Research.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

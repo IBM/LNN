@@ -1,0 +1,801 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>LNN Module &mdash; Logical Neural Networks  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="Grounding Management" href="../education/examples/gm.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Logical Neural Networks
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html">Logical Neural Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage.html">Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../papers.html">Papers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../education/education.html">Education</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">LNN Module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#symbolic-structure">Symbolic Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-lnn">Symbolic Modules</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Logical Neural Networks</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>LNN Module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/lnn/LNN.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="lnn-module">
+<h1>LNN Module<a class="headerlink" href="#lnn-module" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="symbolic-structure">
+<h2>Symbolic Structure<a class="headerlink" href="#symbolic-structure" title="Permalink to this headline">¶</a></h2>
+<a class="reference internal image-reference" href="../_images/class_diagram.png"><img alt="Class Diagram" src="../_images/class_diagram.png" style="width: 800px;" /></a>
+</div>
+<div class="section" id="module-lnn">
+<span id="symbolic-modules"></span><h2>Symbolic Modules<a class="headerlink" href="#module-lnn" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="lnn.And">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">lnn.</span></code><code class="sig-name descname"><span class="pre">And</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">formula</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwds</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lnn.And" title="Permalink to this definition">¶</a></dt>
+<dd><p>Symbolic Conjunction</p>
+<p>Returns a logical conjunction where inputs can be propositional,
+first-order logic predicates or other connectives.</p>
+<p><strong>Parameters</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">formula</span> <span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">_ConnectiveFormula</span><span class="p">,</span> <span class="n">Proposition</span><span class="p">,</span> <span class="n">Predicate</span><span class="p">(</span><span class="o">*</span><span class="n">Variable</span><span class="p">)]</span>
+    <span class="n">accepts</span> <span class="n">n</span><span class="o">-</span><span class="n">ary</span> <span class="n">inputs</span>
+<span class="n">kwds</span> <span class="p">:</span> <span class="nb">dict</span>
+    <span class="n">_Formula</span> <span class="n">kwds</span>
+</pre></div>
+</div>
+<p><strong>Example</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Propositional</span>
+<span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">Proposition</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">])</span>
+<span class="n">And</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># First-order logic</span>
+<span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">Variables</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">])</span>
+<span class="n">A</span><span class="p">,</span> <span class="n">C</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">Predicate</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">])</span>
+<span class="n">B</span> <span class="o">=</span> <span class="n">Predicate</span><span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="n">arity</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">And</span><span class="p">(</span><span class="n">A</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">B</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span> <span class="n">C</span><span class="p">(</span><span class="n">y</span><span class="p">)))</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py class">
+<dt id="lnn.Bidirectional">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">lnn.</span></code><code class="sig-name descname"><span class="pre">Bidirectional</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">formula</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwds</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lnn.Bidirectional" title="Permalink to this definition">¶</a></dt>
+<dd><p>Symbolic Bidirectional Implication</p>
+<p>Returns a logical bidirectional implication where inputs can be
+propositional, first-order logic predicates or other connectives.
+Decomposes into a conjunction of implications, where the root conjunction
+is defined as the bidirectional neuron and named accordingly.</p>
+<p><strong>Parameters</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">formula</span> <span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">_ConnectiveFormula</span><span class="p">,</span> <span class="n">Proposition</span><span class="p">,</span> <span class="n">Predicate</span><span class="p">(</span><span class="o">*</span><span class="n">Variable</span><span class="p">)]</span>
+    <span class="n">accepts</span> <span class="n">binary</span> <span class="n">inputs</span>
+<span class="n">kwds</span> <span class="p">:</span> <span class="nb">dict</span>
+    <span class="n">_Formula</span> <span class="n">kwds</span>
+</pre></div>
+</div>
+<p><strong>Example</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Propositional</span>
+<span class="n">A</span><span class="p">,</span> <span class="n">B</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">Proposition</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">])</span>
+<span class="n">Bidirectional</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># First-order logic</span>
+<span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">Variables</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">])</span>
+<span class="n">A</span> <span class="o">=</span> <span class="n">Predicate</span><span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">)</span>
+<span class="n">B</span> <span class="o">=</span> <span class="n">Predicate</span><span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="n">arity</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">Bidirectional</span><span class="p">(</span><span class="n">A</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">B</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)))</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py class">
+<dt id="lnn.Direction">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">lnn.</span></code><code class="sig-name descname"><span class="pre">Direction</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lnn.Direction" title="Permalink to this definition">¶</a></dt>
+<dd><p>An enumeration for the direction of inference</p>
+<p><strong>Attributes</strong></p>
+<div class="highlight-raw notranslate"><div class="highlight"><pre><span></span>UPWARD : Evaluation of the operator given the operands
+DOWNWARD : Evaluation of operands given the operator and the rest of
+           the operands
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py class">
+<dt id="lnn.Exists">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">lnn.</span></code><code class="sig-name descname"><span class="pre">Exists</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwds</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lnn.Exists" title="Permalink to this definition">¶</a></dt>
+<dd><p>Symbolic existential quantifier</p>
+<p><strong>Example</strong></p>
+<p>No free variables, Quantifier reduces to a proposition:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">add_formulae</span><span class="p">(</span><span class="n">Exists</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">birthdate</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">d</span><span class="p">)))</span>
+</pre></div>
+</div>
+<p>Free variables, Quantifier reduces to a predicate:
+Currently not implemented</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="lnn.Fact">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">lnn.</span></code><code class="sig-name descname"><span class="pre">Fact</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lnn.Fact" title="Permalink to this definition">¶</a></dt>
+<dd><p>An enumeration for facts</p>
+<p><strong>Attributes</strong></p>
+<div class="highlight-raw notranslate"><div class="highlight"><pre><span></span>TRUE : Classically True inputs as represented by LNN bounds
+FALSE : Classically False inputs as represented by LNN bounds
+UNKNOWN : A classical interpretation of what would be an unknown input,
+          this is represented by LNN bounds with complete uncertainty
+CONTRADICTION : A classical interpretation of a contradictory input.
+                Contradictions arise by disagreement of two signal,
+                most often coming from different directions
+                (UPWARD+DOWNWARD). This can be interpreted as a
+                disagreement between the data and the logic, or
+                more appropriately - introducing data to a logic that
+                violates soundness and thereby moves the model into
+                worlds that are not consistent with the logic.
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py class">
+<dt id="lnn.ForAll">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">lnn.</span></code><code class="sig-name descname"><span class="pre">ForAll</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwds</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lnn.ForAll" title="Permalink to this definition">¶</a></dt>
+<dd><p>Symbolic universal quantifier</p>
+<p><strong>Example</strong></p>
+<p>No free variables, Quantifier reduces to a proposition:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">add_formulae</span><span class="p">(</span><span class="n">ForAll</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">birthdate</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">d</span><span class="p">)))</span>
+</pre></div>
+</div>
+<p>Free variables, Quantifier reduces to a predicate:
+Currently not implemented</p>
+<dl class="py method">
+<dt id="lnn.ForAll.downward">
+<code class="sig-name descname"><span class="pre">downward</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">torch.Tensor</span><a class="headerlink" href="#lnn.ForAll.downward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns sum of bounds tightening from DOWNWARD inference</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="lnn.Implies">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">lnn.</span></code><code class="sig-name descname"><span class="pre">Implies</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">formula</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwds</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lnn.Implies" title="Permalink to this definition">¶</a></dt>
+<dd><p>Symbolic Implication</p>
+<p>Returns a logical implication where inputs can be propositional,
+first-order logic predicates or other connectives.</p>
+<p><strong>Parameters</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">formula</span> <span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">_ConnectiveFormula</span><span class="p">,</span> <span class="n">Proposition</span><span class="p">,</span> <span class="n">Predicate</span><span class="p">(</span><span class="o">*</span><span class="n">Variable</span><span class="p">)]</span>
+    <span class="n">accepts</span> <span class="n">binary</span> <span class="n">inputs</span>
+<span class="n">kwds</span> <span class="p">:</span> <span class="nb">dict</span>
+    <span class="n">_Formula</span> <span class="n">kwds</span>
+</pre></div>
+</div>
+<p><strong>Example</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Propositional</span>
+<span class="n">A</span><span class="p">,</span> <span class="n">B</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">Proposition</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">])</span>
+<span class="n">Implies</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># First-order logic</span>
+<span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">Variables</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">])</span>
+<span class="n">A</span> <span class="o">=</span> <span class="n">Predicate</span><span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">)</span>
+<span class="n">B</span> <span class="o">=</span> <span class="n">Predicate</span><span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="n">arity</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">Implies</span><span class="p">(</span><span class="n">A</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">B</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)))</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py class">
+<dt id="lnn.Join">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">lnn.</span></code><code class="sig-name descname"><span class="pre">Join</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lnn.Join" title="Permalink to this definition">¶</a></dt>
+<dd><p>An enumeration for joining methods</p>
+<p><strong>Attributes</strong></p>
+<div class="highlight-raw notranslate"><div class="highlight"><pre><span></span>INNER : (default) Extended version of inner db joins that allows
+        groundings to be propagated between operands
+OUTER : Extended outer db join with grounding propagation
+OUTER_PRUNED : A reduced outer join
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py class">
+<dt id="lnn.Model">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">lnn.</span></code><code class="sig-name descname"><span class="pre">Model</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'Model'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lnn.Model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a container for logical reasoning and neural learning.</p>
+<p>Models offer contextual segmentation between free-variable formulae and
+the instantiation of facts that may apply to those formulae under a
+specific instance.
+Models are dynamic, often constructed as empty containers to later be
+populated by rules and facts - this allows LNNs to operate under
+dynamic environments where the rules themselves are allowed to grow as
+new information emerges.
+In general a model acts as a canvas, that includes only the formulae
+specified. The model will include a</p>
+<p><strong>Parameters</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">name</span> <span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">optional</span>
+    <span class="n">name</span> <span class="n">of</span> <span class="n">contextual</span> <span class="n">model</span>
+</pre></div>
+</div>
+<p><strong>Attributes</strong></p>
+<div class="highlight-raw notranslate"><div class="highlight"><pre><span></span>graph : nx.DiGraph
+    directed graph that connects nodes
+nodes : dict
+    keys are names given to the formulae at instantiation and values are
+    the object containers as placed inside the model
+</pre></div>
+</div>
+<p><strong>Warning</strong></p>
+<blockquote>
+<div><p>Assumes that every node in the model has a unique name</p>
+</div></blockquote>
+<p><strong>Example</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># define the predicates</span>
+<span class="n">Smokes</span><span class="p">,</span> <span class="n">Asthma</span><span class="p">,</span> <span class="n">Cough</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">Predicate</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;Smokes&#39;</span><span class="p">,</span> <span class="s1">&#39;Asthma&#39;</span><span class="p">,</span> <span class="s1">&#39;Cough&#39;</span><span class="p">])</span>
+<span class="n">Friends</span> <span class="o">=</span> <span class="n">Predicate</span><span class="p">(</span><span class="s1">&#39;Friends&#39;</span><span class="p">,</span> <span class="n">arity</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="c1"># define the connectives/quantifiers</span>
+<span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">Variable</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">])</span>
+<span class="n">Smokers_have_friends</span> <span class="o">=</span> <span class="n">And</span><span class="p">(</span><span class="n">Smokes</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">Friends</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+<span class="n">Asmatic_smokers_cough</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Exists</span><span class="p">(</span><span class="n">x</span><span class="p">,</span>
+           <span class="n">Implies</span><span class="p">(</span><span class="n">And</span><span class="p">(</span><span class="n">Smokes</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">Asthma</span><span class="p">(</span><span class="n">x</span><span class="p">)),</span> <span class="n">Cough</span><span class="p">(</span><span class="n">x</span><span class="p">)),</span> <span class="n">world</span><span class="o">=</span><span class="n">AXIOM</span><span class="p">))</span>
+<span class="n">Smokers_befriend_smokers</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">ForAll</span><span class="p">(</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span>
+        <span class="n">Implies</span><span class="p">(</span><span class="n">Smokers_have_friends</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span> <span class="n">Smokes</span><span class="p">(</span><span class="n">y</span><span class="p">)),</span> <span class="n">world</span><span class="o">=</span><span class="n">AXIOM</span><span class="p">))</span>
+
+<span class="c1"># add root formulae to model</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">()</span>
+<span class="n">model</span><span class="o">.</span><span class="n">add_formulae</span><span class="p">(</span>
+    <span class="n">Asmatic_smokers_cough</span><span class="p">,</span>
+    <span class="n">Smokers_befriend_smokers</span><span class="p">)</span>
+
+<span class="c1"># add data to the model</span>
+<span class="n">model</span><span class="o">.</span><span class="n">add_facts</span><span class="p">({</span>
+    <span class="n">Smokes</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;Person_1&#39;</span><span class="p">:</span> <span class="n">TRUE</span><span class="p">,</span>
+        <span class="s1">&#39;Person_2&#39;</span><span class="p">:</span> <span class="n">UNKNOWN</span><span class="p">,</span>
+        <span class="s1">&#39;Person_3&#39;</span><span class="p">:</span> <span class="n">UNKNOWN</span><span class="p">},</span>
+    <span class="n">Friends</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="p">{</span>
+        <span class="p">(</span><span class="s1">&#39;Person_1&#39;</span><span class="p">,</span> <span class="s1">&#39;Person_2&#39;</span><span class="p">):</span> <span class="n">TRUE</span><span class="p">,</span>
+        <span class="p">(</span><span class="s1">&#39;Person_2&#39;</span><span class="p">,</span> <span class="s1">&#39;Person_3&#39;</span><span class="p">):</span> <span class="n">UNKNOWN</span><span class="p">}})</span>
+
+<span class="c1"># reason over the model</span>
+<span class="n">model</span><span class="o">.</span><span class="n">infer</span><span class="p">()</span>
+
+<span class="c1"># verify the model outputs</span>
+<span class="n">model</span><span class="o">.</span><span class="n">print</span><span class="p">()</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt id="lnn.Model.add_facts">
+<code class="sig-name descname"><span class="pre">add_facts</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">facts</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">lnn.constants.Fact</span><span class="p"><span class="pre">,</span> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="p"><span class="pre">…</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">lnn.constants.Fact</span><span class="p"><span class="pre">,</span> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lnn.Model.add_facts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Append facts to the model</p>
+<p>Assumes that the formulae that require facts have already been inserted
+into the model, see
+<a class="reference external" href="https://ibm.github.io/LNN/LNN.html#lnn.Model.add_formulae">add_formulae</a>  # noqa: E501
+for more details</p>
+<p><strong>Parameters</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span># propositional
+facts : dict
+    key : str
+        This is the unique node name stored in the model
+        can be reference either by the associated string in the
+        model-scope or extracting the node`.name` stored in the
+        user-scope
+    value :  Fact or Bounds
+        Facts may be the flags for classical bounds or bounds can
+        be directly set as a list of two floats, representing lower
+        and upper bounds
+
+# first-order logic
+facts : dict
+    key : str
+        This is the unique node name stored in the model
+        can be reference either by the associated string in the
+        model-scope or extracting the node`.name` stored in the
+        user-scope
+    value :  dict
+        key : str or tuple-of-str
+            This inner key represents the first-order grounding or
+            the propositionalised/instantiated binding that applies
+            the the free variable. It represents a single row
+            within the bounds table
+        value :  Fact or Bounds
+            This inner value represents the facts, given either as
+            a flag for classical bounds or directly as a list of
+            two floats, representing the lower and upper bounds.
+            This fact is set as the associated truth for the
+            grounding key above.
+</pre></div>
+</div>
+<p><strong>Example</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># propositional</span>
+<span class="n">P</span> <span class="o">=</span> <span class="n">Proposition</span><span class="p">(</span><span class="s1">&#39;Person&#39;</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">add_facts</span><span class="p">({</span><span class="s1">&#39;Person&#39;</span><span class="p">:</span> <span class="n">Facts</span><span class="o">.</span><span class="n">TRUE</span><span class="p">})</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># first-order logic</span>
+<span class="n">P</span> <span class="o">=</span> <span class="n">Predicate</span><span class="p">(</span><span class="s1">&#39;Person&#39;</span><span class="p">)</span>
+<span class="n">B</span> <span class="o">=</span> <span class="n">Predicate</span><span class="p">(</span><span class="s1">&#39;Birthdate&#39;</span><span class="p">,</span> <span class="n">arity</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">add_facts</span><span class="p">(</span>
+    <span class="p">{</span><span class="s1">&#39;Person&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;Barack Obama&#39;</span><span class="p">:</span> <span class="n">TRUE</span><span class="p">,</span>
+        <span class="s1">&#39;Bo&#39;</span><span class="p">:</span> <span class="n">FALSE</span><span class="p">},</span>
+     <span class="n">B</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="p">{</span>
+         <span class="p">(</span><span class="s1">&#39;Barack Obama&#39;</span><span class="p">,</span> <span class="s1">&#39;04 August 1961&#39;</span><span class="p">):</span> <span class="n">TRUE</span><span class="p">,</span>
+         <span class="p">(</span><span class="s1">&#39;Bo&#39;</span><span class="p">,</span> <span class="s1">&#39;09 October 2008&#39;</span><span class="p">):</span> <span class="n">TRUE</span><span class="p">}</span>
+    <span class="p">})</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="lnn.Model.add_formulae">
+<code class="sig-name descname"><span class="pre">add_formulae</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">*formulae:</span> <span class="pre">lnn.symbolic.logic._Formula</span></em>, <em class="sig-param"><span class="pre">world:</span> <span class="pre">lnn.constants.World</span> <span class="pre">=</span> <span class="pre">&lt;World.OPEN:</span> <span class="pre">(0</span></em>, <em class="sig-param"><span class="pre">1)&gt;</span></em><span class="sig-paren">)</span><a class="headerlink" href="#lnn.Model.add_formulae" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extend the model to include additional formulae</p>
+<p>Only root level formulae explicitly need to be added to the model.
+Unless otherwise specified, each root formula follows the open world
+assumption.</p>
+<p><strong>Example</strong></p>
+<p>Any formula given without cloning will be operated on directly
+To be used when working with only 1 model,
+i.e., directly referencing the model nodes</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">add_formulae</span><span class="p">(</span><span class="n">Predicate</span><span class="p">(</span><span class="s1">&#39;P1&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>or directly modifying the formula in the user space:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">()</span>
+<span class="n">P1</span> <span class="o">=</span> <span class="n">Predicate</span><span class="p">(</span><span class="s1">&#39;P1&#39;</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">add_formulae</span><span class="p">(</span><span class="n">P1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>the former requires modifications to be accessed via <code class="docutils literal notranslate"><span class="pre">model['P1']</span></code>
+while the latter will store any changes to made by the model,
+directly in <code class="docutils literal notranslate"><span class="pre">P1</span></code></p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="lnn.Model.add_labels">
+<code class="sig-name descname"><span class="pre">add_labels</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">lnn.constants.Fact</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="p"><span class="pre">…</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">lnn.constants.Fact</span><span class="p"><span class="pre">,</span> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lnn.Model.add_labels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Append labels to the model</p>
+<p>Adding labels to formulae in the model follows the same dictionary
+input API as
+<a class="reference external" href="https://ibm.github.io/LNN/LNN.html#lnn.Model.add_facts">adding facts</a>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="lnn.Model.fit">
+<code class="sig-name descname"><span class="pre">fit</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwds</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lnn.Model.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for train</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="lnn.Model.infer">
+<code class="sig-name descname"><span class="pre">infer</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">direction</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">lnn.constants.Direction</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">lnn.symbolic.logic._Formula</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_steps</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwds</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lnn.Model.infer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reasons over all possible inferences until convergence</p>
+<p><strong>Return</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">steps</span> <span class="p">:</span> <span class="nb">int</span>
+    <span class="n">The</span> <span class="n">number</span> <span class="n">of</span> <span class="n">steps</span> <span class="n">taken</span> <span class="n">to</span> <span class="n">converge</span>
+<span class="n">facts_inferred</span> <span class="p">:</span> <span class="n">Tensor</span>
+    <span class="n">Sum</span> <span class="n">of</span> <span class="n">bounds</span> <span class="n">tightening</span> <span class="kn">from</span> <span class="nn">inference</span> <span class="n">updates</span>
+</pre></div>
+</div>
+<p><strong>Parameters</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">direction</span> <span class="p">:</span> <span class="n">Direction</span>
+    <span class="n">Can</span> <span class="n">be</span> <span class="n">specified</span> <span class="k">as</span> <span class="n">either</span> <span class="n">UPWARD</span> <span class="ow">or</span> <span class="n">DOWNWARD</span> <span class="n">inference</span><span class="p">,</span> <span class="n">a</span>
+    <span class="n">single</span> <span class="k">pass</span> <span class="n">of</span> <span class="n">that</span> <span class="n">direction</span> <span class="n">will</span> <span class="n">be</span> <span class="n">applied</span>
+    <span class="n">If</span> <span class="n">unspecified</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">defaults</span> <span class="n">to</span> <span class="n">the</span> <span class="n">LNN</span> <span class="n">naive</span> <span class="n">inference</span>
+    <span class="n">strategy</span> <span class="n">of</span> <span class="n">doing</span> <span class="n">upward</span> <span class="ow">and</span> <span class="n">downward</span> <span class="n">inference</span> <span class="n">until</span>
+    <span class="n">convergence</span>
+<span class="n">source</span> <span class="p">:</span> <span class="n">node</span>
+    <span class="n">Specifies</span> <span class="n">starting</span> <span class="n">node</span> <span class="k">for</span>
+    <span class="p">[</span><span class="n">depth</span><span class="o">-</span><span class="n">first</span> <span class="n">search</span> <span class="n">traversal</span><span class="p">](</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">networkx</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">documentation</span><span class="o">/</span><span class="n">stable</span><span class="o">/</span><span class="n">reference</span><span class="o">/</span><span class="n">algorithms</span><span class="o">/</span><span class="n">generated</span><span class="o">/</span><span class="n">networkx</span><span class="o">.</span><span class="n">algorithms</span><span class="o">.</span><span class="n">traversal</span><span class="o">.</span><span class="n">depth_first_search</span><span class="o">.</span><span class="n">dfs_postorder_nodes</span><span class="o">.</span><span class="n">html</span><span class="c1">#networkx.algorithms.traversal.depth_first_search.dfs_postorder_nodes)  # noqa: E501</span>
+    <span class="n">The</span> <span class="n">node</span> <span class="n">can</span> <span class="n">be</span> <span class="n">extracted</span> <span class="n">using</span> <span class="fm">__getitem__</span> <span class="kn">from</span> <span class="nn">the</span> <span class="n">node</span> <span class="n">name</span>
+<span class="n">max_steps</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">Limits</span> <span class="n">the</span> <span class="n">inference</span> <span class="n">to</span> <span class="n">a</span> <span class="n">specified</span> <span class="n">number</span> <span class="n">of</span> <span class="n">passes</span> <span class="n">of</span> <span class="n">the</span>
+    <span class="n">naive</span> <span class="n">traversal</span> <span class="n">strategy</span>
+<span class="n">kwds</span>
+    <span class="n">lifted</span> <span class="p">:</span> <span class="nb">bool</span> <span class="ow">or</span> <span class="nb">float</span>
+        <span class="n">Computes</span> <span class="n">lifted</span> <span class="n">inference</span> <span class="n">preprocessing</span> <span class="n">to</span> <span class="n">expand</span> <span class="n">the</span>
+        <span class="n">knowledge</span> <span class="n">by</span> <span class="n">randomly</span> <span class="n">searching</span> <span class="k">for</span> <span class="n">axioms</span> <span class="n">that</span> <span class="n">can</span> <span class="n">be</span>
+        <span class="n">applied</span> <span class="n">to</span> <span class="n">the</span> <span class="n">network</span><span class="o">.</span> <span class="n">If</span> <span class="kc">True</span><span class="p">,</span> <span class="n">defaults</span> <span class="n">to</span> <span class="mf">1e3</span> <span class="n">random</span>
+        <span class="n">nodes</span><span class="o">.</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="lnn.Model.learn">
+<code class="sig-name descname"><span class="pre">learn</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwds</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lnn.Model.learn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for train</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="lnn.Model.train">
+<code class="sig-name descname"><span class="pre">train</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwds</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lnn.Model.train" title="Permalink to this definition">¶</a></dt>
+<dd><p>Train the model</p>
+<p>Reasons across the model until convergence using the standard inference
+strategy - equivalent to running a NN in the forward direction.
+At the end of each reasoning pass losses are calculated according to a
+predefined or custom loss and model parameters are updated.
+An epoch constitutes all computation until parameters take a step.</p>
+<p><strong>Parameters</strong>
+kwds
+losses: list or dict
+predefined losses include
+[‘contradiction’, ‘uncertainty’, ‘logical’, ‘supervised’]
+If given in dict form, coefficients of each loss can be
+specified as a float value. The value can alternatively
+specify additional parameters for each loss calculation
+using a dict</p>
+<p><strong>Returns</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>epoch + 1: int
+total_loss: tuple
+    running_loss: list
+        sum of loss at the end of each epoch
+    loss_history: Tensor
+        individual loss components as specified by `losses` kwd
+</pre></div>
+</div>
+<p><strong>Example</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># construct the model from formulae</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">()</span>
+<span class="n">p1</span><span class="p">,</span> <span class="n">p2</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">Predicate</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;P1&#39;</span><span class="p">,</span> <span class="s1">&#39;P2&#39;</span><span class="p">])</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">)</span>
+<span class="n">model</span><span class="p">[</span><span class="s1">&#39;AB&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">And</span><span class="p">(</span><span class="n">p1</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">p2</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+
+<span class="c1"># add data to the model</span>
+<span class="n">model</span><span class="o">.</span><span class="n">add_facts</span><span class="p">({</span>
+    <span class="n">p1</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;0&#39;</span><span class="p">:</span> <span class="n">TRUE</span><span class="p">,</span>
+        <span class="s1">&#39;1&#39;</span><span class="p">:</span> <span class="n">TRUE</span><span class="p">,</span>
+        <span class="s1">&#39;2&#39;</span><span class="p">:</span> <span class="n">FALSE</span><span class="p">,</span>
+        <span class="s1">&#39;3&#39;</span><span class="p">:</span> <span class="n">FALSE</span>
+    <span class="p">},</span>
+    <span class="n">p2</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;0&#39;</span><span class="p">:</span> <span class="n">TRUE</span><span class="p">,</span>
+        <span class="s1">&#39;1&#39;</span><span class="p">:</span> <span class="n">FALSE</span><span class="p">,</span>
+        <span class="s1">&#39;2&#39;</span><span class="p">:</span> <span class="n">TRUE</span><span class="p">,</span>
+        <span class="s1">&#39;3&#39;</span><span class="p">:</span> <span class="n">FALSE</span><span class="p">,</span>
+    <span class="p">}</span>
+<span class="p">})</span>
+
+<span class="c1"># add supervisory targets</span>
+<span class="n">model</span><span class="o">.</span><span class="n">add_labels</span><span class="p">({</span>
+    <span class="s1">&#39;AB&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;0&#39;</span><span class="p">:</span> <span class="n">TRUE</span><span class="p">,</span>
+        <span class="s1">&#39;1&#39;</span><span class="p">:</span> <span class="n">FALSE</span><span class="p">,</span>
+        <span class="s1">&#39;2&#39;</span><span class="p">:</span> <span class="n">TRUE</span><span class="p">,</span>
+        <span class="s1">&#39;3&#39;</span><span class="p">:</span> <span class="n">FALSE</span><span class="p">,</span>
+    <span class="p">}</span>
+<span class="p">})</span>
+
+<span class="c1"># train the model and output results</span>
+<span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">losses</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;supervised&#39;</span><span class="p">])</span>
+<span class="n">model</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="lnn.Not">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">lnn.</span></code><code class="sig-name descname"><span class="pre">Not</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">operand</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwds</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lnn.Not" title="Permalink to this definition">¶</a></dt>
+<dd><p>Symbolic Negation</p>
+<p>Returns a logical negation where inputs can be propositional,
+first-order logic predicates or other connectives.</p>
+<p><strong>Parameters</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">*</span><span class="n">formula</span> <span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">_ConnectiveFormula</span><span class="p">,</span> <span class="n">Proposition</span><span class="p">,</span> <span class="n">Predicate</span><span class="p">(</span><span class="o">*</span><span class="n">Variable</span><span class="p">)]</span>
+    <span class="n">accepts</span> <span class="n">a</span> <span class="n">unary</span> <span class="nb">input</span>
+<span class="n">kwds</span> <span class="p">:</span> <span class="nb">dict</span>
+    <span class="n">_Formula</span> <span class="n">kwds</span>
+</pre></div>
+</div>
+<p><strong>Example</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Propositional</span>
+<span class="n">A</span><span class="p">,</span> <span class="n">B</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">Proposition</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">])</span>
+<span class="n">Bidirectional</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># First-order logic</span>
+<span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">Variables</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">])</span>
+<span class="n">A</span> <span class="o">=</span> <span class="n">Predicate</span><span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">)</span>
+<span class="n">B</span> <span class="o">=</span> <span class="n">Predicate</span><span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="n">arity</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">Bidirectional</span><span class="p">(</span><span class="n">A</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">B</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)))</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py class">
+<dt id="lnn.Or">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">lnn.</span></code><code class="sig-name descname"><span class="pre">Or</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">formula</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwds</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lnn.Or" title="Permalink to this definition">¶</a></dt>
+<dd><p>Symbolic Disjunction</p>
+<p>Returns a logical disjunction where inputs can be propositional,
+first-order logic predicates or other connectives.</p>
+<p><strong>Parameters</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">formula</span> <span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">_ConnectiveFormula</span><span class="p">,</span> <span class="n">Proposition</span><span class="p">,</span> <span class="n">Predicate</span><span class="p">(</span><span class="o">*</span><span class="n">Variable</span><span class="p">)]</span>
+    <span class="n">accepts</span> <span class="n">n</span><span class="o">-</span><span class="n">ary</span> <span class="n">inputs</span>
+<span class="n">kwds</span> <span class="p">:</span> <span class="nb">dict</span>
+    <span class="n">_Formula</span> <span class="n">kwds</span>
+</pre></div>
+</div>
+<p><strong>Example</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Propositional</span>
+<span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">Proposition</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">])</span>
+<span class="n">Or</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># First-order logic</span>
+<span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">Variables</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">])</span>
+<span class="n">A</span><span class="p">,</span> <span class="n">C</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">Predicate</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">])</span>
+<span class="n">B</span> <span class="o">=</span> <span class="n">Predicate</span><span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="n">arity</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">Or</span><span class="p">(</span><span class="n">A</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">B</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span> <span class="n">C</span><span class="p">(</span><span class="n">y</span><span class="p">)))</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py class">
+<dt id="lnn.Predicate">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">lnn.</span></code><code class="sig-name descname"><span class="pre">Predicate</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arity</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwds</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lnn.Predicate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a container for a predicate</p>
+<p>Stores a table of truths, with columns specified by the arity and rows
+indexed by the grounding</p>
+<p><strong>Parameters</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">name</span> <span class="p">:</span> <span class="nb">str</span>
+    <span class="n">name</span> <span class="n">of</span> <span class="n">the</span> <span class="n">predicate</span>
+<span class="n">arity</span> <span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">optional</span>
+    <span class="n">defaults</span> <span class="n">to</span> <span class="n">unary</span> <span class="n">predicates</span> <span class="p">()</span>
+</pre></div>
+</div>
+<p><strong>Example</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">P1</span> <span class="o">=</span> <span class="n">Predicate</span><span class="p">()</span>
+<span class="n">P2</span> <span class="o">=</span> <span class="n">Predicate</span><span class="p">(</span><span class="n">arity</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py class">
+<dt id="lnn.Proposition">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">lnn.</span></code><code class="sig-name descname"><span class="pre">Proposition</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwds</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lnn.Proposition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates propositional containers</p>
+<p>Stores and retrieves single truth bounds instead of tables as in FOL case</p>
+<p><strong>Parameters</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">name</span> <span class="p">:</span> <span class="nb">str</span>
+    <span class="n">name</span> <span class="n">of</span> <span class="n">the</span> <span class="n">proposition</span>
+</pre></div>
+</div>
+<p><strong>Example</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">P</span> <span class="o">=</span> <span class="n">Proposition</span><span class="p">(</span><span class="s1">&#39;Person&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py class">
+<dt id="lnn.Variable">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">lnn.</span></code><code class="sig-name descname"><span class="pre">Variable</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ctype</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lnn.Variable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates free variables to quantify first-order logic formulae</p>
+<p><strong>Parameters</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">name</span> <span class="p">:</span> <span class="nb">str</span>
+    <span class="n">name</span> <span class="n">of</span> <span class="n">the</span> <span class="n">free</span> <span class="n">variable</span>
+<span class="n">ctype</span> <span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">optional</span>
+    <span class="n">constant</span> <span class="n">of</span> <span class="n">the</span> <span class="nb">type</span> <span class="n">associated</span> <span class="k">with</span> <span class="n">the</span> <span class="n">free</span> <span class="n">variable</span>
+</pre></div>
+</div>
+<p><strong>Example</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;person&#39;</span><span class="p">)</span>
+<span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">Variable</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py class">
+<dt id="lnn.World">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">lnn.</span></code><code class="sig-name descname"><span class="pre">World</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lnn.World" title="Permalink to this definition">¶</a></dt>
+<dd><p>An enumeration for world assumptions to for incomplete knowledge</p>
+<p>See the discussion of
+<a class="reference external" href="https://en.wikipedia.org/wiki/Open-world_assumption">OPEN vs CLOSED</a>
+world assumptions for more information</p>
+<p><strong>Attributes</strong></p>
+<div class="highlight-raw notranslate"><div class="highlight"><pre><span></span>OPEN : Formulae that follow the open world assumption
+CLOSED : Formulae that follow the open world assumption
+AXIOM : Formulae that follow assumptions of universally being TRUE
+FALSE : Alias for CLOSED
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="lnn.predicate_truth_table">
+<code class="sig-prename descclassname"><span class="pre">lnn.</span></code><code class="sig-name descname"><span class="pre">predicate_truth_table</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">'p'</span></em>, <em class="sig-param"><span class="pre">'q'</span></em>, <em class="sig-param"><span class="pre">'r'</span></em>, <em class="sig-param"><span class="pre">model=model</span></em><span class="sig-paren">)</span><a class="headerlink" href="#lnn.predicate_truth_table" title="Permalink to this definition">¶</a></dt>
+<dd><p>randomises the truth table into a predicate by str(int) rows</p>
+<p><strong>Returns</strong></p>
+<p>model</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="../education/examples/gm.html" class="btn btn-neutral float-left" title="Grounding Management" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2020, IBM Research.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

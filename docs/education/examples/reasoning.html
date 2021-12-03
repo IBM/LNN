@@ -1,0 +1,343 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Reasoning &mdash; Logical Neural Networks  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Grounding Management" href="gm.html" />
+    <link rel="prev" title="Examples" href="examples.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Logical Neural Networks
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Logical Neural Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../papers.html">Papers</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../education.html">Education</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../blogs/blogs.html">Understanding LNNs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/tutorials.html">Tutorials</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="examples.html">Examples</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Reasoning</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#simple-geometry-reasoning-example">Simple Geometry reasoning example</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#more-complex-reasoning-example">More complex reasoning example</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="gm.html">Grounding Management</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../lnn/LNN.html">LNN Module</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Logical Neural Networks</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../education.html">Education</a> &raquo;</li>
+        
+          <li><a href="examples.html">Examples</a> &raquo;</li>
+        
+      <li>Reasoning</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../../_sources/education/examples/reasoning.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="reasoning">
+<h1>Reasoning<a class="headerlink" href="#reasoning" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="simple-geometry-reasoning-example">
+<h2>Simple Geometry reasoning example<a class="headerlink" href="#simple-geometry-reasoning-example" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="problem-in-natural-language">
+<h3>Problem in Natural Language<a class="headerlink" href="#problem-in-natural-language" title="Permalink to this headline">¶</a></h3>
+<p><strong>Background knowledge:</strong> All <span style="color:orange">square</span> objects are <span style="color:orange">rectangular</span>.
+All <span style="color:orange">rectangular</span> objects have <span style="color:orange">four sides</span>.
+The object <code class="docutils literal notranslate"><span class="pre">c</span></code> is a <span style="color:orange">square</span>. The object <code class="docutils literal notranslate"><span class="pre">k</span></code> is a <span style="color:orange">square</span>.</p>
+<p><strong>Query:</strong> Is there any object with <span style="color:orange">four sides</span>?</p>
+<p>The problem can be parsed into First-order logic as shown below, using any semantic parsing modules.
+The output of semantic parsing is facts and rules. We extract <span style="color:orange">predicates</span> , <code class="docutils literal notranslate"><span class="pre">constants</span></code> (or <code class="docutils literal notranslate"><span class="pre">objects</span></code>)
+and logical connectives (→, ∀, etc.). Facts are made of <span style="color:orange">predicates</span> and <code class="docutils literal notranslate"><span class="pre">constants</span></code>.
+For example, <code class="docutils literal notranslate"><span class="pre">Square(c)</span></code> says object <code class="docutils literal notranslate"><span class="pre">c</span></code> is a square. Similarly, for object <code class="docutils literal notranslate"><span class="pre">k</span></code>. Finally,
+‘All square objects are rectangular’ is parsed to ∀x <code class="docutils literal notranslate"><span class="pre">Square(x)</span> </code> → <code class="docutils literal notranslate"><span class="pre">Rectangle(x)</span></code>.</p>
+</div>
+<div class="section" id="problem-in-first-order-logic">
+<h3>Problem in First-order Logic<a class="headerlink" href="#problem-in-first-order-logic" title="Permalink to this headline">¶</a></h3>
+<p><strong>Background knowledge</strong></p>
+<p><code class="docutils literal notranslate"><span class="pre">Square(c)</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">Square(k)</span></code></p>
+<p>∀x <code class="docutils literal notranslate"><span class="pre">Square(x)</span> </code> → <code class="docutils literal notranslate"><span class="pre">Rectangle(x)</span></code></p>
+<p>∀x <code class="docutils literal notranslate"><span class="pre">Rectangle(x)</span> </code> → <code class="docutils literal notranslate"><span class="pre">Fourside(x)</span></code></p>
+<p><strong>Query</strong></p>
+<p>∃x <code class="docutils literal notranslate"><span class="pre">Fourside(x)</span></code>?</p>
+</div>
+<div class="section" id="lnn-code">
+<h3>LNN Code<a class="headerlink" href="#lnn-code" title="Permalink to this headline">¶</a></h3>
+<p>Since the LNN has a one-to-one mapping with First-order Logic, the problem can be directly translated to the LNN representation.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">lnn</span> <span class="kn">import</span> <span class="p">(</span><span class="n">Predicate</span><span class="p">,</span> <span class="n">Variable</span><span class="p">,</span>
+                 <span class="n">Exists</span><span class="p">,</span> <span class="n">Implies</span><span class="p">,</span> <span class="n">ForAll</span><span class="p">,</span> <span class="n">Model</span><span class="p">,</span> <span class="n">Fact</span><span class="p">,</span> <span class="n">World</span><span class="p">)</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">()</span>
+     
+<span class="c1"># Variablle</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">)</span>
+     
+<span class="c1"># Predicate declarations</span>
+<span class="n">square</span> <span class="o">=</span> <span class="n">Predicate</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;square&#39;</span><span class="p">)</span>
+<span class="n">rectangle</span> <span class="o">=</span> <span class="n">Predicate</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;rectangle&#39;</span><span class="p">)</span>
+<span class="n">foursides</span> <span class="o">=</span> <span class="n">Predicate</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;foursides&#39;</span><span class="p">)</span>
+     
+<span class="c1"># Axioms declarations</span>
+<span class="n">square_rect</span> <span class="o">=</span> <span class="n">ForAll</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">Implies</span><span class="p">(</span><span class="n">square</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">rectangle</span><span class="p">(</span><span class="n">x</span><span class="p">),</span>
+                                <span class="n">name</span><span class="o">=</span><span class="s1">&#39;square-rect&#39;</span><span class="p">),</span>
+                    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;all-square-rect&#39;</span><span class="p">,</span> <span class="n">world</span><span class="o">=</span><span class="n">World</span><span class="o">.</span><span class="n">AXIOM</span><span class="p">)</span>
+<span class="n">rect_foursides</span> <span class="o">=</span> <span class="n">ForAll</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">Implies</span><span class="p">(</span><span class="n">rectangle</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">foursides</span><span class="p">(</span><span class="n">x</span><span class="p">),</span>
+                                   <span class="n">name</span><span class="o">=</span><span class="s1">&#39;rect-foursides&#39;</span><span class="p">),</span>
+                        <span class="n">name</span><span class="o">=</span><span class="s1">&#39;all-rect-foursides&#39;</span><span class="p">,</span> <span class="n">world</span><span class="o">=</span><span class="n">World</span><span class="o">.</span><span class="n">AXIOM</span><span class="p">)</span>
+                             
+<span class="c1"># Query</span>
+<span class="n">query</span> <span class="o">=</span> <span class="n">Exists</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">foursides</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;foursided_objects&#39;</span><span class="p">)</span>
+     
+<span class="c1"># Add predicates and rules to the model</span>
+<span class="n">model</span><span class="o">.</span><span class="n">add_formulae</span><span class="p">(</span><span class="n">square</span><span class="p">,</span> <span class="n">rectangle</span><span class="p">,</span> <span class="n">square_rect</span><span class="p">,</span> <span class="n">rect_foursides</span><span class="p">,</span> <span class="n">query</span><span class="p">)</span>
+     
+<span class="c1"># Add facts to the model</span>
+<span class="n">model</span><span class="o">.</span><span class="n">set_facts</span><span class="p">({</span><span class="s1">&#39;square&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;c&#39;</span><span class="p">:</span> <span class="n">Fact</span><span class="o">.</span><span class="n">TRUE</span><span class="p">,</span> <span class="s1">&#39;k&#39;</span><span class="p">:</span> <span class="n">Fact</span><span class="o">.</span><span class="n">TRUE</span><span class="p">}})</span>
+     
+<span class="c1"># Perform inference</span>
+<span class="n">steps</span><span class="p">,</span> <span class="n">facts_inferred</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">infer</span><span class="p">()</span>
+     
+<span class="c1"># Inspect the query node</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">model</span><span class="p">[</span><span class="s1">&#39;foursided_objects&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">true_groundings</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Expected output: <code class="docutils literal notranslate"><span class="pre">{'c',</span> <span class="pre">'k'}</span></code></p>
+</div>
+</div>
+<div class="section" id="more-complex-reasoning-example">
+<h2>More complex reasoning example<a class="headerlink" href="#more-complex-reasoning-example" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id1">
+<h3>Problem in Natural Language<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<p><strong>Background knowledge:</strong> The law says that it is a <span style="color:orange">crime</span> for an <span style="color:orange">American</span> to <span style="color:orange">sell</span> <span style="color:orange">weapons</span> to <span style="color:orange">hostile</span> nations.
+The <span style="color:orange">country</span> <code class="docutils literal notranslate"><span class="pre">Nono</span></code>, an <span style="color:orange">enemy</span> of <code class="docutils literal notranslate"><span class="pre">America</span></code>, and other countries <code class="docutils literal notranslate"><span class="pre">Gotham</span></code> and <code class="docutils literal notranslate"><span class="pre">Wakanda</span></code> all have some <span style="color:orange">missiles</span>.
+<code class="docutils literal notranslate"><span class="pre">Nono</span></code>’s <span style="color:orange">missiles</span> were <span style="color:orange">sold</span> to it by <code class="docutils literal notranslate"><span class="pre">Colonel</span> <span class="pre">West</span></code>, who is <span style="color:orange">American</span>.</p>
+<p><strong>Query:</strong> Prove that <code class="docutils literal notranslate"><span class="pre">Colonel</span> <span class="pre">West</span></code> is a <span style="color:orange">criminal</span>.</p>
+</div>
+<div class="section" id="id2">
+<h3>Problem in First-order Logic<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">Owns(nono,m1)</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">Missile(m1)</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">Missile(m2)</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">Missile(m3)</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">American(\texttt{west})</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">Enemy(nono,america)</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">Enemy(wakanda,america)</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">Enemy(gotham,america)</span></code></p>
+<p>∀ x,y,z <code class="docutils literal notranslate"><span class="pre">American(x)</span></code> ∧ <code class="docutils literal notranslate"><span class="pre">Weapon(y)</span></code> ∧ <code class="docutils literal notranslate"><span class="pre">Sells(x,y,z)</span></code> ∧ <code class="docutils literal notranslate"><span class="pre">Hostile(z)</span></code> → <code class="docutils literal notranslate"><span class="pre">Criminal(x)</span></code></p>
+<p>∀ x <code class="docutils literal notranslate"><span class="pre">Missile(x)</span></code> ∧ <code class="docutils literal notranslate"><span class="pre">Owns(nono,x)</span></code> → <code class="docutils literal notranslate"><span class="pre">Sells(west,x,nono)</span></code></p>
+<p>∀ x <code class="docutils literal notranslate"><span class="pre">Missile(x)</span></code> → <code class="docutils literal notranslate"><span class="pre">Weapon(x)</span></code></p>
+<p>∀ x <code class="docutils literal notranslate"><span class="pre">Enemy(x,america)</span></code> → <code class="docutils literal notranslate"><span class="pre">Hostile(x)</span></code></p>
+</div>
+<div class="section" id="id3">
+<h3>LNN Code<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">lnn</span> <span class="kn">import</span> <span class="p">(</span><span class="n">Predicate</span><span class="p">,</span> <span class="n">Variable</span><span class="p">,</span> <span class="n">Join</span><span class="p">,</span> <span class="n">And</span><span class="p">,</span>
+                 <span class="n">Exists</span><span class="p">,</span> <span class="n">Implies</span><span class="p">,</span> <span class="n">ForAll</span><span class="p">,</span> <span class="n">Model</span><span class="p">,</span> <span class="n">Fact</span><span class="p">,</span> <span class="n">World</span><span class="p">)</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">()</span>  <span class="c1"># Instantiate a model.</span>
+<span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">Variable</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">])</span>
+
+<span class="c1"># Define and add predicates to the model.</span>
+<span class="n">owns</span> <span class="o">=</span> <span class="n">model</span><span class="p">[</span><span class="s1">&#39;owns&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Predicate</span><span class="p">(</span><span class="n">arity</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;owns&#39;</span><span class="p">)</span>
+<span class="n">missile</span> <span class="o">=</span> <span class="n">model</span><span class="p">[</span><span class="s1">&#39;missile&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Predicate</span><span class="p">(</span><span class="n">arity</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;missile&#39;</span><span class="p">)</span>
+<span class="n">american</span> <span class="o">=</span> <span class="n">model</span><span class="p">[</span><span class="s1">&#39;american&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Predicate</span><span class="p">(</span><span class="n">arity</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;american&#39;</span><span class="p">)</span>
+<span class="n">enemy</span> <span class="o">=</span> <span class="n">model</span><span class="p">[</span><span class="s1">&#39;enemy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Predicate</span><span class="p">(</span><span class="n">arity</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;enemy&#39;</span><span class="p">)</span>
+<span class="n">hostile</span> <span class="o">=</span> <span class="n">model</span><span class="p">[</span><span class="s1">&#39;hostile&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Predicate</span><span class="p">(</span><span class="n">arity</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;hostile&#39;</span><span class="p">)</span>
+<span class="n">criminal</span> <span class="o">=</span> <span class="n">model</span><span class="p">[</span><span class="s1">&#39;criminal&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Predicate</span><span class="p">(</span><span class="n">arity</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;criminal&#39;</span><span class="p">)</span>
+<span class="n">weapon</span> <span class="o">=</span> <span class="n">model</span><span class="p">[</span><span class="s1">&#39;weapon&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Predicate</span><span class="p">(</span><span class="n">arity</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;weapon&#39;</span><span class="p">)</span>
+<span class="n">sells</span> <span class="o">=</span> <span class="n">model</span><span class="p">[</span><span class="s1">&#39;sells&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Predicate</span><span class="p">(</span><span class="n">arity</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;sells&#39;</span><span class="p">)</span>
+
+
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="gm.html" class="btn btn-neutral float-right" title="Grounding Management" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="examples.html" class="btn btn-neutral float-left" title="Examples" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2020, IBM Research.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

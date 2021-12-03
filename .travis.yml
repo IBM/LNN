@@ -1,0 +1,27 @@
+language: python
+
+python:
+  - "3.8"
+
+cache: pip
+
+install:
+  # Install Python script dependencies
+  - sudo apt-get update
+  - sudo apt-get install graphviz graphviz-dev
+  - pip install --upgrade pip setuptools
+  - pip install --upgrade -r requirements.txt
+
+  # Install Python linter
+  - pip install --upgrade flake8
+#
+#  # Install Python testing and coverage
+# - pip install --upgrade pytest pytest-cov
+
+script:
+  #  # Run Python linter
+  - flake8 .
+  # Run tests and coverage report
+  # - python -m pytest -v --cov-report=term-missing --cov-fail-under=80 --cov=lnn/
+  - export PYTHONPATH=./lnn:$PYTHONPATH
+  - pytest .

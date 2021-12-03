@@ -1,0 +1,533 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Python API &mdash; Logical Neural Networks  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Papers" href="papers.html" />
+    <link rel="prev" title="Logical Neural Networks" href="introduction.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Logical Neural Networks
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Logical Neural Networks</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Python API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#hierarchical-class-structure">Hierarchical Class Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#using-the-lnn">Using the LNN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#some-design-choices">Some design choices</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="papers.html">Papers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="education/education.html">Education</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lnn/LNN.html">LNN Module</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Logical Neural Networks</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Python API</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/usage.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="python-api">
+<h1>Python API<a class="headerlink" href="#python-api" title="Permalink to this headline">¶</a></h1>
+<p>The LNN API uses a pythonic approach for learning, reasoning and interacting
+with neural representations of first-order logic knowledge bases.</p>
+<p>The API follows a hierarchical model of abstraction, enabling knowledge
+designers to construct and interact only with components of interest.</p>
+<div class="section" id="hierarchical-class-structure">
+<h2>Hierarchical Class Structure<a class="headerlink" href="#hierarchical-class-structure" title="Permalink to this headline">¶</a></h2>
+<ol>
+<li><p>Model</p>
+<p>A model stores the context of compute, i.e., the knowledge being reasoned over
+and the facts for which the knowledge is believed to apply.</p>
+</li>
+<li><p>Symbolic Nodes</p>
+<p>Nodes are “named” nodes that have human-interpretable behaviour
+according the type of node being specified. These nodes may directly be
+instantiated by the designer as prior knowledge  or extracted from templates
+to fit the data.</p>
+</li>
+<li><p>Neural Computations</p>
+<p>The underlying computations used by real-valued logical operations are
+weighted in nature, typically using parameterised extensions of the standard
+t-norms: Łukasiewicz, Gödel and Product logic</p>
+</li>
+</ol>
+</div>
+<div class="section" id="using-the-lnn">
+<h2>Using the LNN<a class="headerlink" href="#using-the-lnn" title="Permalink to this headline">¶</a></h2>
+<ol>
+<li><p>Models are Dynamic</p>
+<ul>
+<li><p>An LNN model can be initialised as an ‘empty container’ and populated
+on-demand with the knowledge and data required to compute over.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">lnn</span> <span class="kn">import</span> <span class="n">Model</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">()</span>
+</pre></div>
+</div>
+</li>
+<li><p>This functionality becomes of special interest in programmatic environments
+that may have discoverable information that requires reasoning over the new
+information while simultaneously retaining previously stored or inferred
+facts.</p></li>
+<li><p>Model knowledge and facts can be initiated with model constructors or
+populated with content on-demand</p></li>
+</ul>
+</li>
+<li><p>Knowledge as a Neural Architecture</p>
+<ol>
+<li><p>Predicates are the base building-blocks for a grounded first-order logic
+system like the LNN.
+They allow data to be populated as relations between constants or
+more explicitly as tables of information.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">lnn</span> <span class="kn">import</span> <span class="n">Predicate</span>
+
+<span class="n">Smokes</span> <span class="o">=</span> <span class="n">Predicate</span><span class="p">(</span><span class="s1">&#39;Smokes&#39;</span><span class="p">)</span>
+<span class="n">Cancer</span> <span class="o">=</span> <span class="n">Predicate</span><span class="p">(</span><span class="s1">&#39;Cancer&#39;</span><span class="p">)</span>
+<span class="n">Friends</span> <span class="o">=</span> <span class="n">Predicate</span><span class="p">(</span><span class="s1">&#39;Friends&#39;</span><span class="p">,</span> <span class="n">arity</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>The arity (default = 1) represents the number of columns in the table,
+where the rows will be filled by <a class="reference external" href="#data">facts in the table</a></p></li>
+<li><p>Predicates require names, e.g., <code class="docutils literal notranslate"><span class="pre">'Smokes'</span></code>, which is used to identify
+the node within the scope of the model</p></li>
+</ul>
+</li>
+<li><p>Where standard neural networks abstractly model knowledge into a neural
+architecture, LNNs do so explicitly, using first-order logic formulae</p>
+<ul>
+<li><p>An explicit representation constructs neurons directly from the formulae,
+using a 1-to-1 mapping to construct the model neurons. The model
+architecture is therefore symbolically defined and precise, as defined
+by the required semantic expression.</p></li>
+<li><p>First we instantiate a free variable</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">lnn</span> <span class="kn">import</span> <span class="n">Variable</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;person&#39;</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;person&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>so that “grounding management” understands how to compose subformulae
+during table joining operations</p>
+</li>
+<li><p>FOL formula can be constructed using neural connectives as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">lnn</span> <span class="kn">import</span> <span class="n">Implies</span><span class="p">,</span> <span class="n">Bidirectional</span>  <span class="c1"># additional connectives: And, Or, Not</span>
+
+<span class="n">model</span><span class="p">[</span><span class="s1">&#39;Smoking causes Cancer&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Implies</span><span class="p">(</span><span class="n">Smokes</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">Cancer</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="n">model</span><span class="p">[</span><span class="s1">&#39;Smokers befriend Smokers&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Implies</span><span class="p">(</span><span class="n">Friends</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span> <span class="n">Bidirectional</span><span class="p">(</span><span class="n">Smokes</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">Smokes</span><span class="p">(</span><span class="n">y</span><span class="p">)))</span>
+</pre></div>
+</div>
+<ul>
+<li><p>Model assignment operations, i.e.,</p>
+<p><code class="docutils literal notranslate"><span class="pre">model['Smoking</span> <span class="pre">causes</span> <span class="pre">Cancer']</span> <span class="pre">=</span> <span class="pre">...</span></code> can be used to inject new
+formulae directly into the model, including predicates</p>
+</li>
+<li><p>Each injected formula requires a unique name, as offered by the
+assignment key, e.g., <code class="docutils literal notranslate"><span class="pre">'Smoking</span> <span class="pre">causes</span> <span class="pre">Cancer'</span></code>.
+This is used to identify the node within the <code class="docutils literal notranslate"><span class="pre">model-scope</span></code></p></li>
+<li><p>Alternatively root level formulae can be collected and inserted into
+the model en masse:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">lnn</span> <span class="kn">import</span> <span class="n">AXIOM</span>  <span class="c1"># additional world assumptions: OPEN, CLOSED</span>
+
+<span class="n">formulae</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">Implies</span><span class="p">(</span><span class="n">Smokes</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">Cancer</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> 
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Smoking causes Cancer&#39;</span><span class="p">),</span>
+    <span class="n">Implies</span><span class="p">(</span><span class="n">Friends</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span> <span class="n">Bidirectional</span><span class="p">(</span><span class="n">Smokes</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">Smokes</span><span class="p">(</span><span class="n">y</span><span class="p">)),</span> 
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Smokers befriend Smokers&#39;</span><span class="p">)</span>
+<span class="p">]</span>
+<span class="n">model</span><span class="o">.</span><span class="n">add_formulae</span><span class="p">(</span><span class="o">*</span><span class="n">formulae</span><span class="p">,</span> <span class="n">world</span><span class="o">=</span><span class="n">AXIOM</span><span class="p">)</span>
+</pre></div>
+</div>
+<ul>
+<li><p>All nodes requiring handles for lookup or directly for symbolic
+operations, should include a <code class="docutils literal notranslate"><span class="pre">name</span></code> via the kwarg</p></li>
+<li><p>The compositional structure of the LNN will recursively build up a
+connective tree structure per root formula and the insertion of a
+root will also include all connected subformulae.</p></li>
+<li><p>Formulae can also be modified to follow a truth <code class="docutils literal notranslate"><span class="pre">world</span></code> assumption
+using the kwarg, i.e., <code class="docutils literal notranslate"><span class="pre">OPEN</span></code> or <code class="docutils literal notranslate"><span class="pre">CLOSED</span></code>
+<a class="reference external" href="https://en.wikipedia.org/wiki/Closed-world_assumption">world assumption</a>.</p>
+<ul>
+<li><p>This places restrictions on the symbolic truths to only consider
+worlds where the facts are initialised as <code class="docutils literal notranslate"><span class="pre">UNKNOWN</span></code> or <code class="docutils literal notranslate"><span class="pre">FALSE</span></code>
+accordingly.</p></li>
+<li><p>By default, LNNs make no assumption of perfect knowledge and opt
+for <code class="docutils literal notranslate"><span class="pre">OPEN</span></code> assumptions on all formulae unless otherwise specified.<br />
+e.g. A safer assumption from the above scenario may assume</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Cancer</span> <span class="o">=</span> <span class="n">Predicate</span><span class="p">(</span><span class="s1">&#39;Cancer&#39;</span><span class="p">,</span> <span class="n">world</span><span class="o">=</span><span class="n">CLOSED</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>to prevent false negatives from downward inference, opting to trust
+the data instead of assuming the formulae perfectly describes the
+data</p>
+</li>
+</ul>
+</li>
+<li><p>Alternatively a formula can be defined as an <code class="docutils literal notranslate"><span class="pre">AXIOM</span></code>, thereby
+limiting truths to worlds where facts are assumed <code class="docutils literal notranslate"><span class="pre">TRUE</span></code></p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Connectives are “neural” due to their parameterised computation or
+implementation as a weighted real-value t-norm.</p>
+<ul class="simple">
+<li><p>The base neural connectives in the LNN are <code class="docutils literal notranslate"><span class="pre">And</span></code>, <code class="docutils literal notranslate"><span class="pre">Or</span></code>, <code class="docutils literal notranslate"><span class="pre">Implies</span></code></p></li>
+<li><p>Note that <code class="docutils literal notranslate"><span class="pre">Not</span></code> gates, albeit a connective, is not neural in nature</p></li>
+<li><p>Compound connectives, e.g., <code class="docutils literal notranslate"><span class="pre">Bidirectional</span></code>, <code class="docutils literal notranslate"><span class="pre">Xor</span></code>, etc. are implemented
+from these 4 connectives</p></li>
+<li><p>The parameterised configuration of each neuron can be overloaded
+using the <code class="docutils literal notranslate"><span class="pre">neuron</span></code> kwarg. See [neuron module] documentation for more.</p></li>
+</ul>
+</li>
+</ol>
+</li>
+<li><p>Tables of Data <a name="data"></a></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># add data to the model</span>
+<span class="n">model</span><span class="o">.</span><span class="n">add_facts</span><span class="p">({</span>
+    <span class="s1">&#39;Friends&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="p">(</span><span class="s1">&#39;Anna&#39;</span><span class="p">,</span> <span class="s1">&#39;Bob&#39;</span><span class="p">):</span> <span class="n">TRUE</span><span class="p">,</span>
+        <span class="p">(</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;Anna&#39;</span><span class="p">):</span> <span class="n">TRUE</span><span class="p">,</span>
+        <span class="p">(</span><span class="s1">&#39;Anna&#39;</span><span class="p">,</span> <span class="s1">&#39;Edward&#39;</span><span class="p">):</span> <span class="n">TRUE</span><span class="p">,</span>
+        <span class="p">(</span><span class="s1">&#39;Edward&#39;</span><span class="p">,</span> <span class="s1">&#39;Anna&#39;</span><span class="p">):</span> <span class="n">TRUE</span><span class="p">,</span>
+        <span class="p">(</span><span class="s1">&#39;Anna&#39;</span><span class="p">,</span> <span class="s1">&#39;Frank&#39;</span><span class="p">):</span> <span class="n">TRUE</span><span class="p">,</span>
+        <span class="p">(</span><span class="s1">&#39;Frank&#39;</span><span class="p">,</span> <span class="s1">&#39;Anna&#39;</span><span class="p">):</span> <span class="n">TRUE</span><span class="p">,</span>
+        <span class="p">(</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;Chris&#39;</span><span class="p">):</span> <span class="n">TRUE</span><span class="p">},</span>
+    <span class="n">Smokes</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;Anna&#39;</span><span class="p">:</span> <span class="n">TRUE</span><span class="p">,</span>
+        <span class="s1">&#39;Edward&#39;</span><span class="p">:</span> <span class="n">TRUE</span><span class="p">,</span>
+        <span class="s1">&#39;Frank&#39;</span><span class="p">:</span> <span class="n">TRUE</span><span class="p">,</span>
+        <span class="s1">&#39;Gary&#39;</span><span class="p">:</span> <span class="n">TRUE</span><span class="p">},</span>
+    <span class="n">Cancer</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;Anna&#39;</span><span class="p">:</span> <span class="n">TRUE</span><span class="p">,</span>
+        <span class="s1">&#39;Edward&#39;</span><span class="p">:</span> <span class="n">TRUE</span><span class="p">}</span>
+    <span class="p">})</span>
+<span class="n">model</span><span class="o">.</span><span class="n">print</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Output:</p>
+<div class="highlight-raw notranslate"><div class="highlight"><pre><span></span>*************************************************************
+                             LNN Model
+
+ AXIOM  Implies: Smokers befriend Smokers(&#39;x&#39;, &#39;y&#39;) 
+
+ OPEN   Bidirectional: Bidirectional_0(&#39;x&#39;, &#39;y&#39;) 
+
+ OPEN   Implies: Implies_2(&#39;y&#39;, &#39;x&#39;) 
+
+ OPEN   Implies: Implies_1(&#39;x&#39;, &#39;y&#39;) 
+
+ OPEN   Predicate: Friends(&#39;x0&#39;, &#39;x1&#39;) 
+        (&#39;Bob&#39;, &#39;Anna&#39;)                     TRUE (1.0, 1.0)
+        (&#39;Anna&#39;, &#39;Bob&#39;)                     TRUE (1.0, 1.0)
+        (&#39;Anna&#39;, &#39;Edward&#39;)                  TRUE (1.0, 1.0)
+        (&#39;Frank&#39;, &#39;Anna&#39;)                   TRUE (1.0, 1.0)
+        (&#39;Bob&#39;, &#39;Chris&#39;)                    TRUE (1.0, 1.0)
+        (&#39;Edward&#39;, &#39;Anna&#39;)                  TRUE (1.0, 1.0)
+        (&#39;Anna&#39;, &#39;Frank&#39;)                   TRUE (1.0, 1.0)
+
+ AXIOM  Implies: Smokers have Cancer(x) 
+
+ CLOSED Predicate: Cancer(x0) 
+        &#39;Edward&#39;                            TRUE (1.0, 1.0)
+        &#39;Anna&#39;                              TRUE (1.0, 1.0)
+ 
+ OPEN   Predicate: Smokes(x0) 
+        &#39;Frank&#39;                             TRUE (1.0, 1.0)
+        &#39;Edward&#39;                            TRUE (1.0, 1.0)
+        &#39;Anna&#39;                              TRUE (1.0, 1.0)
+        &#39;Gary&#39;                              TRUE (1.0, 1.0)
+
+ ************************************************************
+</pre></div>
+</div>
+</li>
+<li><p>Reasoning until convergence <a name="reasoning"></a></p>
+<ul>
+<li><p>Using the above formulae and specified facts, inference runs across the
+entire model until convergence - inferring all possible facts that can be
+inferred.</p></li>
+<li><p>inference can be computed over the entire model by calling</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">infer</span><span class="p">()</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</li>
+<li><p>Learning in the presence of noise <a name="learning"></a></p>
+<ul>
+<li><p>Learning in the LNN can be done with supervisory signals but also under self
+supervision, using the rules to enforce logical consistency.</p></li>
+<li><p>Supervisory learning uses labelled targets on truth bounds, which can be
+set as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># add supervisory targets</span>
+<span class="n">model</span><span class="o">.</span><span class="n">add_labels</span><span class="p">({</span>
+    <span class="s1">&#39;Smokes&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;Ivan&#39;</span><span class="p">:</span> <span class="n">TRUE</span><span class="p">,</span>
+        <span class="s1">&#39;Nick&#39;</span><span class="p">:</span> <span class="n">TRUE</span><span class="p">}</span>
+    <span class="p">})</span>
+
+<span class="c1"># train the model and output results</span>
+<span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">losses</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;supervised&#39;</span><span class="p">])</span>
+<span class="n">model</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p>Self-supervisory signals can check for logical consistency, i.e., ensuring
+that the lower bounds do not cross above the upper bounds.
+This can be set using by adding the loss kwarg:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">loss</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;contradiction&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</li>
+<li><p>Additional losses that may be of interest are <code class="docutils literal notranslate"><span class="pre">logical</span></code> and <code class="docutils literal notranslate"><span class="pre">uncertainty</span></code>
+losses</p>
+<ul class="simple">
+<li><p>Logical losses</p>
+<ul>
+<li><p>Logical losses enforce the logical constraints, see
+<a class="reference external" href="https://arxiv.org/pdf/2006.13155.pdf">Section E</a> for more details.</p>
+<ul>
+<li><p>Enforcement of constraints are required for environments that require a
+‘hard-logic’ interpretation of neurons, however, this presents the
+LNN with a non-trivial optimisation problem - especially in the
+classical case where noise is present</p></li>
+<li><p>A soft-logic is however more desirable in most situation, allowing
+accuracy to be a more prominent goal than interpretability - which is
+the case for most machine learning scenarios.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Uncertainty losses</p>
+<ul>
+<li><p>Uncertainty losses are simply the <code class="docutils literal notranslate"><span class="pre">upper</span> <span class="pre">-</span> <span class="pre">lower</span></code> bounds, allowing the
+parameter configuration to tighten bounds and thereby minimise the amount
+of uncertainty within the output truths.</p>
+<ul>
+<li><p>This configuration is more readily used within scenarios that have
+non-classical inputs, i.e., uncertainty bounds on real-valued (0, 1)
+truths - excluding the extremes.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Losses can also be appended to the training list, enabling multi-task
+learning across the model</p></li>
+</ul>
+</li>
+</ol>
+</div>
+<div class="section" id="some-design-choices">
+<h2>Some design choices<a class="headerlink" href="#some-design-choices" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>While the LNN can handle large graphs, the current strategy of unguided
+reasoning or reasoning over all possible points, can be time intensive.</p>
+<ul>
+<li><p>Bottlenecks being addressed include:</p>
+<ul>
+<li><p>loading large numbers of formulae sequentially</p></li>
+<li><p>efficiency of grounding management for large tables and deep formulae</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>“Grounding management” or the composition of subformulae tables according to
+the variable configuration is therefore kept to a minimal by opting for
+inner-joins instead of outer/product joins.</p></li>
+<li><p>Albeit more efficient, these joins can still be computationally intensive
+(2N^2 in some situations) for large n-ary tables.
+The length of connectives should therefore be kept as compact as possible.</p></li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="papers.html" class="btn btn-neutral float-right" title="Papers" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="introduction.html" class="btn btn-neutral float-left" title="Logical Neural Networks" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2020, IBM Research.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

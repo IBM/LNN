@@ -1,0 +1,242 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Logical Neural Networks &mdash; Logical Neural Networks  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Python API" href="usage.html" />
+    <link rel="prev" title="Logical Neural Networks Documentation" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Logical Neural Networks
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Logical Neural Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="papers.html">Papers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="education/education.html">Education</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lnn/LNN.html">LNN Module</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Logical Neural Networks</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Logical Neural Networks</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/introduction.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="logical-neural-networks">
+<h1>Logical Neural Networks<a class="headerlink" href="#logical-neural-networks" title="Permalink to this headline">¶</a></h1>
+<img src="https://raw.githubusercontent.com/IBM/LNN/master/docsrc/images/class_diagram.png" alt="LNN structure" width="400" class="aligncenter"/>
+<p>The LNN is a form of recurrent neural network with a 1-to-1 correspondence to a set of logical formulae in any of
+various systems of <em><strong>weighted, real-valued logic</strong></em>, in which evaluation performs logical inference. The graph
+structure therefore directly reflects the logical formulae it represents.</p>
+<p>Key innovations that set LNNs aside from other neural networks are</p>
+<ol class="simple">
+<li><p>neural activation functions <strong>constrained</strong> to implement the truth functions of the logical operations they
+represent, i.e. <code class="docutils literal notranslate"><span class="pre">And</span></code>, <code class="docutils literal notranslate"><span class="pre">Or</span></code>, <code class="docutils literal notranslate"><span class="pre">Not</span></code>, <code class="docutils literal notranslate"><span class="pre">Implies</span></code>, and, in FOL, <code class="docutils literal notranslate"><span class="pre">ForAll</span></code> and <code class="docutils literal notranslate"><span class="pre">Exists</span></code>,</p></li>
+<li><p>results expressed in terms of <strong>bounds</strong> on truth values so as to distinguish known, approximately known, unknown,
+and contradictory states,</p></li>
+<li><p><strong>bidirectional inference</strong> permitting, e.g., <code class="docutils literal notranslate"><span class="pre">x</span> <span class="pre">→</span> <span class="pre">y</span></code> to be evaluated as usual in addition to being able to prove <code class="docutils literal notranslate"><span class="pre">y</span></code>
+given <code class="docutils literal notranslate"><span class="pre">x</span></code> or, just as well, <code class="docutils literal notranslate"><span class="pre">~x</span></code> given <code class="docutils literal notranslate"><span class="pre">~y</span></code>.</p></li>
+</ol>
+<p>The nature of the modeled system of logic depends on the family of activation functions chosen for the network’s
+neurons, which implement the logic’s various atoms (i.e. propositions or predicates) and operations.</p>
+<p>In particular, it is possible to constrain the network to behave exactly classically when provided classical input.
+Computation is characterized by tightening <em><strong>bounds</strong></em> on truth values at neurons pertaining to subformulae in
+<em><strong>upward</strong></em> and <em><strong>downward passes</strong></em> over the represented formulae’s syntax trees.</p>
+<p>Bounds tightening is monotonic; accordingly, computation cannot oscillate and necessarily converges for propositional
+logic.
+Because of the network’s modular construction, it is possible to partition and/or compose networks, inject formulae
+serving as logical constraints or queries, and control which parts of the network (or individual neurons) are trained or
+evaluated.</p>
+<p>Inputs are initial truth value bounds for each of the neurons in the network; in particular, neurons pertaining to
+predicate atoms may be populated with truth values taken from KB data. Additional inputs may take the form of injected
+formulae representing a query or specific inference problem.</p>
+<p>Outputs are typically the final computed truth value bounds at one or more neurons pertaining to specific atoms or
+formulae of interest.</p>
+<p>In other problem contexts, the outputs of interest may instead be the neural parameters themselves — serving as a
+form of inductive logic programming (ILP) — after learning with a given loss function and input training data set.</p>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="usage.html" class="btn btn-neutral float-right" title="Python API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="index.html" class="btn btn-neutral float-left" title="Logical Neural Networks Documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2020, IBM Research.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
