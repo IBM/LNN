@@ -1,3 +1,4 @@
+[![Build Status](https://app.travis-ci.com/IBM/LNN.svg?branch=master)](https://app.travis-ci.com/IBM/LNN)
 [![License](https://img.shields.io/github/license/IBM/LNN)](https://github.com/IBM/LNN/blob/master/LICENSE)
 
 # Logical Neural Networks
