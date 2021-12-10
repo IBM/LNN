@@ -1,3 +1,4 @@
+[![Build Status](https://app.travis-ci.com/IBM/LNN.svg?branch=master)](https://app.travis-ci.com/IBM/LNN)
 [![License](https://img.shields.io/github/license/IBM/LNN)](https://github.com/IBM/LNN/blob/master/LICENSE)
 
 # Logical Neural Networks
@@ -29,7 +30,7 @@ To install the LNN:
 
 | [Read the Docs][Docs] | [Academic Papers][Papers]	| [Educational Resources][Education] | [Neuro-Symbolic AI][Neuro-Symbolic AI] | [API Overview][API] | [Python Module][Module] |
 |:-----------------------:|:---------------------------:|:-----------------:|:----------:|:-------:|:-------:|
-| [<img src=https://raw.githubusercontent.com/carbon-design-system/carbon/4538ba9816f15e50d56045af4c149f8d1eebd336/packages/icons/src/svg/32/notebook.svg alt="Wiki" width="60"/>][Docs] | [<img src=https://raw.githubusercontent.com/carbon-design-system/carbon/4538ba9816f15e50d56045af4c149f8d1eebd336/packages/icons/src/svg/32/document--view.svg alt="Academic Papers" width="60"/>][Papers] |  [<img src=https://raw.githubusercontent.com/carbon-design-system/carbon/4538ba9816f15e50d56045af4c149f8d1eebd336/packages/icons/src/svg/32/power.svg alt="Getting Started" width="60"/>][Education] | [<img src=https://raw.githubusercontent.com/carbon-design-system/carbon/main/packages/icons/src/svg/32/load-balancer--network.svg alt="Neuro-Symbolic AI" width="60"/>][Neuro-Symbolic AI] | [<img src=https://raw.githubusercontent.com/carbon-design-system/carbon/4538ba9816f15e50d56045af4c149f8d1eebd336/packages/icons/src/svg/32/api.svg alt="API" width="60"/>][API] | [<img src=https://raw.githubusercontent.com/carbon-design-system/carbon/main/packages/icons/src/svg/32/logo--python.svg alt="Contribute" width="60"/>][Module] |
+| [<img src=https://raw.githubusercontent.com/IBM/LNN/master/docsrc/images/icons/doc.png alt="Docs" width="60"/>][Docs] | [<img src=https://raw.githubusercontent.com/IBM/LNN/master/docsrc/images/icons/academic.png alt="Academic Papers" width="60"/>][Papers] |  [<img src=https://raw.githubusercontent.com/IBM/LNN/master/docsrc/images/icons/help.png alt="Getting Started" width="60"/>][Education] | [<img src=https://raw.githubusercontent.com/IBM/LNN/master/docsrc/images/icons/nsai.png alt="Neuro-Symbolic AI" width="60"/>][Neuro-Symbolic AI] | [<img src=https://raw.githubusercontent.com/IBM/LNN/master/docsrc/images/icons/api.png alt="API" width="60"/>][API] | [<img src=https://raw.githubusercontent.com/IBM/LNN/master/docsrc/images/icons/python.png alt="Python Module" width="60"/>][Module] |
 
 
 ## Citation

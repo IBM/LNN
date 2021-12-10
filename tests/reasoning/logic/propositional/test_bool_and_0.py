@@ -15,7 +15,7 @@ def test_upward():
 
     # define the rules
     A, B = model.add_propositions('A', 'B')
-    AB = model['AB'] = Or(A, B)
+    model['AB'] = Or(A, B)
 
     # set the facts
     model.add_facts({
@@ -36,7 +36,6 @@ def test_upward():
         parameter_history=parameter_history)
 
     # evaluation
-    prediction = model['AB'].state()
     model.print(params=True)
     plot_params(model)
     plot_loss(total_loss, losses)
