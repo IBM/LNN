@@ -187,7 +187,7 @@ class Model:
 
         Assumes that the formulae that require facts have already been inserted
         into the model, see
-        [add_formulae](https://ibm.github.io/LNN/LNN.html#lnn.Model.add_formulae)  # noqa: E501
+        [add_formulae](https://ibm.github.io/LNN/lnn/LNN.html#lnn.Model.add_formulae)  # noqa: E501
         for more details
 
         **Parameters**
@@ -265,7 +265,7 @@ class Model:
 
         Adding labels to formulae in the model follows the same dictionary
         input API as
-        [adding facts](https://ibm.github.io/LNN/LNN.html#lnn.Model.add_facts).
+        [adding facts](https://ibm.github.io/LNN/lnn/LNN.html#lnn.Model.add_facts).
 
         """
         for formula, label in labels.items():
