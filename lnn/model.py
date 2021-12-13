@@ -265,7 +265,7 @@ class Model:
 
         Adding labels to formulae in the model follows the same dictionary
         input API as
-        [adding facts](https://ibm.github.io/LNN/LNN.html#lnn.Model.add_facts).
+        [adding facts](https://ibm.github.io/LNN/lnn/LNN.html#lnn.Model.add_facts).  # noqa: E501
 
         """
         for formula, label in labels.items():
