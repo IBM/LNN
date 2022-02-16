@@ -1259,7 +1259,7 @@ class Not(_UnaryOperator):
         self.neuron = _NodeActivation()(
             self.propositional, self.world, **kwds.get('neuron', {}))
 
-    def upward(self) -> torch.Tensor:
+    def upward(self, **kwds) -> torch.Tensor:
         if self.propositional:
             groundings = {None}
         else:
