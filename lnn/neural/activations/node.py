@@ -4,12 +4,14 @@
 # SPDX-License-Identifier: Apache-2.0
 ##
 
-from ..._utils import val_clamp
-from ..parameters.node import _NodeParameters
+from typing import Tuple, List, Union
 
 import torch
 import numpy as np
-from typing import Tuple, List, Union
+
+from ..._utils import val_clamp
+from ..parameters.node import _NodeParameters
+
 
 """
 Node level activation

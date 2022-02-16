@@ -4,8 +4,9 @@
 # SPDX-License-Identifier: Apache-2.0
 ##
 
-from lnn import Model, Predicate, Variable, Implies, And, plot_graph, \
-    AXIOM, CLOSED
+from lnn import (Model, Predicate, Variable, Implies, And, plot_graph,
+                 AXIOM, CLOSED)
+
 
 model = Model()
 

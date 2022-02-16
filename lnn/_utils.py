@@ -4,14 +4,15 @@
 # SPDX-License-Identifier: Apache-2.0
 ##
 
-from . import _exceptions
-from .constants import World, Fact, _Fact
-
 import time
+from typing import Union, TypeVar, Tuple
+
 import torch
 import torchviz
 import numpy as np
-from typing import Union, TypeVar, Tuple
+
+from . import _exceptions
+from .constants import World, Fact, _Fact
 
 
 class MultiInstance:

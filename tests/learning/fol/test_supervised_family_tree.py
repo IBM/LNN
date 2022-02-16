@@ -6,6 +6,7 @@
 
 import itertools
 import random
+
 from lnn import (Model, World, And, Bidirectional, ForAll, Variable,
                  TRUE, FALSE, UPWARD)
 

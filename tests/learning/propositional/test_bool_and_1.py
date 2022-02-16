@@ -4,8 +4,9 @@
 # SPDX-License-Identifier: Apache-2.0
 ##
 
-from lnn import Model, And, Proposition, World, UPWARD, FALSE, TRUE, CLOSED
 import random
+
+from lnn import Model, And, Proposition, World, UPWARD, FALSE, TRUE, CLOSED
 
 
 def test_1():

@@ -13,6 +13,7 @@ from .utils import (truth_table, truth_table_dict, predicate_truth_table,
                     bool_to_fact)
 from .constants import Fact, World, Direction, Join
 
+
 # constants
 UPWARD = Direction.UPWARD
 DOWNWARD = Direction.DOWNWARD

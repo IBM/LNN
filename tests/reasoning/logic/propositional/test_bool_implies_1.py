@@ -4,10 +4,10 @@
 # SPDX-License-Identifier: Apache-2.0
 ##
 
+import numpy as np
 from lnn import (Proposition, Implies, Model,
                  CONTRADICTION, TRUE, FALSE, UNKNOWN,
                  truth_table, fact_to_bool, bool_to_fact)
-import numpy as np
 
 
 def test_upward():

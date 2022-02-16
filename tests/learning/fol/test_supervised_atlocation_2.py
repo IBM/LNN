@@ -5,6 +5,7 @@
 ##
 
 import itertools
+
 from lnn import (Model, World, And, Bidirectional, ForAll, Variable,
                  TRUE, UPWARD, UNKNOWN, Implies)
 

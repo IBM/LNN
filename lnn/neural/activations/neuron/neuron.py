@@ -4,12 +4,13 @@
 # SPDX-License-Identifier: Apache-2.0
 ##
 
+import torch
+
 from ...._utils import val_clamp
 from ..node import _NodeActivation
 from ....constants import Direction
 from ...parameters.neuron import _NeuronParameters
 
-import torch
 
 """
 Dynamic activation function

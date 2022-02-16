@@ -4,15 +4,16 @@
 # SPDX-License-Identifier: Apache-2.0
 ##
 
-from . import _gm, _trace
-from .. import _utils, _exceptions, utils
-from ..constants import Fact, World, AutoName, Direction, Join
-
-import torch
-import numpy as np
 from enum import auto
 from importlib import import_module
 from typing import Optional, Union, Tuple, Iterator, Set, List, Dict, TypeVar
+
+import torch
+import numpy as np
+
+from . import _gm, _trace
+from .. import _utils, _exceptions, utils
+from ..constants import Fact, World, AutoName, Direction, Join
 
 
 class Variable:

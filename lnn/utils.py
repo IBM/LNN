@@ -4,15 +4,16 @@
 # SPDX-License-Identifier: Apache-2.0
 ##
 
-from . import _utils
-from .constants import Fact
-
 import random
 import itertools
+from typing import Union, Tuple, List, TypeVar
+
 import numpy as np
 import networkx as nx
 import matplotlib.pyplot as plt
-from typing import Union, Tuple, List, TypeVar
+
+from . import _utils
+from .constants import Fact
 
 
 TRUE = Fact.TRUE

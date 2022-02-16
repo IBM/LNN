@@ -4,10 +4,11 @@
 # SPDX-License-Identifier: Apache-2.0
 ##
 
-from .constants import Fact, World, Direction
+from typing import Set, Tuple, Dict
 
 import torch
-from typing import Set, Tuple, Dict
+
+from .constants import Fact, World, Direction
 
 
 class AssertWorld:

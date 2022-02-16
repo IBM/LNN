@@ -4,8 +4,8 @@
 # SPDX-License-Identifier: Apache-2.0
 ##
 
-from lnn import Proposition, And, Model
 import numpy as np
+from lnn import Proposition, And, Model
 
 
 def test():

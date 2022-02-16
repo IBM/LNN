@@ -5,6 +5,7 @@
 ##
 
 import os
+
 import pytest
 from lnn import (Model, Proposition, Implies, And, Or, Not, TRUE, FALSE,
                  truth_table_dict)

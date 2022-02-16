@@ -4,10 +4,11 @@
 # SPDX-License-Identifier: Apache-2.0
 ##
 
+from functools import reduce
+
+import numpy as np
 from lnn import (Proposition, And, Model,
                  truth_table, fact_to_bool, bool_to_fact)
-import numpy as np
-from functools import reduce
 
 
 def test():
