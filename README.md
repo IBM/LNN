@@ -1,5 +1,6 @@
 [![Build Status](https://app.travis-ci.com/IBM/LNN.svg?branch=master)](https://app.travis-ci.com/IBM/LNN)
 [![License](https://img.shields.io/github/license/IBM/LNN)](https://github.com/IBM/LNN/blob/master/LICENSE)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 # Logical Neural Networks
 LNNs are a novel `Neuro = symbolic` framework designed to seamlessly provide key
