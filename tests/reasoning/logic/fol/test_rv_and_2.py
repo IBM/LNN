@@ -4,8 +4,8 @@
 # SPDX-License-Identifier: Apache-2.0
 ##
 
-from lnn import (Predicate, And, Or, Implies, Model, Variable)
 import numpy as np
+from lnn import Predicate, And, Or, Implies, Model, Variable
 
 
 def test_and():

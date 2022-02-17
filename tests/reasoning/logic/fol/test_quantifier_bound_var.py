@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: Apache-2.0
 ##
 
-from lnn import (Model, Variable, TRUE, FALSE, UNKNOWN, ForAll, Exists)
+from lnn import Model, Variable, TRUE, FALSE, UNKNOWN, ForAll, Exists
 
 
 def test_1():

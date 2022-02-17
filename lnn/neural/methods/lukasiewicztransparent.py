@@ -4,11 +4,11 @@
 # SPDX-License-Identifier: Apache-2.0
 ##
 
+import torch
+
 from ...constants import Direction
 from ..._utils import val_clamp, negate_bounds as _not
 from ..activations.neuron.static import _StaticActivation
-
-import torch
 
 
 class LukasiewiczTransparent(_StaticActivation):

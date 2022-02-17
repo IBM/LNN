@@ -4,18 +4,19 @@
 # SPDX-License-Identifier: Apache-2.0
 ##
 
+import random
+import warnings
+from itertools import chain
+from typing import Union, Dict, Tuple
+
+import torch
+import networkx as nx
+from tqdm import tqdm
+
 from . import _utils, _exceptions
 from .symbolic.axioms import lifted_axioms
 from .constants import Fact, World, Direction
 from .symbolic.logic import Proposition, Predicate, _Formula
-
-import torch
-import random
-import warnings
-import networkx as nx
-from tqdm import tqdm
-from itertools import chain
-from typing import Union, Dict, Tuple
 
 
 class Model:

@@ -4,9 +4,10 @@
 # SPDX-License-Identifier: Apache-2.0
 ##
 
+from typing import Tuple
+
 from ..constants import World
 from ..symbolic import Implies
-from typing import Tuple
 
 
 def lifted_axioms() -> dict:

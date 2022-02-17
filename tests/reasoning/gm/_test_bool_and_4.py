@@ -6,6 +6,7 @@
 
 from lnn import Predicate, And, Model, Variable, World, TRUE
 
+
 model = Model()
 x, y, z = map(Variable, ('x', 'y', 'z'))
 model['P'] = Predicate()

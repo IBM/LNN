@@ -4,8 +4,9 @@
 # SPDX-License-Identifier: Apache-2.0
 ##
 
-from .neuron import _NeuronActivation
 import torch
+
+from .neuron import _NeuronActivation
 
 
 class _DynamicActivation(_NeuronActivation):

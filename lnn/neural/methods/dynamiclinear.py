@@ -4,10 +4,11 @@
 # SPDX-License-Identifier: Apache-2.0
 ##
 
+import torch
+
 from ...constants import Direction
 from ..._utils import negate_bounds as _not
 from ..activations.neuron.dynamic import _DynamicActivation
-import torch
 
 
 class DynamicLinear(_DynamicActivation):

@@ -4,13 +4,14 @@
 # SPDX-License-Identifier: Apache-2.0
 ##
 
+import math
+from typing import Union, Optional, Tuple, Iterator, List, Dict, Set
+
+import torch
+
 from ... import _utils
 from ...constants import Fact, World
 from ... import _exceptions
-
-import torch
-import math
-from typing import Union, Optional, Tuple, Iterator, List, Dict, Set
 
 
 class _NodeParameters:

@@ -4,13 +4,15 @@
 # SPDX-License-Identifier: Apache-2.0
 ##
 
+import copy
+from itertools import chain
+from typing import Tuple, Union, List, TypeVar, Set
+
+import torch
+
 from ..constants import Direction, Join
 from .._utils import negate_bounds
 
-import copy
-import torch
-from itertools import chain
-from typing import Tuple, Union, List, TypeVar, Set
 
 """
 Grounding management module
