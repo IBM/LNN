@@ -25,8 +25,10 @@ class MultiInstance:
         elif isinstance(term, str):
             pass
         else:
-            raise Exception(f'expected {self.__class__.__name__} inputs from '
-                            f'[str, list], received {type(term)}')
+            raise Exception(
+                f"expected {self.__class__.__name__} inputs from "
+                f"[str, list], received {type(term)}"
+            )
 
 
 class UniqueNameAssumption:
@@ -49,8 +51,9 @@ class UniqueNameAssumption:
         if key in cls.instances:
             return cls.instances[key]
         raise LookupError(
-            f'should not end up here, {type(key)} key {key} not found in '
-            f'Groundings {list(cls.instances.keys())}')
+            f"should not end up here, {type(key)} key {key} not found in "
+            f"Groundings {list(cls.instances.keys())}"
+        )
 
     @classmethod
     def __setitem__(cls, key: str, val: any):
@@ -98,11 +101,11 @@ class UniqueNameAssumption:
 
 
 def fact_to_bounds(
-        fact: Union[Fact, World],
-        propositional: bool,
-        dims: list = None,
-        requires_grad: bool = False
-        ) -> torch.Tensor:
+    fact: Union[Fact, World],
+    propositional: bool,
+    dims: list = None,
+    requires_grad: bool = False,
+) -> torch.Tensor:
     """Create classical bounds tensor
 
     bounds tensor repeats over dims according to (batch, groundings)
@@ -128,31 +131,33 @@ def fact_to_bounds(
     if isinstance(fact, torch.Tensor):
         return fact
 
-    sizes = dims+[1] if dims else (1 if propositional else [1, 1])
+    sizes = dims + [1] if dims else (1 if propositional else [1, 1])
     if isinstance(fact, tuple):
         _exceptions.AssertBoundsLen(fact)
     elif type(fact) in [World, Fact]:
         fact = fact.value
-    return torch.tensor(tuple(map(float, fact))).repeat(
-        sizes).requires_grad_(requires_grad)
+    return (
+        torch.tensor(tuple(map(float, fact)))
+        .repeat(sizes)
+        .requires_grad_(requires_grad)
+    )
 
 
 def negate_bounds(bounds: torch.Tensor, dim=-1) -> torch.Tensor:
-    """"negate a bounds tensor: (1 - U, 1 - L)"""
+    """ "negate a bounds tensor: (1 - U, 1 - L)"""
     return (1 - bounds).flip(dim)
 
 
 def node_state(state: np.ScalarType):
     result = {
-        'U': Fact.UNKNOWN,
-        'T': Fact.TRUE,
-        'F': Fact.FALSE,
-        'C': Fact.CONTRADICTION,
-
-        '~F': _Fact.APPROX_FALSE,
-        '~U': _Fact.APPROX_UNKNOWN,
-        '=U': _Fact.EXACT_UNKNOWN,
-        '~T': _Fact.APPROX_TRUE,
+        "U": Fact.UNKNOWN,
+        "T": Fact.TRUE,
+        "F": Fact.FALSE,
+        "C": Fact.CONTRADICTION,
+        "~F": _Fact.APPROX_FALSE,
+        "~U": _Fact.APPROX_UNKNOWN,
+        "=U": _Fact.EXACT_UNKNOWN,
+        "~T": _Fact.APPROX_TRUE,
     }
     return result[state.item()]
 
@@ -162,9 +167,13 @@ def dict_rekey(d, old_key, new_key) -> None:
 
 
 param_symbols = {
-    'alpha': 'α', 'bias': 'β', 'weights': 'w',
-    'weights.grad': 'w.g', 'bias.grad': 'β.g'}
-Model = TypeVar('Model')
+    "alpha": "α",
+    "bias": "β",
+    "weights": "w",
+    "weights.grad": "w.g",
+    "bias.grad": "β.g",
+}
+Model = TypeVar("Model")
 
 
 def plot_autograd(model: Model, loss: torch.Tensor, **kwds) -> None:
@@ -172,9 +181,9 @@ def plot_autograd(model: Model, loss: torch.Tensor, **kwds) -> None:
     torchviz.make_dot(
         loss,
         params=params,
-        show_attrs=kwds.get('show_attrs', True),
-        show_saved=kwds.get('show_saved', True)).render(
-            f'graph_{kwds.get("epoch", "")}', view=True)
+        show_attrs=kwds.get("show_attrs", True),
+        show_saved=kwds.get("show_saved", True),
+    ).render(f'graph_{kwds.get("epoch", "")}', view=True)
 
 
 def val_clamp(x, _min: float = 0, _max: float = 1) -> torch.Tensor:
@@ -189,8 +198,7 @@ checkpoints = []
 
 def unpack_checkpoints():
     for t in range(len(checkpoints) - 1):
-        print(f'{checkpoints[t+1][1]}: '
-              f'{checkpoints[t+1][0] - checkpoints[t][0]}')
+        print(f"{checkpoints[t+1][1]}: " f"{checkpoints[t+1][0] - checkpoints[t][0]}")
 
 
 def add_checkpoint(label):

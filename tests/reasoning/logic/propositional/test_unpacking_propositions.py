@@ -9,8 +9,8 @@ from lnn import Proposition, Model
 
 def test():
     model = Model()
-    model['Smokes'] = Proposition()
-    model['Friends'] = Proposition()
+    model["Smokes"] = Proposition()
+    model["Friends"] = Proposition()
 
     smokes, friends = model.nodes.values()
     assert smokes.name == "Smokes", "Didn't get smokes proposition"
