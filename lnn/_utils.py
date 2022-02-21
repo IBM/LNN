@@ -144,7 +144,7 @@ def fact_to_bounds(
 
 
 def negate_bounds(bounds: torch.Tensor, dim=-1) -> torch.Tensor:
-    """ "negate a bounds tensor: (1 - U, 1 - L)"""
+    """Negate a bounds tensor: (1 - U, 1 - L)"""
     return (1 - bounds).flip(dim)
 
 
