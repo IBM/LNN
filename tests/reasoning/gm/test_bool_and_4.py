@@ -7,8 +7,7 @@
 from functools import reduce
 
 import numpy as np
-from lnn import (Predicate, And, Model, Variable,
-                 truth_table, fact_to_bool, bool_to_fact)
+from lnn import Predicate, And, Model, Variable, truth_table, fact_to_bool, bool_to_fact
 
 
 def test():
@@ -21,32 +20,32 @@ def test():
 
     # load model and reason over facts
     model = Model()
-    var_labels = tuple(f'x{i}' for i in range(0, n_vars))
+    var_labels = tuple(f"x{i}" for i in range(0, n_vars))
     variables = list(map(Variable, var_labels))
 
     for pred in range(n_preds):
-        model[f'P{pred}'] = Predicate(arity=n_vars)
+        model[f"P{pred}"] = Predicate(arity=n_vars)
 
-    preds = [model[f'P{pred}'](*variables) for pred in range(n_preds)]
-    model['AB'] = And(*preds)
+    preds = [model[f"P{pred}"](*variables) for pred in range(n_preds)]
+    model["AB"] = And(*preds)
 
     # set model facts
     for pred in range(n_preds):
 
-        test_case = {(f'{row}',) * n_vars: truth[pred]
-                     for row, truth in enumerate(TT)}
-        model.add_facts({f'P{pred}': test_case})
+        test_case = {(f"{row}",) * n_vars: truth[pred] for row, truth in enumerate(TT)}
+        model.add_facts({f"P{pred}": test_case})
 
     # inference
-    model['AB'].upward()
+    model["AB"].upward()
 
     # evaluate the conjunction
     for row in range(len(TT)):
         state = (str(row),) * n_vars
-        prediction = model['AB'].state(state)
-        assert prediction is bool_to_fact(GT[row]), (
-            f'And({TT[row]}) expected {GT}, received {prediction}')
-    print('success')
+        prediction = model["AB"].state(state)
+        assert prediction is bool_to_fact(
+            GT[row]
+        ), f"And({TT[row]}) expected {GT}, received {prediction}"
+    print("success")
 
 
 if __name__ == "__main__":

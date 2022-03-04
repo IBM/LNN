@@ -8,15 +8,15 @@ from lnn import Proposition, And, Model, TRUE
 
 
 def test():
-    for name in ['A^B', 'A∧B', 'A&B']:
+    for name in ["A^B", "A∧B", "A&B"]:
         """allow unicode characters in names"""
-        A = Proposition('A')
-        B = Proposition('B')
+        A = Proposition("A")
+        B = Proposition("B")
         AB = And(A, B, name=name)  # This name should be accepted
         assert AB is not None
 
         formulae = [AB]
-        facts = {'A': TRUE, 'B': TRUE}
+        facts = {"A": TRUE, "B": TRUE}
         model = Model()
         model.add_formulae(*formulae)
         model.add_facts(facts)
@@ -28,4 +28,4 @@ def test():
 
 if __name__ == "__main__":
     test()
-    print('success')
+    print("success")

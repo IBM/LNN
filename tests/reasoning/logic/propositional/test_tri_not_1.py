@@ -14,19 +14,19 @@ def test_upward():
         # A, Not(A)
         [TRUE, FALSE],
         [FALSE, TRUE],
-        [UNKNOWN, UNKNOWN]
+        [UNKNOWN, UNKNOWN],
     ]
 
     # define the rules
-    A = Proposition('A')
+    A = Proposition("A")
 
     try:
-        NotA = Not(A, A, name='NotA')
+        NotA = Not(A, A, name="NotA")
         assert False, "Not should not accept multiple inputs"
     except TypeError:
         pass
 
-    NotA = Not(A, name='NotA')
+    NotA = Not(A, name="NotA")
     formulae = [NotA]
 
     for row in TT:
@@ -34,57 +34,57 @@ def test_upward():
         GT = fact_to_bool(row[1])
 
         # load model and reason over facts
-        facts = {'A': row[0]}
+        facts = {"A": row[0]}
         model = Model()
         model.add_formulae(*formulae)
         model.add_facts(facts)
-        model['NotA'].upward()
+        model["NotA"].upward()
 
         # evaluate the conjunction
-        prediction = model['NotA'].state(to_bool=True)
-        assert prediction is GT, (
-            f'Not({row[0]}, {row[1]}) expected {GT}, received {prediction}')
+        prediction = model["NotA"].state(to_bool=True)
+        assert (
+            prediction is GT
+        ), f"Not({row[0]}, {row[1]}) expected {GT}, received {prediction}"
         model.flush()
 
 
 def test_downward():
     # define model rules
     model = Model()
-    model['A'] = Proposition('A')
-    model['NotA'] = Not(model['A'])
+    model["A"] = Proposition("A")
+    model["NotA"] = Not(model["A"])
 
     # define model facts
-    model.add_facts({'NotA': TRUE})
-    model['NotA'].downward()
+    model.add_facts({"NotA": TRUE})
+    model["NotA"].downward()
 
     # evaluate
-    prediction = model['A'].state()
-    assert prediction is FALSE, (
-        f'Expected input A to be False, received {prediction}')
+    prediction = model["A"].state()
+    assert prediction is FALSE, f"Expected input A to be False, received {prediction}"
     model.flush()
 
     # define model facts
-    model.add_facts({'NotA': FALSE})
-    model['NotA'].downward()
+    model.add_facts({"NotA": FALSE})
+    model["NotA"].downward()
 
     # evaluate
-    prediction = model['A'].state()
-    assert prediction is TRUE, (
-        f'Expected input A to be True, received {prediction}')
+    prediction = model["A"].state()
+    assert prediction is TRUE, f"Expected input A to be True, received {prediction}"
     model.flush()
 
     # define model facts
-    model.add_facts({'NotA': UNKNOWN})
-    model['NotA'].downward()
+    model.add_facts({"NotA": UNKNOWN})
+    model["NotA"].downward()
 
     # evaluate
-    prediction = model['A'].state()
-    assert prediction is UNKNOWN, (
-        f'Expected input A to be Unknown, received {prediction}')
+    prediction = model["A"].state()
+    assert (
+        prediction is UNKNOWN
+    ), f"Expected input A to be Unknown, received {prediction}"
     model.flush()
 
 
 if __name__ == "__main__":
     test_upward()
     test_downward()
-    print('success')
+    print("success")

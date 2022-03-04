@@ -14,14 +14,16 @@ def test_1():
     training in the upward direction
     """
     model = Model()
-    A, B = model.add_propositions('A', 'B')
-    AB = A.Bidirectional(B, name='A <-> B')
+    A, B = model.add_propositions("A", "B")
+    AB = A.Bidirectional(B, name="A <-> B")
     model.add_formulae(AB)
     for rows in truth_table(2):
-        model.add_facts({
-            A.name: rows[0],
-            B.name: rows[1],
-        })
+        model.add_facts(
+            {
+                A.name: rows[0],
+                B.name: rows[1],
+            }
+        )
         model.upward()
         model[AB.name].print()
         model.flush()

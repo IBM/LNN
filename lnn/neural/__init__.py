@@ -6,4 +6,4 @@
 
 from .methods.lukasiewicz import Lukasiewicz
 
-__all__ = ['Lukasiewicz']
+__all__ = ["Lukasiewicz"]
