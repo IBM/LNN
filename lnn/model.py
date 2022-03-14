@@ -160,17 +160,17 @@ class Model:
         """
         self._add_rules(*formulae, world=world)
 
-    def add_propositions(self, *names: str, **kwds):
+    def add_propositions(self, *names: str, **kwargs):
         ret = []
         for name in names:
-            self[name] = Proposition(**kwds)
+            self[name] = Proposition(**kwargs)
             ret.append(self[name])
         return ret[0] if len(ret) == 1 else ret
 
-    def add_predicates(self, arity: int, *names: str, **kwds):
+    def add_predicates(self, arity: int, *names: str, **kwargs):
         ret = []
         for name in names:
-            self[name] = Predicate(arity=arity, **kwds)
+            self[name] = Predicate(arity=arity, **kwargs)
             ret.append(self[name])
         return ret[0] if len(ret) == 1 else ret
 
@@ -293,7 +293,7 @@ class Model:
         func: str,
         direction: Direction = Direction.UPWARD,
         source: _Formula = None,
-        **kwds,
+        **kwargs,
     ):
         r"""Traverse over the model and execute a node operation
 
@@ -310,7 +310,7 @@ class Model:
 
         coalesce = torch.tensor(0.0)
         for node in nodes:
-            val = getattr(node, func)(**kwds) if hasattr(node, func) else None
+            val = getattr(node, func)(**kwargs) if hasattr(node, func) else None
             coalesce = coalesce + val if val is not None else coalesce + 0.0
         return coalesce
 
@@ -338,7 +338,7 @@ class Model:
         direction: Direction = None,
         source: _Formula = None,
         max_steps: int = None,
-        **kwds,
+        **kwargs,
     ):
         r"""Reasons over all possible inferences until convergence
 
@@ -364,7 +364,7 @@ class Model:
             max_steps: int
                 Limits the inference to a specified number of passes of the
                 naive traversal strategy
-            kwds
+            kwargs
                 lifted : bool or float
                     Computes lifted inference preprocessing to expand the
                     knowledge by randomly searching for axioms that can be
@@ -372,7 +372,7 @@ class Model:
                     nodes.
 
         """
-        lifted = kwds.get("lifted")
+        lifted = kwargs.get("lifted")
         if lifted:
             self.lifted_preprocessing(1e3 if lifted is True else lifted)
         direction = (
@@ -385,7 +385,7 @@ class Model:
             bounds_diff = 0.0
             for d in direction:
                 bounds_diff = bounds_diff + self._traverse_execute(
-                    d.value.lower(), d, source, **kwds
+                    d.value.lower(), d, source, **kwargs
                 )
             converged = (
                 True
@@ -398,18 +398,18 @@ class Model:
                 break
         return steps, facts_inferred
 
-    def forward(self, *args, **kwds):
-        return self.infer(*args, **kwds)
+    def forward(self, *args, **kwargs):
+        return self.infer(*args, **kwargs)
 
     reason = inference = forward
 
-    def upward(self, **kwds):
-        return self.infer(Direction.UPWARD, **kwds)
+    def upward(self, **kwargs):
+        return self.infer(Direction.UPWARD, **kwargs)
 
-    def downward(self, **kwds):
-        return self.infer(Direction.DOWNWARD, **kwds)
+    def downward(self, **kwargs):
+        return self.infer(Direction.DOWNWARD, **kwargs)
 
-    def train(self, **kwds):
+    def train(self, **kwargs):
         r"""Train the model
 
         Reasons across the model until convergence using the standard inference
@@ -419,7 +419,7 @@ class Model:
         An epoch constitutes all computation until parameters take a step.
 
         **Parameters**
-            kwds
+            kwargs
                 losses: list or dict
                     predefined losses include
                      ['contradiction', 'uncertainty', 'logical', 'supervised']
@@ -478,25 +478,25 @@ class Model:
         ```
 
         """
-        optimizer = kwds.get(
+        optimizer = kwargs.get(
             "optimizer",
             torch.optim.Adam(
-                kwds.get("parameters", self.parameters()),
-                lr=kwds.get("learning_rate", 5e-2),
+                kwargs.get("parameters", self.parameters()),
+                lr=kwargs.get("learning_rate", 5e-2),
             ),
         )
         running_loss, loss_history, inference_history = [], [], []
         for epoch in tqdm(
-            range(int(kwds.get("epochs", 3e2))),
+            range(int(kwargs.get("epochs", 3e2))),
             desc="training epoch",
-            disable=not kwds.get("pbar", False),
+            disable=not kwargs.get("pbar", False),
         ):
             optimizer.zero_grad()
             if epoch > 0:
                 self.reset_bounds()
-            self.increment_param_history(kwds.get("parameter_history"))
-            _, facts_inferred = self.infer(**kwds)
-            loss_fn = self.loss_fn(kwds.get("losses"))
+            self.increment_param_history(kwargs.get("parameter_history"))
+            _, facts_inferred = self.infer(**kwargs)
+            loss_fn = self.loss_fn(kwargs.get("losses"))
             loss = sum(loss_fn)
             if not loss.grad_fn:
                 raise RuntimeError(
@@ -510,9 +510,9 @@ class Model:
             running_loss.append(loss.item())
             loss_history.append([L.clone().detach().tolist() for L in loss_fn])
             inference_history.append(facts_inferred.item())
-            if loss <= 1e-5 and kwds.get("stop_at_convergence", True):
+            if loss <= 1e-5 and kwargs.get("stop_at_convergence", True):
                 break
-        self.increment_param_history(kwds.get("parameter_history"))
+        self.increment_param_history(kwargs.get("parameter_history"))
         return (running_loss, loss_history), inference_history
 
     def parameters(self):
@@ -540,9 +540,9 @@ class Model:
             )
         return result
 
-    def fit(self, **kwds):
+    def fit(self, **kwargs):
         """Alias for train"""
-        return self.train(**kwds)
+        return self.train(**kwargs)
 
     learn = fit
 
@@ -571,12 +571,12 @@ class Model:
                             coalesce = coalesce + loss_fn(node)
                         result.append(coalesce)
                 else:
-                    kwds = (
+                    kwargs = (
                         losses[loss]
                         if (isinstance(losses[loss], dict))
                         else ({"coeff": losses[loss]})
                     )
-                    result.append(self._traverse_execute(f"{loss}_loss", **kwds))
+                    result.append(self._traverse_execute(f"{loss}_loss", **kwargs))
         return result
 
     def print(

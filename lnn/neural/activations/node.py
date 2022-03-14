@@ -19,8 +19,8 @@ Node level activation
 
 
 class _NodeActivation(_NodeParameters):
-    def __init__(self, *args, **kwds):
-        super().__init__(*args, **kwds)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.Yt = self.alpha
         self.Yf = 1 - self.alpha
 
@@ -29,7 +29,7 @@ class _NodeActivation(_NodeParameters):
         grounding_rows: List[int] = None,
         new_bounds: torch.Tensor = None,
         bound: str = None,
-        **kwds,
+        **kwargs,
     ) -> torch.Tensor:
         """Proof aggregation to tighten existing bounds towards new bounds
 
@@ -40,7 +40,7 @@ class _NodeActivation(_NodeParameters):
             if None [default], then both 'lower' and 'upper' bounds aggregate
         """
         prev_bounds = self.get_facts(grounding_rows).clone()
-        if kwds.get("logical_aggregation", False):
+        if kwargs.get("logical_aggregation", False):
             raise NotImplementedError(
                 "should not end here, logical" "aggregation not yet implemented"
             )

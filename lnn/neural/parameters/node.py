@@ -41,19 +41,21 @@ class _NodeParameters:
         Connective inputs (FOL + propositional) are extended on `dim = -1`
     """
 
-    def __init__(self, propositional: bool, world: World, **kwds):
+    def __init__(self, propositional: bool, world: World, **kwargs):
         self.params = {}
         self.propositional = propositional
         self.world = world
         self.alpha = self.add_param(
             "alpha",
             torch.tensor(
-                kwds.get("alpha", math.erf(kwds.get("alpha_sigma", 10) / math.sqrt(2))),
-                requires_grad=kwds.get("alpha_learning", False),
+                kwargs.get(
+                    "alpha", math.erf(kwargs.get("alpha_sigma", 10) / math.sqrt(2))
+                ),
+                requires_grad=kwargs.get("alpha_learning", False),
             ),
         )
         _exceptions.AssertAlphaNodeValue(self.alpha)
-        self.bounds_learning = kwds.get("bounds_learning", False)
+        self.bounds_learning = kwargs.get("bounds_learning", False)
         self.leaves = _utils.fact_to_bounds(
             self.world, self.propositional, [0], requires_grad=self.bounds_learning
         )

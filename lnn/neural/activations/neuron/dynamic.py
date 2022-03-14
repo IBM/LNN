@@ -14,8 +14,8 @@ class _DynamicActivation(_NeuronActivation):
     Dynamic neuron activation function
     """
 
-    def __init__(self, *args, **kwds):
-        super().__init__(*args, **kwds)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.Xmin = 0
         self.Xf = 1 - self.alpha
         self.Xt = self.alpha

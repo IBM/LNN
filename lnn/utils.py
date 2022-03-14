@@ -77,7 +77,7 @@ def predicate_truth_table(*args: str, arity: int, model, states=None):
     return model
 
 
-def plot_graph(self, **kwds) -> None:
+def plot_graph(self, **kwargs) -> None:
     labels = {node: f"{node.__class__.__name__}\n{node}" for node in self.graph}
 
     options = {
@@ -89,7 +89,7 @@ def plot_graph(self, **kwds) -> None:
         "labels": labels,
     }
 
-    options.update(kwds)
+    options.update(kwargs)
     pos = nx.drawing.nx_agraph.graphviz_layout(self.graph, prog="dot")
     nx.draw(self.graph, pos, **options)
 

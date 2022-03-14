@@ -128,7 +128,7 @@ _Formula = TypeVar("_Formula")
 class _Formula:
     r"""_Formula(*formula: _Formula,
                 name: Optional[str] = '',
-                world: World = World.OPEN, **kwds)
+                world: World = World.OPEN, **kwargs)
 
     **Warnings**
     Formula should not be directly instantiated
@@ -147,7 +147,7 @@ class _Formula:
         name: Optional[str] = "",
         arity: int = None,
         world: World = World.OPEN,
-        **kwds,
+        **kwargs,
     ):
 
         # formula naming
@@ -157,7 +157,7 @@ class _Formula:
             else (f"{self.class_name}_{_Formula.unique_num[self.class_name]}")
         )
         _Formula.unique_num[self.class_name] += 1
-        self.join_method = kwds.get("join", Join.INNER)
+        self.join_method = kwargs.get("join", Join.INNER)
 
         # construct edge and operand list for each formula
         self.edge_list = list()
@@ -167,7 +167,7 @@ class _Formula:
         self.arity = arity
 
         # inherit propositional, variables, and graphs
-        self.propositional = kwds.get("propositional")
+        self.propositional = kwargs.get("propositional")
         self._inherit_from_subformulae(*formula)
 
         # formula truth world assumption
@@ -832,42 +832,42 @@ class _Formula:
     # declaration to use hinting within the function definition
     Not = TypeVar("Not")
 
-    def Not(self, **kwds) -> Not:
-        if "name" not in kwds:
-            kwds["name"] = f"¬({self.name})"
-        return Not(*self._formula_vars(self), **kwds)
+    def Not(self, **kwargs) -> Not:
+        if "name" not in kwargs:
+            kwargs["name"] = f"¬({self.name})"
+        return Not(*self._formula_vars(self), **kwargs)
 
     # declaration to use hinting within the function definition
     And = TypeVar("And")
 
-    def And(self, *formulae: _Formula, **kwds) -> And:
-        if "name" not in kwds:
-            kwds["name"] = self._formula_name(self, *formulae, connective="∧")
-        return And(*self._formula_vars(self), **kwds)
+    def And(self, *formulae: _Formula, **kwargs) -> And:
+        if "name" not in kwargs:
+            kwargs["name"] = self._formula_name(self, *formulae, connective="∧")
+        return And(*self._formula_vars(self), **kwargs)
 
     # declaration to use hinting within the function definition
     Or = TypeVar("Or")
 
-    def Or(self, *formulae: _Formula, **kwds) -> Or:
-        if "name" not in kwds:
-            kwds["name"] = self._formula_name(self, *formulae, connective="∨")
-        return Or(*self._formula_vars(self, *formulae), **kwds)
+    def Or(self, *formulae: _Formula, **kwargs) -> Or:
+        if "name" not in kwargs:
+            kwargs["name"] = self._formula_name(self, *formulae, connective="∨")
+        return Or(*self._formula_vars(self, *formulae), **kwargs)
 
     # declaration to use hinting within the function definition
     Implies = TypeVar("Implies")
 
-    def Implies(self, formula: _Formula, **kwds) -> Implies:
-        if "name" not in kwds:
-            kwds["name"] = self._formula_name(self, formula, connective="→")
-        return Implies(*self._formula_vars(self, formula), **kwds)
+    def Implies(self, formula: _Formula, **kwargs) -> Implies:
+        if "name" not in kwargs:
+            kwargs["name"] = self._formula_name(self, formula, connective="→")
+        return Implies(*self._formula_vars(self, formula), **kwargs)
 
     # declaration to use hinting within the function definition
     Bidirectional = TypeVar("Bidirectional")
 
-    def Bidirectional(self, formula: _Formula, **kwds) -> Bidirectional:
-        if "name" not in kwds:
-            kwds["name"] = self._formula_name(self, formula, connective="↔")
-        return Bidirectional(*self._formula_vars(self, formula), **kwds)
+    def Bidirectional(self, formula: _Formula, **kwargs) -> Bidirectional:
+        if "name" not in kwargs:
+            kwargs["name"] = self._formula_name(self, formula, connective="↔")
+        return Bidirectional(*self._formula_vars(self, formula), **kwargs)
 
 
 class _LeafFormula(_Formula):
@@ -878,10 +878,10 @@ class _LeafFormula(_Formula):
 
     """
 
-    def __init__(self, *args, **kwds):
-        super().__init__(*args, **kwds)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.neuron = _NodeActivation()(
-            self.propositional, self.world, **kwds.get("neuron", {})
+            self.propositional, self.world, **kwargs.get("neuron", {})
         )
 
 
@@ -903,8 +903,8 @@ class Proposition(_LeafFormula):
 
     """
 
-    def __init__(self, name: Optional[str] = "", **kwds):
-        super().__init__(name=name, arity=1, propositional=True, **kwds)
+    def __init__(self, name: Optional[str] = "", **kwargs):
+        super().__init__(name=name, arity=1, propositional=True, **kwargs)
 
     def _add_facts(self, fact: Fact) -> None:
         """Populate proposition with facts
@@ -939,10 +939,10 @@ class Predicate(_LeafFormula):
 
     """
 
-    def __init__(self, name: Optional[str] = "", arity: int = 1, **kwds):
+    def __init__(self, name: Optional[str] = "", arity: int = 1, **kwargs):
         if arity is None:
             raise Exception(f"arity expected as int > 0, received {arity}")
-        super().__init__(name=name, arity=arity, propositional=False, **kwds)
+        super().__init__(name=name, arity=arity, propositional=False, **kwargs)
         self._update_variables(tuple(Variable(f"x{i}") for i in range(self.arity)))
 
     def _add_facts(self, facts: Union[dict, set]) -> None:
@@ -960,15 +960,15 @@ class Predicate(_LeafFormula):
 
 
 class _ConnectiveFormula(_Formula):
-    def __init__(self, *formula: _Formula, **kwds):
-        super().__init__(*formula, **kwds)
+    def __init__(self, *formula: _Formula, **kwargs):
+        super().__init__(*formula, **kwargs)
 
 
 class _ConnectiveNeuron(_ConnectiveFormula):
-    def __init__(self, *formula, **kwds):
-        super().__init__(*formula, **kwds)
-        self.neuron = _NeuralActivation(kwds.get("neuron", {}).get("type"))(
-            self.propositional, self.arity, self.world, **kwds.get("neuron", {})
+    def __init__(self, *formula, **kwargs):
+        super().__init__(*formula, **kwargs)
+        self.neuron = _NeuralActivation(kwargs.get("neuron", {}).get("type"))(
+            self.propositional, self.arity, self.world, **kwargs.get("neuron", {})
         )
         self.func = self.neuron.function(
             self.__class__.__name__, direction=Direction.UPWARD
@@ -978,7 +978,7 @@ class _ConnectiveNeuron(_ConnectiveFormula):
         )
 
     def upward(
-        self, groundings: Set[Union[str, Tuple[str, ...]]] = None, **kwds
+        self, groundings: Set[Union[str, Tuple[str, ...]]] = None, **kwargs
     ) -> Union[torch.Tensor, None]:
         upward_bounds = _gm.upward_bounds(self, self.operands, groundings)
         if upward_bounds is None:  # contradiction arresting
@@ -1000,7 +1000,7 @@ class _ConnectiveNeuron(_ConnectiveFormula):
         self,
         index: int = None,
         groundings: Set[Union[str, Tuple[str, ...]]] = None,
-        **kwds,
+        **kwargs,
     ) -> Union[torch.Tensor, None]:
         operands = tuple(self.operands)
         downward_bounds = _gm.downward_bounds(self, operands, groundings)
@@ -1087,20 +1087,20 @@ class _ConnectiveNeuron(_ConnectiveFormula):
 class _BinaryNeuron(_ConnectiveNeuron):
     r"""Restrict neurons to 2 inputs"""
 
-    def __init__(self, *formula, **kwds):
+    def __init__(self, *formula, **kwargs):
         if len(formula) != 2:
             raise Exception(
                 "Binary neurons expect 2 formulae as inputs, received "
                 f"{len(formula)}"
             )
-        super().__init__(*formula, arity=2, **kwds)
+        super().__init__(*formula, arity=2, **kwargs)
 
 
 class _NAryNeuron(_ConnectiveNeuron):
     r"""N-ary connective neuron"""
 
-    def __init__(self, *formula, **kwds):
-        super().__init__(*formula, arity=len(formula), **kwds)
+    def __init__(self, *formula, **kwargs):
+        super().__init__(*formula, arity=len(formula), **kwargs)
 
 
 class And(_NAryNeuron):
@@ -1113,8 +1113,8 @@ class And(_NAryNeuron):
 
         formula : Union[_ConnectiveFormula, Proposition, Predicate(*Variable)]
             accepts n-ary inputs
-        kwds : dict
-            _Formula kwds
+        kwargs : dict
+            _Formula kwargs
 
     **Example**
 
@@ -1145,8 +1145,8 @@ class Or(_NAryNeuron):
 
         formula : Union[_ConnectiveFormula, Proposition, Predicate(*Variable)]
             accepts n-ary inputs
-        kwds : dict
-            _Formula kwds
+        kwargs : dict
+            _Formula kwargs
 
     **Example**
 
@@ -1177,8 +1177,8 @@ class Implies(_BinaryNeuron):
 
         formula : Union[_ConnectiveFormula, Proposition, Predicate(*Variable)]
             accepts binary inputs
-        kwds : dict
-            _Formula kwds
+        kwargs : dict
+            _Formula kwargs
 
     **Example**
 
@@ -1211,8 +1211,8 @@ class Bidirectional(_BinaryNeuron):
 
         formula : Union[_ConnectiveFormula, Proposition, Predicate(*Variable)]
             accepts binary inputs
-        kwds : dict
-            _Formula kwds
+        kwargs : dict
+            _Formula kwargs
 
     **Example**
 
@@ -1231,33 +1231,33 @@ class Bidirectional(_BinaryNeuron):
 
     """
 
-    def __init__(self, *formula, **kwds):
+    def __init__(self, *formula, **kwargs):
         lhs, rhs = formula
         self.Imp1, self.Imp2 = Implies(lhs, rhs), Implies(rhs, lhs)
-        super().__init__(self.Imp1, self.Imp2, **kwds)
+        super().__init__(self.Imp1, self.Imp2, **kwargs)
         self.func = self.neuron.function("And", direction=Direction.UPWARD)
         self.func_inv = self.neuron.function("And", direction=Direction.DOWNWARD)
 
-    def upward(self, *args, **kwds) -> torch.Tensor:
-        self.Imp1.upward(*args, **kwds)
-        self.Imp2.upward(*args, **kwds)
-        return super().upward(*args, **kwds)
+    def upward(self, *args, **kwargs) -> torch.Tensor:
+        self.Imp1.upward(*args, **kwargs)
+        self.Imp2.upward(*args, **kwargs)
+        return super().upward(*args, **kwargs)
 
-    def downward(self, *args, **kwds) -> torch.Tensor:
-        self.Imp1.downward(*args, **kwds)
-        self.Imp2.downward(*args, **kwds)
-        return super().downward(*args, **kwds)
+    def downward(self, *args, **kwargs) -> torch.Tensor:
+        self.Imp1.downward(*args, **kwargs)
+        self.Imp2.downward(*args, **kwargs)
+        return super().downward(*args, **kwargs)
 
 
 class _UnaryOperator(_ConnectiveFormula):
     r"""Restrict operators to 1 input"""
 
-    def __init__(self, *formula: _Formula, **kwds):
+    def __init__(self, *formula: _Formula, **kwargs):
         if len(formula) != 1:
             raise Exception(
                 "Unary operator expect 1 formula as input, received " f"{len(formula)}"
             )
-        super().__init__(*formula, **kwds)
+        super().__init__(*formula, **kwargs)
 
 
 class Not(_UnaryOperator):
@@ -1270,8 +1270,8 @@ class Not(_UnaryOperator):
 
         *formula : Union[_ConnectiveFormula, Proposition, Predicate(*Variable)]
             accepts a unary input
-        kwds : dict
-            _Formula kwds
+        kwargs : dict
+            _Formula kwargs
 
     **Example**
 
@@ -1290,15 +1290,15 @@ class Not(_UnaryOperator):
 
     """
 
-    def __init__(self, operand, **kwds):
+    def __init__(self, operand, **kwargs):
         self.operand = operand[0] if isinstance(operand, Tuple) else operand
-        kwds.setdefault("name", "Not_" + self.operand.name)
-        super().__init__(operand, arity=1, **kwds)
+        kwargs.setdefault("name", "Not_" + self.operand.name)
+        super().__init__(operand, arity=1, **kwargs)
         self.neuron = _NodeActivation()(
-            self.propositional, self.world, **kwds.get("neuron", {})
+            self.propositional, self.world, **kwargs.get("neuron", {})
         )
 
-    def upward(self, **kwds) -> torch.Tensor:
+    def upward(self, **kwargs) -> torch.Tensor:
         if self.propositional:
             groundings = {None}
         else:
@@ -1328,7 +1328,7 @@ class _Quantifier(_Formula):
 
     **Parameters**
 
-        kwds : dict
+        kwargs : dict
             fully_grounded : bool
                 specifies if a full upward inference can be done on a
                 quantifier due to all the groundings being present inside it.
@@ -1342,9 +1342,9 @@ class _Quantifier(_Formula):
 
     """
 
-    def __init__(self, *args, **kwds):
-        super().__init__(args[-1], arity=1, propositional=True, **kwds)
-        self.fully_grounded = kwds.get("fully_grounded", False)
+    def __init__(self, *args, **kwargs):
+        super().__init__(args[-1], arity=1, propositional=True, **kwargs)
+        self.fully_grounded = kwargs.get("fully_grounded", False)
 
         # dimensions to quantify over
         self._update_variables(args[:-1])
@@ -1355,7 +1355,7 @@ class _Quantifier(_Formula):
         self._grounding_set = set()
         self._set_activation()
 
-    def upward(self, **kwds) -> Union[torch.Tensor, None]:
+    def upward(self, **kwargs) -> Union[torch.Tensor, None]:
         r"""Returns sum of bounds tightening from UPWARD inference"""
         n_groundings = len(self._grounding_set)
         input_bounds = self._upward_bounds(self.operands[0])
@@ -1461,13 +1461,13 @@ class ForAll(_Quantifier):
 
     """
 
-    def __init__(self, *args, **kwds):
-        kwds.setdefault(
+    def __init__(self, *args, **kwargs):
+        kwargs.setdefault(
             "name",
             "All_"
             + (args[-1][0].name if isinstance(args[-1], Tuple) else args[-1].name),
         )
-        super().__init__(*args, **kwds)
+        super().__init__(*args, **kwargs)
 
     def downward(self) -> torch.Tensor:
         r"""Returns sum of bounds tightening from DOWNWARD inference"""
@@ -1496,19 +1496,19 @@ class Exists(_Quantifier):
 
     """
 
-    def __init__(self, *args, **kwds):
-        kwds.setdefault(
+    def __init__(self, *args, **kwargs):
+        kwargs.setdefault(
             "name",
             "Some_"
             + (args[-1][0].name if isinstance(args[-1], Tuple) else args[-1].name),
         )
-        super().__init__(*args, **kwds)
+        super().__init__(*args, **kwargs)
 
 
 class _NodeActivation:
-    def __call__(self, propositional: bool, world: World, **kwds):
+    def __call__(self, propositional: bool, world: World, **kwargs):
         return getattr(import_module("lnn.neural.activations.node"), "_NodeActivation")(
-            propositional, world, **kwds
+            propositional, world, **kwargs
         )
 
 
@@ -1523,9 +1523,9 @@ class _NeuralActivation:
             f"lnn.neural.methods.{self.neuron_type.name.lower()}"
         )
 
-    def __call__(self, propositional: bool, arity: int, world: World, **kwds):
+    def __call__(self, propositional: bool, arity: int, world: World, **kwargs):
         return getattr(self.module, self.neuron_type.name)(
-            propositional, arity, world, **kwds
+            propositional, arity, world, **kwargs
         )
 
 

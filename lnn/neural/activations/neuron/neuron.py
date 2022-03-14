@@ -18,8 +18,8 @@ Dynamic activation function
 
 
 class _NeuronActivation(_NodeActivation, _NeuronParameters):
-    def __init__(self, *args, **kwds):
-        super().__init__(*args, **kwds)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.Xf = 1 - self.alpha
         self.Xt = self.alpha
         self.Xmid = 0.5

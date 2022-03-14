@@ -34,7 +34,7 @@ class MultiInstance:
 class UniqueNameAssumption:
     """Class to store and retrieve instances using the unique name assumption
 
-    if an instance is created with the same args, kwds as an existing instance
+    if an instance is created with the same args, kwargs as an existing instance
         the original object is returned
 
     **Example**
@@ -59,8 +59,8 @@ class UniqueNameAssumption:
     def __setitem__(cls, key: str, val: any):
         cls.instances[key] = val
 
-    def __new__(cls, *args, **kwds):
-        unique_name = str(*args, **kwds)
+    def __new__(cls, *args, **kwargs):
+        unique_name = str(*args, **kwargs)
         instance = cls.instances.get(unique_name)
         if instance is None:
             instance = super(cls.__class__, cls).__new__(cls)
@@ -176,14 +176,14 @@ param_symbols = {
 Model = TypeVar("Model")
 
 
-def plot_autograd(model: Model, loss: torch.Tensor, **kwds) -> None:
+def plot_autograd(model: Model, loss: torch.Tensor, **kwargs) -> None:
     params = model.named_parameters()
     torchviz.make_dot(
         loss,
         params=params,
-        show_attrs=kwds.get("show_attrs", True),
-        show_saved=kwds.get("show_saved", True),
-    ).render(f'graph_{kwds.get("epoch", "")}', view=True)
+        show_attrs=kwargs.get("show_attrs", True),
+        show_saved=kwargs.get("show_saved", True),
+    ).render(f'graph_{kwargs.get("epoch", "")}', view=True)
 
 
 def val_clamp(x, _min: float = 0, _max: float = 1) -> torch.Tensor:

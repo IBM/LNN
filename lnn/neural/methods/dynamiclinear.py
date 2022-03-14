@@ -14,11 +14,11 @@ from ..activations.neuron.dynamic import _DynamicActivation
 class DynamicLinear(_DynamicActivation):
     """Interpolated Linear"""
 
-    def __init__(self, *args, **kwds):
-        super().__init__(*args, **kwds)
-        self.w_m_slacks = kwds.get("w_m_slacks", "max")
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.w_m_slacks = kwargs.get("w_m_slacks", "max")
         self.kappa = self.add_param("kappa", torch.tensor(1.0))
-        self.kappa.requires_grad_(kwds.get("kappa_learning", False))
+        self.kappa.requires_grad_(kwargs.get("kappa_learning", False))
 
     def _and(self, direction: Direction):
         self.kappa.data = torch.tensor(1.0)
@@ -93,7 +93,7 @@ class DynamicLinear(_DynamicActivation):
             else (downward if direction is Direction.DOWNWARD else None)
         )
 
-    def update_activation(self, **kwds):
+    def update_activation(self, **kwargs):
         bias = self.weights[0] = self.weights[1:].sum()
         self.Xmax = bias
         w_m = self.TransparentMax.apply(
