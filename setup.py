@@ -5,23 +5,19 @@
 ##
 
 import setuptools
+import pathlib
 
-with open("README.md", "r") as f:
-    long_description = f.read()
-
-with open("requirements.txt", "r") as f:
-    install_requires = f.read().replace("==", ">=")
 
 setuptools.setup(
     name="lnn",
     version="1.0",
     author="IBM Research",
     description="A `Neuro = Symbolic` framework for weighted " "real-valued logic",
-    long_description=long_description,
+    long_description=pathlib.Path("README.md").read_text(),
     long_description_content_type="text/markdown",
     url="https://github.com/IBM/LNN",
     packages=setuptools.find_packages(),
-    install_requires=install_requires,
+    install_requires=pathlib.Path("requirements.txt").read_text().replace("==", ">="),
     extras_require={
         "test": ["pytest"],
     },
@@ -31,5 +27,3 @@ setuptools.setup(
     ],
     python_requires=">=3.9",
 )
-
-print(setuptools)
