@@ -22,6 +22,9 @@ setuptools.setup(
     url="https://github.com/IBM/LNN",
     packages=setuptools.find_packages(),
     install_requires=install_requires,
+    extras_require={
+        "test": ["pytest"],
+    },
     classifiers=[
         "Programming Language :: Python :: 3",
         "Operating System :: OS Independent",
