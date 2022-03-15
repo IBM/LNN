@@ -23,5 +23,13 @@ def test():
     model.add_formulae(formula)
     model.add_facts(facts)
     model.infer()
-    model.print()
+
     assert model["Friends"].state() == TRUE, "Not friends :-("
+
+    return model
+
+
+if __name__ == "__main__":
+    model = test()
+    model.print()
+    print("success")

@@ -45,10 +45,6 @@ def test_1():
         parameter_history=parameter_history,
     )
 
-    model.print(params=True)
-    plot_params(model)
-    plot_loss(total_loss, losses)
-
     state = model["A|B"].state()
     eps = 1e-3
     assert state is FALSE, f"expected A|B to be FALSE, received {state}"
@@ -71,7 +67,12 @@ def test_1():
         (0 <= w) + (w <= eps)
     ), f"expected A->B weights to be in [0, .5], received {w}"
 
+    return model, total_loss, losses
+
 
 if __name__ == "__main__":
-    test_1()
+    model, total_loss, losses = test_1()
+    model.print(params=True)
+    plot_params(model)
+    plot_loss(total_loss, losses)
     print("success")

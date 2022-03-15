@@ -49,7 +49,7 @@ def test():
     total_loss, _ = model.train(
         direction=UPWARD, losses=losses, parameter_history=parameter_history
     )
-    model.print(params=True)
+
     predictions = model[p1.name].state().values()
     assert all([fact is TRUE for fact in predictions]), (
         "expected AB Facts to all be TRUE, received bounds "
@@ -60,6 +60,7 @@ def test():
 
 
 if __name__ == "__main__":
-    my_model, total_loss, losses = test()
+    model, total_loss, losses = test()
+    model.print(params=True)
     plot_loss(total_loss, losses)
-    plot_params(my_model)
+    plot_params(model)

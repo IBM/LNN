@@ -23,12 +23,13 @@ def test_1():
     total_loss, _ = model.train(
         losses=losses, learning_rate=0.1, parameter_history=parameter_history
     )
-    model.print(params=True)
+
     return total_loss, losses, model
 
 
 if __name__ == "__main__":
     total_loss, losses, model = test_1()
+    model.print(params=True)
     plot_loss(total_loss, losses)
     plot_params(model)
     print("success")

@@ -27,8 +27,6 @@ def test():
 
     # perform inference/learning on the model
     model.infer(lifted=True)
-    model.print()
-    plot_graph(model)
 
     GT = ["(G → M)", "(H → (L ∨ A))", "(G → (L ∨ A))"]
     for gt in GT:
@@ -36,7 +34,11 @@ def test():
             gt in model.nodes.keys()
         ), f"lifted preprocessing could not find {gt} in the model"
 
+    return model
+
 
 if __name__ == "__main__":
-    test()
+    model = test()
+    model.print()
+    plot_graph(model)
     print("success")
