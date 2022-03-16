@@ -28,11 +28,12 @@ def test_true_operator():
     model["AB"] = Implies(model["LHS"], model["RHS"], world=World.AXIOM)
     model.add_facts({"LHS": TRUE, "RHS": FALSE})
     model.train(direction=UPWARD, losses=["contradiction"])
-    model.print(params=True)
     bias = model["AB"].params("bias")
     bounds = model["AB"].state()
     assert bias <= 1e-5, f"expected bias to be downweighted <= 0., received {bias}"
     assert bounds is TRUE, f"expected operator bounds to remain True, received {bounds}"
+
+    return model
 
 
 def test_false_operator_1():
@@ -105,7 +106,8 @@ def test_false_operator_3():
 
 
 if __name__ == "__main__":
-    test_true_operator()
+    model = test_true_operator()
+    model.print(params=True)
     test_false_operator_1()
     test_false_operator_2()
     test_false_operator_3()

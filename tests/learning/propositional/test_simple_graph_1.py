@@ -16,7 +16,6 @@ def test_1():
     model.add_facts({"A": TRUE})
     model.add_facts({"B": FALSE})
     model.train(epochs=11, losses={"contradiction": 1})
-    model.print(params=True)
 
     weights_and = model["A&B"].params("weights")[1]
     weights_or, bias_or = model["A|B"].params("weights", "bias")
@@ -29,7 +28,10 @@ def test_1():
     ), f"expected input B in A&B to be downweighted, received {weights_and}"
     assert bounds is FALSE, f"expected bounds to remain False, received {bounds}"
 
+    return model
+
 
 if __name__ == "__main__":
-    test_1()
+    model = test_1()
+    model.print(params=True)
     print("success")

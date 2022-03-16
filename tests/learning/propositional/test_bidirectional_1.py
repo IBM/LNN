@@ -7,7 +7,7 @@
 from lnn import Model, truth_table
 
 
-def test_1():
+def test_1(output=False):
     """decrease weights for contradictory facts
 
     given And(A, B) - reduce the weight on B
@@ -25,5 +25,11 @@ def test_1():
             }
         )
         model.upward()
-        model[AB.name].print()
+        if output:
+            model[AB.name].print()
         model.flush()
+
+
+if __name__ == "__main__":
+    test_1(output=True)
+    print("success")

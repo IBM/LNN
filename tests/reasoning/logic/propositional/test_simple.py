@@ -45,9 +45,6 @@ def test_1():
         losses=losses,
         parameter_history={"weights": True, "bias": True},
     )
-    model.print(params=True)
-    plot_params(model)
-    plot_loss(total_loss, losses)
 
     A_and_B_weights = model["AB"].params("weights")
     assert A_and_B_weights[1] <= 0.5, (
@@ -57,3 +54,13 @@ def test_1():
     assert all(A_or_B_weights > 0.99), (
         "expected weights at A or B to remain high, " f"received {A_or_B_weights}"
     )
+
+    return model, total_loss, losses
+
+
+if __name__ == "__main__":
+    model, total_loss, losses = test_1()
+    model.print(params=True)
+    plot_params(model)
+    plot_loss(total_loss, losses)
+    print("success")

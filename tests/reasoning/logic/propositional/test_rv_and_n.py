@@ -8,7 +8,7 @@ import numpy as np
 from lnn import Proposition, And, Model, Fact
 
 
-def test_upward():
+def test_upward(output=False):
     """standard upward n-input conjunction boolean truth table"""
 
     n = 1000
@@ -21,7 +21,9 @@ def test_upward():
     GT = dat[0]
     for i in range(1, n):
         GT = max(0, GT + dat[i] - 1)
-    print("Ground truth", GT)
+
+    if output:
+        print("Ground truth", GT)
 
     # load model and reason over facts
     facts = {}
@@ -45,7 +47,7 @@ def test_upward():
     model.flush()
 
 
-def test_downward():
+def test_downward(output=False):
     n = 1000
     propositions = list()
     for i in range(0, n):
@@ -56,7 +58,9 @@ def test_downward():
     GT = dat[0]
     for i in range(1, n):
         GT = max(0, GT + dat[i] - 1)
-    print("Ground truth", GT)
+
+    if output:
+        print("Ground truth", GT)
 
     # load model and reason over facts
     facts = {}
@@ -109,6 +113,6 @@ def test_downward():
 
 
 if __name__ == "__main__":
-    test_upward()
-    test_downward()
+    test_upward(output=True)
+    test_downward(output=True)
     print("success")

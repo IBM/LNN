@@ -28,7 +28,6 @@ def test_1():
 
     # train/inference
     model.train(direction=UPWARD, losses={"contradiction": 1})
-    model.print(params=True)
 
     weights = model["AB"].params("weights")
     bounds = model["B"].state()
@@ -36,6 +35,8 @@ def test_1():
         weights[1] <= 1 / 2
     ), f"expected input B to be downweighted <= 0., received {weights[1]}"
     assert bounds is FALSE, f"expected bounds to remain False, received {bounds}"
+
+    return model
 
 
 def test_2():
@@ -90,7 +91,7 @@ def test_3():
     assert bounds is FALSE, f"expected bounds to remain False, received {bounds}"
 
 
-def test_multiple():
+def test_multiple(output=False):
     """decrease weights for contradictory facts
 
     given And(n inputs) - reduce the weight on r random
@@ -116,7 +117,9 @@ def test_multiple():
             *[model[f"{p}"] for p in prop], world=World.AXIOM, neuron=neuron
         )
         model.train(losses=["contradiction"], learning_rate=1e-1)
-        model.print(params=True)
+
+        if output:
+            model.print(params=True)
 
         # test operator bounds
         prediction = model["and"].state()
@@ -178,10 +181,11 @@ def test_all():
 
 
 if __name__ == "__main__":
-    test_1()
+    model = test_1()
+    model.print(params=True)
     test_2()
     test_3()
-    test_multiple()
+    test_multiple(output=True)
     test_bias()
     test_all()
     print("success")

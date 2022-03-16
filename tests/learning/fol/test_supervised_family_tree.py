@@ -263,7 +263,7 @@ def test_2():
         )
 
 
-def test_3():
+def test_3(output=False):
     """
     In this test all positive examples are provided and the rest are assumed
     negative.
@@ -389,7 +389,9 @@ def test_3():
                 subrule_and_vars = subrule_and.binding_str
                 chosen_idx.append(subrule_and_vars)
 
-        rule.print(params=True)
+        if output:
+            rule.print(params=True)
+
         num_chosen = len(chosen_idx)
         assert num_chosen == 1, f"expected 1 got {num_chosen} in {chosen_idx}"
         assert chosen_idx[0] == target[1], (
@@ -405,5 +407,5 @@ def test_3():
 if __name__ == "__main__":
     test_1()
     test_2()
-    test_3()
+    test_3(output=True)
     print("success")
