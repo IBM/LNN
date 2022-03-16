@@ -150,12 +150,7 @@ class _Formula:
         **kwds,
     ):
         # check if all subformula has called predicates
-        if formula:
-            for subformula in formula:
-                if isinstance(subformula, Predicate):
-                    raise ValueError(
-                        f"predicate {subformula} inside formula must be called"
-                    )
+        _exceptions.AssertCalledPredicate(formula)
 
         # formula naming
         self.name = (
