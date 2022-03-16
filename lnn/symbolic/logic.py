@@ -149,6 +149,13 @@ class _Formula:
         world: World = World.OPEN,
         **kwds,
     ):
+        # check if all subformula has called predicates
+        if formula:
+            for subformula in formula:
+                if isinstance(subformula, Predicate):
+                    raise ValueError(
+                        f"predicate {subformula} inside formula must be called"
+                    )
 
         # formula naming
         self.name = (
