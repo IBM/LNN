@@ -8,6 +8,10 @@ import setuptools
 import pathlib
 
 
+def parse_requirements(filename):
+    return pathlib.Path(filename).read_text().replace("==", ">=").split("\n")
+
+
 setuptools.setup(
     name="lnn",
     version="1.0",
@@ -17,9 +21,10 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/IBM/LNN",
     packages=setuptools.find_packages(),
-    install_requires=pathlib.Path("requirements.txt").read_text().replace("==", ">="),
+    install_requires=parse_requirements("requirements.txt"),
     extras_require={
-        "test": ["pytest"],
+        "test": parse_requirements("requirements_test.txt"),
+        "plot": parse_requirements("requirements_plot.txt"),
     },
     classifiers=[
         "Programming Language :: Python :: 3",

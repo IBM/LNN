@@ -10,7 +10,6 @@ from typing import Union, Tuple, List, TypeVar
 
 import numpy as np
 import networkx as nx
-import matplotlib.pyplot as plt
 
 from . import _utils
 from .constants import Fact
@@ -78,6 +77,8 @@ def predicate_truth_table(*args: str, arity: int, model, states=None):
 
 
 def plot_graph(self, **kwds) -> None:
+    import matplotlib.pyplot as plt
+
     labels = {node: f"{node.__class__.__name__}\n{node}" for node in self.graph}
 
     options = {
@@ -97,6 +98,8 @@ def plot_graph(self, **kwds) -> None:
 
 
 def plot_loss(total_loss, losses) -> None:
+    import matplotlib.pyplot as plt
+
     loss, cummulative_loss = total_loss
     fig, axs = plt.subplots(1, 2)
     fig.suptitle("Model Loss")
@@ -113,6 +116,8 @@ Model = TypeVar("Model")
 
 
 def plot_params(self: Model) -> None:
+    import matplotlib.pyplot as plt
+
     legend = []
     for node in self.nodes:
         if hasattr(self[node], "parameter_history"):

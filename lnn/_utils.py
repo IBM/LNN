@@ -8,7 +8,6 @@ import time
 from typing import Union, TypeVar, Tuple
 
 import torch
-import torchviz
 import numpy as np
 
 from . import _exceptions
@@ -177,6 +176,8 @@ Model = TypeVar("Model")
 
 
 def plot_autograd(model: Model, loss: torch.Tensor, **kwds) -> None:
+    import torchviz
+
     params = model.named_parameters()
     torchviz.make_dot(
         loss,
