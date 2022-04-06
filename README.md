@@ -21,10 +21,16 @@ properties of both neural nets (learning) and symbolic logic (knowledge and reas
 ## Quickstart
 
 To install the LNN:
+1. Run: 
+   ```
+   pip install git+https://github.com/IBM/LNN.git
+   ```
+
+To install the LNN with graph plot support:
 1. Install [GraphViz](https://www.graphviz.org/download/)
 2. Run: 
    ```
-   pip install git+https://github.com/IBM/LNN.git
+   pip install git+https://github.com/IBM/LNN.git#egg=lnn"[plot]"
    ```
 
 ## Documentation
