@@ -1312,7 +1312,7 @@ class Not(_UnaryOperator):
             None, _utils.negate_bounds(self.operand.get_facts(*groundings))
         )
 
-    def downward(self) -> torch.Tensor:
+    def downward(self, **kwds) -> torch.Tensor:
         if self.propositional:
             groundings = {None}
         else:
