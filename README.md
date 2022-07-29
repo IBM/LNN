@@ -1,5 +1,6 @@
-[![Build Status](https://app.travis-ci.com/IBM/LNN.svg?branch=master)](https://app.travis-ci.com/IBM/LNN)
+[![Build Status](https://github.com/IBM/LNN/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/IBM/LNN/actions/workflows/build.yml?query=branch%3Amaster)
 [![License](https://img.shields.io/github/license/IBM/LNN)](https://github.com/IBM/LNN/blob/master/LICENSE)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 # Logical Neural Networks
 LNNs are a novel `Neuro = symbolic` framework designed to seamlessly provide key
@@ -20,10 +21,16 @@ properties of both neural nets (learning) and symbolic logic (knowledge and reas
 ## Quickstart
 
 To install the LNN:
+1. Run: 
+   ```
+   pip install git+https://github.com/IBM/LNN.git
+   ```
+
+To install the LNN with graph plot support:
 1. Install [GraphViz](https://www.graphviz.org/download/)
 2. Run: 
    ```
-   pip install git+https://github.com/IBM/LNN.git
+   pip install git+https://github.com/IBM/LNN.git#egg=lnn"[plot]"
    ```
 
 ## Documentation

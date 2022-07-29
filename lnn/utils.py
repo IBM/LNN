@@ -4,15 +4,15 @@
 # SPDX-License-Identifier: Apache-2.0
 ##
 
-from . import _utils
-from .constants import Fact
-
 import random
 import itertools
+from typing import Union, Tuple, List, TypeVar
+
 import numpy as np
 import networkx as nx
-import matplotlib.pyplot as plt
-from typing import Union, Tuple, List, TypeVar
+
+from . import _utils
+from .constants import Fact
 
 
 TRUE = Fact.TRUE
@@ -62,6 +62,7 @@ def predicate_truth_table(*args: str, arity: int, model, states=None):
     if states is None:
         states = [FALSE, TRUE]
     from lnn import Predicate  # noqa: F401
+
     n = len(args)
     TT = np.array(truth_table(n, states))
     _range = list(range(len(TT)))
@@ -69,58 +70,69 @@ def predicate_truth_table(*args: str, arity: int, model, states=None):
         model[arg] = Predicate(arity=arity)
         random.shuffle(_range)
         for i in _range:
-            grounding = f'{i}' if arity == 1 else (f'{i}',)*arity
+            grounding = f"{i}" if arity == 1 else (f"{i}",) * arity
             truth = TT[i, idx].item()
             model[arg].add_facts({grounding: truth})
     return model
 
 
 def plot_graph(self, **kwds) -> None:
+    import matplotlib.pyplot as plt
+
+    labels = {node: f"{node.__class__.__name__}\n{node}" for node in self.graph}
+
     options = {
-        'with_labels': True,
-        'arrows': True,
-        'edge_color': '#d0e2ff',
-        'node_size': 1,
-        'font_size': 9,
+        "with_labels": True,
+        "arrows": True,
+        "edge_color": "#d0e2ff",
+        "node_size": 1,
+        "font_size": 9,
+        "labels": labels,
     }
+
     options.update(kwds)
-    pos = nx.drawing.nx_agraph.graphviz_layout(self.graph, prog='dot')
+    pos = nx.drawing.nx_agraph.graphviz_layout(self.graph, prog="dot")
     nx.draw(self.graph, pos, **options)
+
     plt.show()
 
 
 def plot_loss(total_loss, losses) -> None:
+    import matplotlib.pyplot as plt
+
     loss, cummulative_loss = total_loss
     fig, axs = plt.subplots(1, 2)
-    fig.suptitle('Model Loss')
+    fig.suptitle("Model Loss")
     axs[0].plot(np.array(loss))
     for ax in axs.flat:
-        ax.set(xlabel='Epochs', ylabel='Loss')
-    axs[0].legend(['Total Loss'])
+        ax.set(xlabel="Epochs", ylabel="Loss")
+    axs[0].legend(["Total Loss"])
     axs[1].plot(np.array(cummulative_loss))
     axs[1].legend([str.capitalize(i) for i in losses])
     plt.show()
 
 
-Model = TypeVar('Model')
+Model = TypeVar("Model")
 
 
 def plot_params(self: Model) -> None:
+    import matplotlib.pyplot as plt
+
     legend = []
     for node in self.nodes:
-        if hasattr(self[node], 'parameter_history'):
+        if hasattr(self[node], "parameter_history"):
             for param, data in self[node].parameter_history.items():
                 if isinstance(data[0], list):
                     operands = list(self[node].operands)
-                    legend_idxs = [
-                        f'_{operands[i]}' for i in list(range(len(data[0])))]
+                    legend_idxs = [f"_{operands[i]}" for i in list(range(len(data[0])))]
                 else:
-                    legend_idxs = ['']
-                [legend.append(
-                    f'{node} {_utils.param_symbols[param]}{i}')
-                    for i in legend_idxs]
+                    legend_idxs = [""]
+                [
+                    legend.append(f"{node} {_utils.param_symbols[param]}{i}")
+                    for i in legend_idxs
+                ]
                 plt.plot(data)
-    plt.xlabel('Epochs')
+    plt.xlabel("Epochs")
     plt.legend(legend)
-    plt.title(f'{self.name} Parameters')
+    plt.title(f"{self.name} Parameters")
     plt.show()

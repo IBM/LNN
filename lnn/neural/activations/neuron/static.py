@@ -6,6 +6,7 @@
 
 from .neuron import _NeuronActivation
 
+
 """
 Static neuron activation function
 """

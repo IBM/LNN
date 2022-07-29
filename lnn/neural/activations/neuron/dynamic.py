@@ -4,14 +4,16 @@
 # SPDX-License-Identifier: Apache-2.0
 ##
 
-from .neuron import _NeuronActivation
 import torch
+
+from .neuron import _NeuronActivation
 
 
 class _DynamicActivation(_NeuronActivation):
     """
     Dynamic neuron activation function
     """
+
     def __init__(self, *args, **kwds):
         super().__init__(*args, **kwds)
         self.Xmin = 0
@@ -22,15 +24,14 @@ class _DynamicActivation(_NeuronActivation):
 
     def input_regions(self, bounds) -> torch.Tensor:
         result = torch.zeros_like(bounds)
-        result = result.masked_fill(
-            (self.Xmin <= bounds) * (bounds <= self.Xf), 1)
-        result = result.masked_fill(
-            (self.Xf < bounds) * (bounds < self.Xt), 2)
-        result = result.masked_fill(
-            (self.Xt <= bounds) * (bounds <= self.Xmax), 3)
+        result = result.masked_fill((self.Xmin <= bounds) * (bounds <= self.Xf), 1)
+        result = result.masked_fill((self.Xf < bounds) * (bounds < self.Xt), 2)
+        result = result.masked_fill((self.Xt <= bounds) * (bounds <= self.Xmax), 3)
         if any(result == 0):
-            raise ValueError('Unknown input regions. Expected all values from '
-                             f'[1, 2, 3], received  {result}')
+            raise ValueError(
+                "Unknown input regions. Expected all values from "
+                f"[1, 2, 3], received  {result}"
+            )
         return result
 
     class TransparentMax(torch.autograd.Function):
@@ -41,16 +42,14 @@ class _DynamicActivation(_NeuronActivation):
 
         @staticmethod
         def backward(ctx, grad_output):
-            bounds, = ctx.saved_tensors
+            (bounds,) = ctx.saved_tensors
             flags = bounds == bounds.max()
             grad_input = torch.ones_like(bounds) * grad_output.clone()
             grad_input = grad_input.where(flags, torch.zeros_like(bounds))
             return grad_input
 
     @staticmethod
-    def divide(divident: torch.Tensor,
-               divisor: torch.Tensor, fill=1.
-               ) -> torch.Tensor:
+    def divide(divident: torch.Tensor, divisor: torch.Tensor, fill=1.0) -> torch.Tensor:
         """
         Divide the bounds tensor (divident) by weights (divisor) while
             respecting gradient connectivity
@@ -59,8 +58,7 @@ class _DynamicActivation(_NeuronActivation):
         shape = divident.shape
         if divident.dim() < 2:
             divident = divident.reshape(1, -1)
-        div = divident.masked_select(divisor != 0) / divisor.masked_select(
-            divisor != 0)
+        div = divident.masked_select(divisor != 0) / divisor.masked_select(divisor != 0)
         result = divident.masked_scatter(divisor != 0, div)
         result = result.masked_fill(divisor == 0, fill)
         return result.reshape(shape)

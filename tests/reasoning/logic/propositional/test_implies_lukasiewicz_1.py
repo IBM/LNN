@@ -4,8 +4,8 @@
 # SPDX-License-Identifier: Apache-2.0
 ##
 
-from lnn import Proposition, Implies, Model
 import numpy as np
+from lnn import Proposition, Implies, Model
 
 
 def test():
@@ -16,9 +16,9 @@ def test():
     x, y = np.meshgrid(steps, steps)
 
     # define the rules
-    A = Proposition('A')
-    B = Proposition('B')
-    AB = Implies(A, B, name='AB')
+    A = Proposition("A")
+    B = Proposition("B")
+    AB = Implies(A, B, name="AB")
 
     # rules per model
     formulae = [AB]
@@ -32,7 +32,7 @@ def test():
             GT = 1 - a + b
 
             # facts per model
-            facts = {'A': (a, a), 'B': (b, b)}
+            facts = {"A": (a, a), "B": (b, b)}
 
             # load data into a new model
             model = Model()
@@ -40,14 +40,15 @@ def test():
             model.add_facts(facts)
 
             # evaluate the implication
-            model['AB'].upward()
+            model["AB"].upward()
 
             # test the prediction
-            prediction = model['AB'].get_facts()[0]
-            assert prediction - GT <= 1e-7, (
-                f'And({a}, {b}) expected {GT}, received {prediction}')
+            prediction = model["AB"].get_facts()[0]
+            assert (
+                prediction - GT <= 1e-7
+            ), f"And({a}, {b}) expected {GT}, received {prediction}"
             model.flush()
-    print('success')
+    print("success")
 
 
 if __name__ == "__main__":

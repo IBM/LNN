@@ -12,12 +12,13 @@ def test_upward():
     inputs = [FALSE, TRUE, UNKNOWN]
     for i in range(3):
         model = Model()
-        model['not'] = Not(Proposition('A'))
-        model.add_facts({'A': inputs[i]})
-        model['not'].upward()
-        prediction = model['not'].state()
-        assert (prediction is GTs[i]), (
-            f'expected Not({inputs[i]}) = {GTs[i]}, received {prediction}')
+        model["not"] = Not(Proposition("A"))
+        model.add_facts({"A": inputs[i]})
+        model["not"].upward()
+        prediction = model["not"].state()
+        assert (
+            prediction is GTs[i]
+        ), f"expected Not({inputs[i]}) = {GTs[i]}, received {prediction}"
 
 
 def test_downward():
@@ -25,15 +26,16 @@ def test_downward():
     inputs = [FALSE, TRUE, UNKNOWN]
     for i in range(3):
         model = Model()
-        model['not'] = Not(Proposition('A'))
-        model.add_facts({'not': inputs[i]})
-        model['not'].downward()
-        prediction = model['A'].state()
-        assert (prediction is GTs[i]), (
-            f'expected Not({inputs[i]}) = {GTs[i]}, received A={prediction}')
+        model["not"] = Not(Proposition("A"))
+        model.add_facts({"not": inputs[i]})
+        model["not"].downward()
+        prediction = model["A"].state()
+        assert (
+            prediction is GTs[i]
+        ), f"expected Not({inputs[i]}) = {GTs[i]}, received A={prediction}"
 
 
 if __name__ == "__main__":
     test_upward()
     test_downward()
-    print('success')
+    print("success")

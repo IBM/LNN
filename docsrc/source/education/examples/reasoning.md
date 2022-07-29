@@ -63,7 +63,7 @@ query = Exists(x, foursides(x), name='foursided_objects')
 model.add_formulae(square, rectangle, square_rect, rect_foursides, query)
      
 # Add facts to the model
-model.set_facts({'square': {'c': Fact.TRUE, 'k': Fact.TRUE}})
+model.add_facts({'square': {'c': Fact.TRUE, 'k': Fact.TRUE}})
      
 # Perform inference
 steps, facts_inferred = model.infer()

@@ -4,18 +4,19 @@
 # SPDX-License-Identifier: Apache-2.0
 ##
 
+import random
+import warnings
+from itertools import chain
+from typing import Union, Dict, Tuple
+
+import torch
+import networkx as nx
+from tqdm import tqdm
+
 from . import _utils, _exceptions
 from .symbolic.axioms import lifted_axioms
 from .constants import Fact, World, Direction
 from .symbolic.logic import Proposition, Predicate, _Formula
-
-import torch
-import random
-import warnings
-import networkx as nx
-from tqdm import tqdm
-from itertools import chain
-from typing import Union, Dict, Tuple
 
 
 class Model:
@@ -92,7 +93,8 @@ class Model:
     ```
 
     """
-    def __init__(self, name: str = 'Model'):
+
+    def __init__(self, name: str = "Model"):
         self.graph = nx.DiGraph()
         self.nodes = dict()
         self.name = name
@@ -114,9 +116,11 @@ class Model:
         _utils.dict_rekey(self.nodes, formula.name, name)
         self.nodes[name].rename(name)
         if name in self.__dict__:
-            warnings.warn(f'{name} already exists as a model variable the '
-                          f'existing object {repr(self.__dict__[name])} will '
-                          'be overtten')
+            warnings.warn(
+                f"{name} already exists as a model variable the "
+                f"existing object {repr(self.__dict__[name])} will "
+                "be overtten"
+            )
             self.__dict__.update({name: formula})
 
     def __contains__(self, key: str):
@@ -178,16 +182,21 @@ class Model:
         if world is not World.OPEN:
             [self[f.name]._set_world(world) for f in formulae]
 
-    def add_facts(self,
-                  facts: Dict[str,
-                              Union[Union[Fact, Tuple[float, float]],
-                                    Dict[Union[str, Tuple[str, ...]],
-                                         Union[Fact, Tuple[float, float]]]]]):
+    def add_facts(
+        self,
+        facts: Dict[
+            str,
+            Union[
+                Union[Fact, Tuple[float, float]],
+                Dict[Union[str, Tuple[str, ...]], Union[Fact, Tuple[float, float]]],
+            ],
+        ],
+    ):
         r"""Append facts to the model
 
         Assumes that the formulae that require facts have already been inserted
         into the model, see
-        [add_formulae](https://ibm.github.io/LNN/LNN.html#lnn.Model.add_formulae)  # noqa: E501
+        [add_formulae](https://ibm.github.io/LNN/lnn/LNN.html#lnn.Model.add_formulae)  # noqa: E501
         for more details
 
         **Parameters**
@@ -256,11 +265,14 @@ class Model:
             self[formula]._add_facts(fact)
 
     def add_labels(
-            self,
-            labels: Union[
-                Dict[str, Union[Tuple[float, float], Fact]],
-                Dict[str, Dict[Union[str, Tuple[str, ...]],
-                               Union[Tuple[float, float], Fact]]]]):
+        self,
+        labels: Union[
+            Dict[str, Union[Tuple[float, float], Fact]],
+            Dict[
+                str, Dict[Union[str, Tuple[str, ...]], Union[Tuple[float, float], Fact]]
+            ],
+        ],
+    ):
         r"""Append labels to the model
 
         Adding labels to formulae in the model follows the same dictionary
@@ -276,11 +288,13 @@ class Model:
                 _exceptions.AssertFOLFacts(label)
             self[formula]._add_labels(label)
 
-    def _traverse_execute(self,
-                          func: str,
-                          direction: Direction = Direction.UPWARD,
-                          source: _Formula = None,
-                          **kwds):
+    def _traverse_execute(
+        self,
+        func: str,
+        direction: Direction = Direction.UPWARD,
+        source: _Formula = None,
+        **kwds,
+    ):
         r"""Traverse over the model and execute a node operation
 
         Traverses through graph from `source` in the given `direction`
@@ -292,13 +306,12 @@ class Model:
         if direction is Direction.UPWARD:
             nodes = list(nx.dfs_postorder_nodes(self.graph, source))
         elif direction is Direction.DOWNWARD:
-            nodes = list(reversed(list(nx.dfs_postorder_nodes(
-                self.graph, source))))
+            nodes = list(reversed(list(nx.dfs_postorder_nodes(self.graph, source))))
 
-        coalesce = torch.tensor(0.)
+        coalesce = torch.tensor(0.0)
         for node in nodes:
             val = getattr(node, func)(**kwds) if hasattr(node, func) else None
-            coalesce = coalesce + val if val is not None else coalesce + 0.
+            coalesce = coalesce + val if val is not None else coalesce + 0.0
         return coalesce
 
     def lifted_preprocessing(self, n: Union[float, int]):
@@ -317,14 +330,16 @@ class Model:
             if result and result.name not in self.nodes:
                 self.add_formulae(result)
                 subformulae.append(self[str(result)])
-                print(f'Added {str(result)}')
+                print(f"Added {str(result)}")
         print(f'{"*" * 75}')
 
-    def infer(self,
-              direction: Direction = None,
-              source: _Formula = None,
-              max_steps: int = None,
-              **kwds):
+    def infer(
+        self,
+        direction: Direction = None,
+        source: _Formula = None,
+        max_steps: int = None,
+        **kwds,
+    ):
         r"""Reasons over all possible inferences until convergence
 
         **Return**
@@ -357,22 +372,26 @@ class Model:
                     nodes.
 
         """
-        lifted = kwds.get('lifted')
+        lifted = kwds.get("lifted")
         if lifted:
             self.lifted_preprocessing(1e3 if lifted is True else lifted)
-        direction = ([Direction.UPWARD, Direction.DOWNWARD]
-                     if not direction else [direction])
+        direction = (
+            [Direction.UPWARD, Direction.DOWNWARD] if not direction else [direction]
+        )
         converged = False
         steps = 0
         facts_inferred = torch.tensor(0)
         while not converged:
-            bounds_diff = 0.
+            bounds_diff = 0.0
             for d in direction:
                 bounds_diff = bounds_diff + self._traverse_execute(
-                    d.value.lower(), d, source, **kwds)
-            converged = True if direction in (
-                [[Direction.UPWARD], [Direction.DOWNWARD]]) else (
-                    bounds_diff <= 1e-7)
+                    d.value.lower(), d, source, **kwds
+                )
+            converged = (
+                True
+                if direction in ([[Direction.UPWARD], [Direction.DOWNWARD]])
+                else (bounds_diff <= 1e-7)
+            )
             facts_inferred = facts_inferred + bounds_diff
             steps = steps + 1
             if max_steps is not None and steps >= max_steps:
@@ -460,62 +479,65 @@ class Model:
 
         """
         optimizer = kwds.get(
-            'optimizer',
+            "optimizer",
             torch.optim.Adam(
-                kwds.get('parameters', self.parameters()),
-                lr=kwds.get('learning_rate', 5e-2)))
+                kwds.get("parameters", self.parameters()),
+                lr=kwds.get("learning_rate", 5e-2),
+            ),
+        )
         running_loss, loss_history, inference_history = [], [], []
         for epoch in tqdm(
-                range(int(kwds.get('epochs', 3e2))),
-                desc='training epoch', disable=not kwds.get('pbar', False)):
+            range(int(kwds.get("epochs", 3e2))),
+            desc="training epoch",
+            disable=not kwds.get("pbar", False),
+        ):
             optimizer.zero_grad()
             if epoch > 0:
                 self.reset_bounds()
-            self.increment_param_history(kwds.get('parameter_history'))
+            self.increment_param_history(kwds.get("parameter_history"))
             _, facts_inferred = self.infer(**kwds)
-            loss_fn = self.loss_fn(kwds.get('losses'))
+            loss_fn = self.loss_fn(kwds.get("losses"))
             loss = sum(loss_fn)
             if not loss.grad_fn:
                 raise RuntimeError(
-                    'graph loss found no gradient... '
-                    'check learning flags, loss functions, labels '
-                    'or switch to reasoning without learning')
+                    "graph loss found no gradient... "
+                    "check learning flags, loss functions, labels "
+                    "or switch to reasoning without learning"
+                )
             loss.backward()
             optimizer.step()
             self._project_params()
             running_loss.append(loss.item())
-            loss_history.append(
-                [L.clone().detach().tolist() for L in loss_fn])
+            loss_history.append([L.clone().detach().tolist() for L in loss_fn])
             inference_history.append(facts_inferred.item())
-            if loss <= 1e-5 and kwds.get('stop_at_convergence', True):
+            if loss <= 1e-5 and kwds.get("stop_at_convergence", True):
                 break
-        self.increment_param_history(kwds.get('parameter_history'))
+        self.increment_param_history(kwds.get("parameter_history"))
         return (running_loss, loss_history), inference_history
 
     def parameters(self):
-        result = list(chain.from_iterable(
-            [self[n].parameters() for n in self.nodes]))
+        result = list(chain.from_iterable([self[n].parameters() for n in self.nodes]))
         return result
 
     def parameters_grouped_by_neuron(self):
         result = list()
         for n in self.nodes:
             param_group = dict()
-            param_group['params'] = list()
-            param_group['param_names'] = list()
+            param_group["params"] = list()
+            param_group["param_names"] = list()
             for name, param in self[n].named_parameters():
-                param_group['params'].append(param)
-                param_group['param_names'].append(name)
-            param_group['neuron_type'] = self[n].__class__.__name__
+                param_group["params"].append(param)
+                param_group["param_names"].append(name)
+            param_group["neuron_type"] = self[n].__class__.__name__
             result.append(param_group)
         return result
 
     def named_parameters(self):
         result = dict()
         for n in self.nodes:
-            result.update({
-                f'{n}.{name}': param
-                for name, param in self[n].named_parameters()})
+            result.update(
+                {f"{n}.{name}": param for name, param in self[n].named_parameters()}
+            )
         return result
 
     def fit(self, **kwds):
@@ -525,63 +547,68 @@ class Model:
     learn = fit
 
     def loss_fn(self, losses):
-        loss_names = ['contradiction', 'uncertainty', 'logical', 'supervised',
-                      'custom']
+        loss_names = ["contradiction", "uncertainty", "logical", "supervised", "custom"]
         if losses is None:
             raise Exception(
-                'no loss function given, '
-                f'expected losses from the following {loss_names}')
+                "no loss function given, "
+                f"expected losses from the following {loss_names}"
+            )
         elif isinstance(losses, list):
             losses = {c: None for c in losses}
         result = list()
         for loss in losses:
             if loss in loss_names:
-                if loss == 'custom':
+                if loss == "custom":
                     if not isinstance(losses[loss], dict):
                         raise TypeError(
-                            'custom losses expected as a dict with keys as '
-                            'name of the loss and values as function '
-                            'definitions')
+                            "custom losses expected as a dict with keys as "
+                            "name of the loss and values as function "
+                            "definitions"
+                        )
                     for loss_fn in losses[loss].values():
-                        coalesce = torch.tensor(0.)
+                        coalesce = torch.tensor(0.0)
                         for node in list(nx.dfs_postorder_nodes(self.graph)):
                             coalesce = coalesce + loss_fn(node)
                         result.append(coalesce)
                 else:
-                    kwds = losses[loss] if (
-                        isinstance(losses[loss], dict)) else (
-                        {'coeff': losses[loss]})
-                    result.append(self._traverse_execute(
-                        f'{loss}_loss', **kwds))
+                    kwds = (
+                        losses[loss]
+                        if (isinstance(losses[loss], dict))
+                        else ({"coeff": losses[loss]})
+                    )
+                    result.append(self._traverse_execute(f"{loss}_loss", **kwds))
         return result
 
-    def print(self,
-              header_len: int = 50,
-              roundoff: int = 5,
-              params: bool = False,
-              grads: bool = False,
-              ):
+    def print(
+        self,
+        header_len: int = 50,
+        roundoff: int = 5,
+        params: bool = False,
+        grads: bool = False,
+    ):
         n = header_len + 25
-        print('\n' + '*' * n + f'\n{"":<{n/2 - 5}}LNN {self.name}\n')
-        self._traverse_execute('print',
-                               Direction.DOWNWARD,
-                               header_len=header_len,
-                               roundoff=roundoff,
-                               params=params,
-                               grads=grads)
-        print('*' * n)
+        print("\n" + "*" * n + f'\n{"":<{n/2 - 5}}LNN {self.name}\n')
+        self._traverse_execute(
+            "print",
+            Direction.DOWNWARD,
+            header_len=header_len,
+            roundoff=roundoff,
+            params=params,
+            grads=grads,
+        )
+        print("*" * n)
 
     def flush(self):
-        self._traverse_execute('flush')
+        self._traverse_execute("flush")
 
     def reset_bounds(self):
-        self._traverse_execute('reset_bounds')
+        self._traverse_execute("reset_bounds")
 
     def _project_params(self):
-        self._traverse_execute('project_params')
+        self._traverse_execute("project_params")
 
     def increment_param_history(self, parameter_history):
         if parameter_history:
             self._traverse_execute(
-                'increment_param_history',
-                parameter_history=parameter_history)
+                "increment_param_history", parameter_history=parameter_history
+            )

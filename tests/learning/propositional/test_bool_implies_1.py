@@ -4,8 +4,7 @@
 # SPDX-License-Identifier: Apache-2.0
 ##
 
-from lnn import (Model, Implies, Proposition, World,
-                 UPWARD, TRUE, FALSE, UNKNOWN, CLOSED)
+from lnn import Model, Implies, Proposition, World, UPWARD, TRUE, FALSE, UNKNOWN, CLOSED
 
 
 def test_true_operator():
@@ -24,23 +23,17 @@ def test_true_operator():
         the operator is incorrect
     """
     model = Model()
-    model['LHS'] = Proposition('LHS')
-    model['RHS'] = Proposition('RHS')
-    model['AB'] = Implies(model['LHS'], model['RHS'], world=World.AXIOM)
-    model.add_facts({
-        'LHS': TRUE,
-        'RHS': FALSE
-    })
-    model.train(
-        direction=UPWARD,
-        losses=['contradiction'])
-    model.print(params=True)
-    bias = model['AB'].params('bias')
-    bounds = model['AB'].state()
-    assert bias <= 1e-5, (
-        f'expected bias to be downweighted <= 0., received {bias}')
-    assert bounds is TRUE, (
-        f'expected operator bounds to remain True, received {bounds}')
+    model["LHS"] = Proposition("LHS")
+    model["RHS"] = Proposition("RHS")
+    model["AB"] = Implies(model["LHS"], model["RHS"], world=World.AXIOM)
+    model.add_facts({"LHS": TRUE, "RHS": FALSE})
+    model.train(direction=UPWARD, losses=["contradiction"])
+    bias = model["AB"].params("bias")
+    bounds = model["AB"].state()
+    assert bias <= 1e-5, f"expected bias to be downweighted <= 0., received {bias}"
+    assert bounds is TRUE, f"expected operator bounds to remain True, received {bounds}"
+
+    return model
 
 
 def test_false_operator_1():
@@ -50,24 +43,18 @@ def test_false_operator_1():
     expects LHS innput to be downweighted
     """
     model = Model()
-    neuron = {'alpha': 1-1e-5}
-    model['LHS'] = Proposition('LHS')
-    model['RHS'] = Proposition('RHS')
-    model['AB'] = Implies(model['LHS'], model['RHS'],
-                          world=CLOSED, neuron=neuron)
-    model.add_facts({
-        'LHS': FALSE,
-        'RHS': UNKNOWN
-    })
-    model.train(
-        direction=UPWARD,
-        losses=['contradiction'])
-    weights = model['AB'].params('weights')
-    bounds = model['AB'].state()
-    assert weights[0] <= 1/2, (
-        f'expected input LHS to be downweighted <= .5, received {weights[0]}')
-    assert bounds is FALSE, (
-        f'expected bounds AB to remain False, received {bounds}')
+    neuron = {"alpha": 1 - 1e-5}
+    model["LHS"] = Proposition("LHS")
+    model["RHS"] = Proposition("RHS")
+    model["AB"] = Implies(model["LHS"], model["RHS"], world=CLOSED, neuron=neuron)
+    model.add_facts({"LHS": FALSE, "RHS": UNKNOWN})
+    model.train(direction=UPWARD, losses=["contradiction"])
+    weights = model["AB"].params("weights")
+    bounds = model["AB"].state()
+    assert (
+        weights[0] <= 1 / 2
+    ), f"expected input LHS to be downweighted <= .5, received {weights[0]}"
+    assert bounds is FALSE, f"expected bounds AB to remain False, received {bounds}"
 
 
 def test_false_operator_2():
@@ -81,23 +68,18 @@ def test_false_operator_2():
         - both LHS and RHS add information, and are therefore incorrect
     """
     model = Model()
-    model['LHS'] = Proposition('LHS')
-    model['RHS'] = Proposition('RHS')
-    model['AB'] = Implies(model['LHS'], model['RHS'], world=CLOSED)
-    model.add_facts({
-        'LHS': FALSE,
-        'RHS': TRUE
-    })
-    model.train(
-        direction=UPWARD,
-        losses=['contradiction'])
+    model["LHS"] = Proposition("LHS")
+    model["RHS"] = Proposition("RHS")
+    model["AB"] = Implies(model["LHS"], model["RHS"], world=CLOSED)
+    model.add_facts({"LHS": FALSE, "RHS": TRUE})
+    model.train(direction=UPWARD, losses=["contradiction"])
 
-    weights = model['AB'].params('weights')
-    bounds = model['AB'].state()
-    assert all([w <= 1/2 for w in weights]), (
-        f'expected both inputs to be downweighted <= .5, received {weights}')
-    assert bounds is FALSE, (
-        f'expected bounds AB to remain False, received {bounds}')
+    weights = model["AB"].params("weights")
+    bounds = model["AB"].state()
+    assert all(
+        [w <= 1 / 2 for w in weights]
+    ), f"expected both inputs to be downweighted <= .5, received {weights}"
+    assert bounds is FALSE, f"expected bounds AB to remain False, received {bounds}"
 
 
 def test_false_operator_3():
@@ -109,29 +91,24 @@ def test_false_operator_3():
     of the contradiction - downweight RHS
     """
     model = Model()
-    neuron = {'alpha': 1 - 1e-5}
-    model['LHS'] = Proposition('LHS')
-    model['RHS'] = Proposition('RHS')
-    model['AB'] = Implies(model['LHS'], model['RHS'],
-                          world=CLOSED, neuron=neuron)
-    model.add_facts({
-        'LHS': TRUE,
-        'RHS': TRUE
-    })
-    model.train(
-        direction=UPWARD,
-        losses=['contradiction'])
-    weights = model['AB'].params('weights')
-    bounds = model['AB'].state()
-    assert weights[1] <= 1/2, (
-        f'expected input RHS to be downweighted <= .5, received {weights[1]}')
-    assert bounds is FALSE, (
-        f'expected bounds AB to remain False, received {bounds}')
+    neuron = {"alpha": 1 - 1e-5}
+    model["LHS"] = Proposition("LHS")
+    model["RHS"] = Proposition("RHS")
+    model["AB"] = Implies(model["LHS"], model["RHS"], world=CLOSED, neuron=neuron)
+    model.add_facts({"LHS": TRUE, "RHS": TRUE})
+    model.train(direction=UPWARD, losses=["contradiction"])
+    weights = model["AB"].params("weights")
+    bounds = model["AB"].state()
+    assert (
+        weights[1] <= 1 / 2
+    ), f"expected input RHS to be downweighted <= .5, received {weights[1]}"
+    assert bounds is FALSE, f"expected bounds AB to remain False, received {bounds}"
 
 
 if __name__ == "__main__":
-    test_true_operator()
+    model = test_true_operator()
+    model.print(params=True)
     test_false_operator_1()
     test_false_operator_2()
     test_false_operator_3()
-    print('success')
+    print("success")

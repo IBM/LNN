@@ -5,29 +5,30 @@
 ##
 
 import setuptools
+import pathlib
 
-with open('README.md', 'r') as f:
-    long_description = f.read()
 
-with open('requirements.txt', 'r') as f:
-    install_requires = f.read().replace('==', '>=')
+def parse_requirements(filename):
+    return pathlib.Path(filename).read_text().replace("==", ">=").split("\n")
+
 
 setuptools.setup(
-    name='lnn',
-    version='1.0',
-    author='IBM Research',
-    description='A `Neuro = Symbolic` framework for weighted '
-                'real-valued logic',
-    long_description=long_description,
-    long_description_content_type='text/markdown',
-    url='https://github.com/IBM/LNN',
+    name="lnn",
+    version="1.0",
+    author="IBM Research",
+    description="A `Neuro = Symbolic` framework for weighted " "real-valued logic",
+    long_description=pathlib.Path("README.md").read_text(),
+    long_description_content_type="text/markdown",
+    url="https://github.com/IBM/LNN",
     packages=setuptools.find_packages(),
-    install_requires=install_requires,
+    install_requires=parse_requirements("requirements.txt"),
+    extras_require={
+        "test": parse_requirements("requirements_test.txt"),
+        "plot": parse_requirements("requirements_plot.txt"),
+    },
     classifiers=[
-        'Programming Language :: Python :: 3',
-        'Operating System :: OS Independent',
+        "Programming Language :: Python :: 3",
+        "Operating System :: OS Independent",
     ],
-    python_requires='>=3.9',
+    python_requires=">=3.9",
 )
-
-print(setuptools)

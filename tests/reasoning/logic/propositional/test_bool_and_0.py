@@ -14,34 +14,32 @@ def test_upward():
     model = Model()
 
     # define the rules
-    A, B = model.add_propositions('A', 'B')
-    model['AB'] = Or(A, B)
+    A, B = model.add_propositions("A", "B")
+    model["AB"] = Or(A, B)
 
     # set the facts
-    model.add_facts({
-        'A': TRUE,
-        'B': FALSE,
-    })
+    model.add_facts(
+        {
+            "A": TRUE,
+            "B": FALSE,
+        }
+    )
 
     # set labels
-    model.add_labels({
-        'AB': FALSE
-    })
+    model.add_labels({"AB": FALSE})
 
     # learning/reasoning
-    losses = {'supervised': None, 'logical': 1e-1, 'contradiction': None}
-    parameter_history = {'weights': True, 'bias': True}
-    total_loss, _ = model.train(
-        losses=losses,
-        parameter_history=parameter_history)
+    losses = {"supervised": None, "logical": 1e-1, "contradiction": None}
+    parameter_history = {"weights": True, "bias": True}
+    total_loss, _ = model.train(losses=losses, parameter_history=parameter_history)
 
-    # evaluation
+    return model, total_loss, losses
+
+
+if __name__ == "__main__":
+    model, total_loss, losses = test_upward()
     model.print(params=True)
     plot_params(model)
     plot_loss(total_loss, losses)
     print(total_loss[0][-1])
-
-
-if __name__ == "__main__":
-    test_upward()
-    print('success')
+    print("success")
