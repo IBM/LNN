@@ -1,4 +1,4 @@
 sphinx
 myst-parser
-sphinx-rtd-theme
-torchviz
+sphinx_material
+sphinx_copybutton

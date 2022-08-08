@@ -1,35 +1,29 @@
 ##
-# Copyright 2021 IBM Corp. All Rights Reserved.
+# Copyright 2022 IBM Corp. All Rights Reserved.
 #
 # SPDX-License-Identifier: Apache-2.0
 ##
 
-from lnn import Model, TRUE, AXIOM
+from lnn import Model, Fact, World
+
+TRUE = Fact.TRUE
 
 
 def test():
     model = Model()
 
-    smokes, friends = model.add_propositions("Smokes", "Friends")
+    Smokes, Friends = model.add_propositions("Smokes", "Friends")
     # check that more propositions can be added
-    colleagues, gender = model.add_propositions("Colleagues", "GenderAlike")
-    assert colleagues.name == "Colleagues"
-    assert gender.name == "GenderAlike"
+    Colleagues, Gender = model.add_propositions("Colleagues", "GenderAlike")
+    assert Colleagues.name == "Colleagues"
+    assert Gender.name == "GenderAlike"
 
-    formula = smokes.And(colleagues, gender).Implies(friends, world=AXIOM)
+    formula = Smokes.And(Colleagues, Gender).Implies(Friends, world=World.AXIOM)
 
-    facts = {"Smokes": TRUE, "Colleagues": TRUE, "GenderAlike": TRUE}
+    facts = {Smokes: TRUE, Colleagues: TRUE, Gender: TRUE}
 
-    model.add_formulae(formula)
-    model.add_facts(facts)
+    model.add_knowledge(formula)
+    model.add_data(facts)
     model.infer()
-
-    assert model["Friends"].state() == TRUE, "Not friends :-("
-
-    return model
-
-
-if __name__ == "__main__":
-    model = test()
     model.print()
-    print("success")
+    assert Friends.state() == TRUE, "Not friends :-("

@@ -1,10 +1,14 @@
 ##
-# Copyright 2021 IBM Corp. All Rights Reserved.
+# Copyright 2022 IBM Corp. All Rights Reserved.
 #
 # SPDX-License-Identifier: Apache-2.0
 ##
 
-from lnn import Proposition, And, Model, TRUE, FALSE, UNKNOWN
+from lnn import Proposition, And, Model, Fact
+
+TRUE = Fact.TRUE
+FALSE = Fact.FALSE
+UNKNOWN = Fact.UNKNOWN
 
 
 def test_upward():
@@ -22,10 +26,10 @@ def test_upward():
 
     # define the rules
     n = 1000
-    propositions = list()
-    for i in range(1, n):
-        propositions.append(Proposition("p" + str(i)))
-    formulae = [And(*propositions, name="And_n")]
+    props = list()
+    for i in range(n):
+        props.append(Proposition("p" + str(i)))
+    And_n = And(*props)
 
     for row in TT:
         # get ground truth
@@ -33,16 +37,16 @@ def test_upward():
 
         # load model and reason over facts
         facts = {}
-        facts["p1"] = row[0]
-        for i in range(2, n):
-            facts["p" + str(i)] = row[1]
+        facts[props[0]] = row[0]
+        for i in range(1, n):
+            facts[props[i]] = row[1]
         model = Model()
-        model.add_formulae(*formulae)
-        model.add_facts(facts)
-        model["And_n"].upward()
+        model.add_knowledge(And_n)
+        model.add_data(facts)
+        And_n.upward()
 
         # evaluate the conjunction
-        prediction = model["And_n"].state()
+        prediction = And_n.state()
         assert (
             prediction is GT
         ), f"And({row[0]}, {row[1]}...) expected {GT}, received {prediction}"
@@ -61,11 +65,11 @@ def test_downward():
     ]
 
     # define the rules
-    n = 1000
-    propositions = list()
-    for i in range(1, n):
-        propositions.append(Proposition("p" + str(i)))
-    formulae = [And(*propositions, name="And_n")]
+    n = 3
+    props = list()
+    for i in range(n):
+        props.append(Proposition("p" + str(i)))
+    And_n = And(*props)
 
     for row in TT:
         # get ground truth
@@ -73,20 +77,19 @@ def test_downward():
 
         # load model and reason over facts
         facts = {}
-        facts["And_n"] = row[1]
-        for i in range(2, n):
-            facts["p" + str(i)] = row[0]
+        facts[And_n] = row[1]
+        for i in range(1, n):
+            facts[props[i]] = row[0]
         model = Model()
-        model.add_formulae(*formulae)
-        model.add_facts(facts)
-        model["And_n"].downward(index=0)
+        model.add_knowledge(And_n)
+        model.add_data(facts)
+        And_n.downward(index=0)
 
-        # evaluate the conjunction
-        prediction = model["p1"].state()
-        assert prediction is GT, (
-            f"And(A, {row[0]}, ...)={row[1]} expected"
-            + " A={GT}, received {prediction}"
-        )
+        # evaluate the conjunction input A
+        prediction = props[0].state()
+        assert (
+            prediction is GT
+        ), f"And(A, {row[0]}, ...)={row[1]} expected A={GT}, received {prediction}"
         model.flush()
 
 

@@ -1,12 +1,14 @@
 ##
-# Copyright 2021 IBM Corp. All Rights Reserved.
+# Copyright 2022 IBM Corp. All Rights Reserved.
 #
 # SPDX-License-Identifier: Apache-2.0
 ##
 
+from lnn import Predicate, And, Model, Variable, Fact, World, Join
 import random
 
-from lnn import Predicate, And, Model, Variable, World, TRUE, Join
+
+TRUE = Fact.TRUE
 
 
 def test_1():
@@ -20,19 +22,17 @@ def test_1():
         var_labels = tuple(f"x{i}" for i in range(0, n_vars))
         variables = list(map(Variable, var_labels))
 
-        p0 = model["p0"] = Predicate()
-        p1 = model["p1"] = Predicate(arity=n_vars)
-
-        model["And"] = And(
-            p0(variables[0]), p1(*variables), world=World.AXIOM, join=join
+        p0 = Predicate("p0")
+        p1 = Predicate("p1", arity=n_vars)
+        _and = And(p0(variables[0]), p1(*variables), world=World.AXIOM, join=join)
+        model.add_knowledge(_and)
+        model.add_data(
+            {p0: {"0": TRUE, "1": TRUE, "2": TRUE}, p1: {("0",) * n_vars: TRUE}}
         )
 
-        model.add_facts({"p0": {"0": TRUE, "1": TRUE, "2": TRUE}})
-        model.add_facts({"p1": {("0",) * n_vars: TRUE}})
-
         model.infer()
-        assert len(model["And"].groundings) == gt, (
-            f"Expected {gt} grounding, " f"received {len(model['And'].groundings)}"
+        assert len(_and.groundings) == gt, (
+            f"Expected {gt} grounding, " f"received {len(_and.groundings)}"
         )
 
 
@@ -47,20 +47,19 @@ def test_2():
         var_labels = tuple(f"x{i}" for i in range(0, n_vars))
         variables = list(map(Variable, var_labels))
 
-        p0 = model["p0"] = Predicate()
-        p1 = model["p1"] = Predicate(arity=n_vars)
+        p0 = Predicate("p0")
+        p1 = Predicate("p1", arity=n_vars)
 
         r = random.randrange(0, n_vars)
-        model["And"] = And(
-            p0(variables[r]), p1(*variables), world=World.AXIOM, join=join
+        _and = And(p0(variables[r]), p1(*variables), world=World.AXIOM, join=join)
+        model.add_knowledge(_and)
+        model.add_data(
+            {p0: {"0": TRUE, "1": TRUE, "2": TRUE}, p1: {("0",) * n_vars: TRUE}}
         )
 
-        model.add_facts({"p0": {"0": TRUE, "1": TRUE, "2": TRUE}})
-        model.add_facts({"p1": {("0",) * n_vars: TRUE}})
-
         model.infer()
-        assert len(model["And"].groundings) == gt, (
-            f"Expected {gt} grounding, " f"received {len(model['And'].groundings)}"
+        assert len(_and.groundings) == gt, (
+            f"Expected {gt} grounding, " f"received {len(_and.groundings)}"
         )
 
 
@@ -75,18 +74,19 @@ def test_3():
         var_labels = tuple(f"x{i}" for i in range(0, n_vars))
         variables = list(map(Variable, var_labels))
 
-        p0 = model["p0"] = Predicate(arity=3)
-        p1 = model["p1"] = Predicate(arity=n_vars)
-
-        model["And"] = And(
+        p0 = Predicate("p0", arity=3)
+        p1 = Predicate("p1", arity=n_vars)
+        _and = And(
             p0(variables[0], variables[1], variables[2]),
             p1(*variables),
             world=World.AXIOM,
         )
 
-        model.add_facts(
+        model.add_knowledge(_and)
+
+        model.add_data(
             {
-                "p0": {
+                p0: {
                     ("0", "0", "0"): TRUE,
                     ("0", "0", "1"): TRUE,
                     ("0", "0", "2"): TRUE,
@@ -94,9 +94,9 @@ def test_3():
             }
         )
 
-        model.add_facts(
+        model.add_data(
             {
-                "p1": {
+                p1: {
                     ("0", "0", "0", "0", "0"): TRUE,
                     ("0", "0", "1", "0", "0"): TRUE,
                     ("0", "0", "2", "0", "0"): TRUE,
@@ -105,8 +105,8 @@ def test_3():
         )
 
         model.infer()
-        assert len(model["And"].groundings) == gt, (
-            f"Expected {gt} groundings, " f"received {len(model['And'].groundings)}"
+        assert len(_and.groundings) == gt, (
+            f"Expected {gt} groundings, " f"received {len(_and.groundings)}"
         )
 
 
@@ -122,10 +122,10 @@ def test_4():
         var_labels = tuple(f"x{i}" for i in range(0, n_vars))
         variables = list(map(Variable, var_labels))
 
-        p0 = model["p0"] = Predicate(arity=n_vars)
-        p1 = model["p1"] = Predicate(arity=n_vars)
-
-        model["And"] = And(p0(*variables), p1(*variables), world=World.AXIOM, join=join)
+        p0 = Predicate("p0", arity=n_vars)
+        p1 = Predicate("p1", arity=n_vars)
+        _and = And(p0(*variables), p1(*variables), world=World.AXIOM, join=join)
+        model.add_knowledge(_and)
 
         key_arr = ["0"] * n_vars
         random_indices = random.sample(range(1, n_vars), 3)
@@ -135,12 +135,12 @@ def test_4():
 
         key = tuple(key_arr)
 
-        model.add_facts({"p0": {key: TRUE, ("0",) * n_vars: TRUE}})
-        model.add_facts({"p1": {key: TRUE, ("1",) * n_vars: TRUE}})
+        model.add_data({p0: {key: TRUE, ("0",) * n_vars: TRUE}})
+        model.add_data({p1: {key: TRUE, ("1",) * n_vars: TRUE}})
 
         model.infer()
-        assert len(model["And"].groundings) == gt, (
-            f"Expected {gt} groundings, " f"received {len(model['And'].groundings)}"
+        assert len(_and.groundings) == gt, (
+            f"Expected {gt} groundings, " f"received {len(_and.groundings)}"
         )
 
 

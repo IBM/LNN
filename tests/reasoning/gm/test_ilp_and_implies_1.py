@@ -1,10 +1,12 @@
 ##
-# Copyright 2021 IBM Corp. All Rights Reserved.
+# Copyright 2022 IBM Corp. All Rights Reserved.
 #
 # SPDX-License-Identifier: Apache-2.0
 ##
 
-from lnn import Model, World, And, Variable, TRUE, UPWARD, Implies, Fact, Join
+from lnn import Model, World, And, Variable, Direction, Implies, Fact, Join
+
+TRUE = Fact.TRUE
 
 
 def test_1():
@@ -52,14 +54,14 @@ def test_1():
 
         model = Model()
         b = model.add_predicates(2, B[0], world=World.FALSE)
-        model.add_facts({b.name: {pair: TRUE for pair in B[1]}})
+        model.add_data({b: {pair: TRUE for pair in B[1]}})
+        rule = And(b(*vars1), b(*vars2), join=join)
+        model.add_knowledge(rule)
 
-        model["rule"] = And(b(*vars1), b(*vars2), join=join)
+        model.infer(direction=Direction.UPWARD)
 
-        model.infer(direction=UPWARD)
-
-        assert all([model["rule"].state(groundings=g) is GT[g] for g in GT]), "FAILED 😔"
-        assert len(model["rule"].groundings) == len(GT), "FAILED 😔"
+        assert all([rule.state(groundings=g) is GT[g] for g in GT]), "FAILED 😔"
+        assert len(rule.groundings) == len(GT), "FAILED 😔"
 
 
 def test_2():
@@ -99,21 +101,19 @@ def test_2():
 
         model = Model()
         b, p = model.add_predicates(2, B[0], P1[0], world=World.FALSE)
-        model.add_facts(
+        model.add_data(
             {
-                b.name: {pair: TRUE for pair in B[1]},
-                p.name: {pair: TRUE for pair in P1[1]},
+                b: {pair: TRUE for pair in B[1]},
+                p: {pair: TRUE for pair in P1[1]},
             }
         )
+        rule = Implies(p(x, y), And(b(*vars1), b(*vars2), join=join), join=join)
+        model.add_knowledge(rule)
 
-        model["rule"] = Implies(
-            p(x, y), And(b(*vars1), b(*vars2), join=join), join=join
-        )
+        model.infer(direction=Direction.UPWARD)
 
-        model.infer(direction=UPWARD)
-
-        assert all([model["rule"].state(groundings=g) is GT[g] for g in GT]), "FAILED 😔"
-        assert len(model["rule"].groundings) == len(GT), "FAILED 😔"
+        assert all([rule.state(groundings=g) is GT[g] for g in GT]), "FAILED 😔"
+        assert len(rule.groundings) == len(GT), "FAILED 😔"
 
 
 if __name__ == "__main__":

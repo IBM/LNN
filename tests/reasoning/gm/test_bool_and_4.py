@@ -1,13 +1,12 @@
 ##
-# Copyright 2021 IBM Corp. All Rights Reserved.
+# Copyright 2022 IBM Corp. All Rights Reserved.
 #
 # SPDX-License-Identifier: Apache-2.0
 ##
 
-from functools import reduce
-
-import numpy as np
 from lnn import Predicate, And, Model, Variable, truth_table, fact_to_bool, bool_to_fact
+from functools import reduce
+import numpy as np
 
 
 def test():
@@ -23,25 +22,25 @@ def test():
     var_labels = tuple(f"x{i}" for i in range(0, n_vars))
     variables = list(map(Variable, var_labels))
 
+    preds = []
     for pred in range(n_preds):
-        model[f"P{pred}"] = Predicate(arity=n_vars)
-
-    preds = [model[f"P{pred}"](*variables) for pred in range(n_preds)]
-    model["AB"] = And(*preds)
+        preds.append(Predicate(f"P{pred}", arity=n_vars))
+    AB = And(*[pred(*variables) for pred in preds])
+    model.add_knowledge(AB)
 
     # set model facts
-    for pred in range(n_preds):
+    for idx, pred in enumerate(preds):
 
-        test_case = {(f"{row}",) * n_vars: truth[pred] for row, truth in enumerate(TT)}
-        model.add_facts({f"P{pred}": test_case})
+        test_case = {(f"{row}",) * n_vars: truth[idx] for row, truth in enumerate(TT)}
+        model.add_data({pred: test_case})
 
     # inference
-    model["AB"].upward()
+    AB.upward()
 
     # evaluate the conjunction
     for row in range(len(TT)):
         state = (str(row),) * n_vars
-        prediction = model["AB"].state(state)
+        prediction = AB.state(state)
         assert prediction is bool_to_fact(
             GT[row]
         ), f"And({TT[row]}) expected {GT}, received {prediction}"

@@ -1,89 +1,89 @@
 ##
-# Copyright 2021 IBM Corp. All Rights Reserved.
+# Copyright 2022 IBM Corp. All Rights Reserved.
 #
 # SPDX-License-Identifier: Apache-2.0
 ##
 
-import random
-import warnings
-from itertools import chain
-from typing import Union, Dict, Tuple
+# flake8: noqa: E501
+
+import itertools
+from collections.abc import Iterable
+from typing import Union, Dict, Tuple, List
+
+from . import _exceptions, _utils
+from .symbolic._lifted import lifted_axioms
+from .constants import Fact, World, Direction, Join, Loss
+from .symbolic.logic import Proposition, Predicate, Formula
 
 import torch
+import random
+import logging
+import datetime
 import networkx as nx
 from tqdm import tqdm
+import matplotlib.pyplot as plt
 
-from . import _utils, _exceptions
-from .symbolic.axioms import lifted_axioms
-from .constants import Fact, World, Direction
-from .symbolic.logic import Proposition, Predicate, _Formula
+_utils.logger_setup(flush=True)
 
 
 class Model:
     r"""Creates a container for logical reasoning and neural learning.
 
-    Models offer contextual segmentation between free-variable formulae and
-        the instantiation of facts that may apply to those formulae under a
-        specific instance.
-    Models are dynamic, often constructed as empty containers to later be
-        populated by rules and facts - this allows LNNs to operate under
-        dynamic environments where the rules themselves are allowed to grow as
-        new information emerges.
-    In general a model acts as a canvas, that includes only the formulae
-        specified. The model will include a
+    Models define a theory or a collection of formulae, with additional reasoning and
+        learning functionality that can be applied to each formula in the model.
+        In contrast to standard FOL where the existence of a formula symbol assumes a
+        `True` truth value, the data associated with LNN formulae can take on any
+        classical truth (Fact) or belief bounds (a range real-values).
 
-    **Parameters**
+    Models are also dynamic, instantiated as empty containers which are later populated
+        with knowledge rules and data. This additionally allows LNNs to operate in
+        dynamic environments whereby the knowledge acquired may grow as new
+        information becomes available.
 
-        name : str, optional
-            name of contextual model
+    Parameters
+    ------------
+    name : str, optional
+        Name of contextual model, defaults to "Model"
 
-    **Attributes**
-
-    ```raw
+    Attributes
+    ----------
     graph : nx.DiGraph
-        directed graph that connects nodes
+        Directed graph that connects nodes, pointing from operator to operand nodes.
     nodes : dict
-        keys are names given to the formulae at instantiation and values are
-        the object containers as placed inside the model
-    ```
+        Each formula is keyed by a formula_number, with the value as the formula object.
+    query : Formula
+        A formula node that is set as the current query - allows the model to be used in QA/theorem proving whereby inference is governed towards solving the query.
 
-    **Warning**
-
-    > Assumes that every node in the model has a unique name
-
-    **Example**
-
+    Examples
+    --------
     ```python
     # define the predicates
-    Smokes, Asthma, Cough = map(Predicate, ['Smokes', 'Asthma', 'Cough'])
-    Friends = Predicate('Friends', arity=2)
+    x, y = Variables("x", "y")
+    Smokes, Asthma, Cough = Predicates("Smokes", "Asthma", "Cough")
+    Friends = Predicate("Friends", arity=2)
 
     # define the connectives/quantifiers
-    x, y = map(Variable, ['x', 'y'])
     Smokers_have_friends = And(Smokes(x), Friends(x, y))
-    Asmatic_smokers_cough = (
-        Exists(x,
-               Implies(And(Smokes(x), Asthma(x)), Cough(x)), world=AXIOM))
+    Asthmatic_smokers_cough = (
+        Exists(x, Implies(And(Smokes(x), Asthma(x)), Cough(x))))
     Smokers_befriend_smokers = (
-        ForAll(
-            x, y,
-            Implies(Smokers_have_friends(x, y), Smokes(y)), world=AXIOM))
+        ForAll(x, y, Implies(Smokers_have_friends(x, y), Smokes(y))))
 
     # add root formulae to model
     model = Model()
-    model.add_formulae(
-        Asmatic_smokers_cough,
+    model.add_knowledge(
+        Asthmatic_smokers_cough,
         Smokers_befriend_smokers)
 
     # add data to the model
-    model.add_facts({
-        Smokes.name: {
-            'Person_1': TRUE,
-            'Person_2': UNKNOWN,
-            'Person_3': UNKNOWN},
-        Friends.name: {
-            ('Person_1', 'Person_2'): TRUE,
-            ('Person_2', 'Person_3'): UNKNOWN}})
+    model.add_data({
+        Smokes: {
+            "Person_1": Fact.TRUE,
+            "Person_2": Fact.UNKNOWN,
+            "Person_3": Fact.UNKNOWN},
+        Friends: {
+            ("Person_1", "Person_2"): Fact.TRUE,
+            ("Person_2", "Person_3"): Fact.UNKNOWN}})
 
     # reason over the model
     model.infer()
@@ -94,208 +94,333 @@ class Model:
 
     """
 
-    def __init__(self, name: str = "Model"):
+    def __init__(
+        self,
+        knowledge: Union[Formula, Iterable[Formula]] = None,
+        data: Dict = None,
+        name: str = "Model",
+    ):
         self.graph = nx.DiGraph()
         self.nodes = dict()
+        self.node_names = dict()
+        self.node_structures = dict()
+        self.num_formulae = 0
         self.name = name
+        self.query = None
+        self._converge = None
+        if knowledge:
+            if isinstance(knowledge, Iterable):
+                self.add_knowledge(*knowledge)
+            else:
+                self.add_knowledge(knowledge)
+        if data:
+            self.add_data(data)
+        logging.info(f" {name} {datetime.datetime.now()} ".join(["*" * 22] * 2))
 
-    def __getitem__(self, key: str):
-        r"""model['node_name']"""
-        if key in self.nodes:
-            return self.nodes[key]
+    def __getitem__(
+        self, formula: Union[Formula, int]
+    ) -> Union[Formula, List[Formula]]:
+        r"""Returns a formula object from the model.
 
-    def __setitem__(self, name: str, formula: _Formula):
-        r"""Alias for `model.add_formulae`
+        If the formula is in the model, return the formula
+            - for backward compatibility
+        if multiple formula exists in the model with the same structure,
+            return a list of all the relevant nodes
 
-        Automatically renames graph nodes, instantiated nodes need not be named
-        ```python
-        model['P1'] = Predicate()
-        ```
         """
-        self.add_formulae(formula)
-        _utils.dict_rekey(self.nodes, formula.name, name)
-        self.nodes[name].rename(name)
-        if name in self.__dict__:
-            warnings.warn(
-                f"{name} already exists as a model variable the "
-                f"existing object {repr(self.__dict__[name])} will "
-                "be overtten"
+        if isinstance(formula, int):
+            return self.nodes[formula]
+        if formula.formula_number is not None and formula.formula_number in self.nodes:
+            return self.nodes[formula.formula_number]
+        if formula.structure in self.node_structures:
+            result = self.node_structures[formula.structure]
+            return (
+                result
+                if len(self.node_structures[formula.structure]) > 1
+                else result[0]
             )
-            self.__dict__.update({name: formula})
 
-    def __contains__(self, key: str):
-        return key in self.nodes
+    def __contains__(self, formula: Formula):
+        if formula.formula_number and formula.formula_number in self.nodes:
+            return True
+        return formula.structure in self.node_structures
 
-    def add_formulae(self, *formulae: _Formula, world: World = World.OPEN):
-        r"""Extend the model to include additional formulae
+    def set_query(self, formula: Formula, world=World.OPEN, converge=False):
+        r"""Inserts a query node into the model and maintains a handle on the node.
+
+        Parameters
+        ----------
+        formula : Formula
+            Name of contextual model
+        world : World
+            Default behavior of the formula. If unspecified, assumes open world assumption.
+
+        Notes
+        -----
+        The query formula will be added to the model and will not be removed, even if a new query is defined using this function.
+
+        """
+        self.add_knowledge(formula, world=world)
+        self.query = formula
+        self._converge = converge
+
+    def infer_query(self, *args, **kwds) -> Tuple[Tuple[int, int], torch.Tensor]:
+        r"""Reasons only over the stored query.
+
+        Is the same as calling [model.infer](#lnn.Model.infer) but setting the source
+        node as [model.query](#lnn.Model.set_query)."""
+        if self.query:
+            return self.infer(*args, **kwds, source=self.query)
+
+    def add_formulae(self, *args, **kwds):
+        raise NameError(f"`add_formulae` is deprecated, use `add_knowledge` instead")
+
+    def add_knowledge(self, *formulae: Formula, world: World = None, join: Join = None):
+        r"""Extend the model to include additional formulae.
 
         Only root level formulae explicitly need to be added to the model.
         Unless otherwise specified, each root formula follows the open world
         assumption.
 
-        **Example**
-
-        Any formula given without cloning will be operated on directly
-        To be used when working with only 1 model,
-        i.e., directly referencing the model nodes
-
+        Examples
+        --------
         ```python
-        model.add_formulae(Predicate('P1'))
+        P, Q = Predicates("P1", "Q")
+        model.add_knowledge(P, Q)
 
         ```
+        creates the predicate and inserts into the model
 
-        or directly modifying the formula in the user space:
+        or
 
         ```python
         model = Model()
-        P1 = Predicate('P1')
-        model.add_formulae(P1)
+        P1 = Predicate("P1")
+        P2 = Predicate("P2", 2)
+        P3 = Predicate("P3", 3)
+        model.add_knowledge(
+            And(P1(x), P2(x, y)),
+            Implies(P2(x, y), P3(x, y, z))
+        )
 
         ```
 
-        the former requires modifications to be accessed via `model['P1']`
-        while the latter will store any changes to made by the model,
-        directly in `P1`
+        inserts the formulae roots into the model and appropriately includes
+        all subformulae also into the scope of the model.
+
+        Any formulae that directly require inquiry should first be created in
+        the user scope and thereafter inserted into the model for reference
+        after reasoning/learning
+
+        e.g.
+
+        ```python
+        model = Model()
+        P1 = Predicate("P1")
+        P2 = Predicate("P2", 2)
+        P3 = Predicate("P3", 3)
+        my_and = And(P1(x), P2(x, y))
+        model.add_knowledge(
+            my_and,
+            Implies(P2(x, y), P3(x, y, z))
+        )
+
+        ...
+        model.infer()
+        ...
+
+        my_and.state()
+
+        ```
 
         """
-        self._add_rules(*formulae, world=world)
+        self._add_knowledge(*formulae, world=world, join=join)
 
     def add_propositions(self, *names: str, **kwds):
         ret = []
         for name in names:
-            self[name] = Proposition(**kwds)
-            ret.append(self[name])
+            P = Proposition(name, **kwds)
+            self.add_knowledge(P)
+            ret.append(P)
         return ret[0] if len(ret) == 1 else ret
 
     def add_predicates(self, arity: int, *names: str, **kwds):
         ret = []
         for name in names:
-            self[name] = Predicate(arity=arity, **kwds)
-            ret.append(self[name])
+            P = Predicate(name, arity=arity, **kwds)
+            self.add_knowledge(P)
+            ret.append(P)
         return ret[0] if len(ret) == 1 else ret
 
-    def _add_rules(self, *formulae: _Formula, world: World = World.OPEN):
-        for f in formulae:
+    def replace_graph_edge(
+        self, old_edge: (Formula, Formula), new_edge: (Formula, Formula)
+    ):
+        self.graph.remove_edge(*old_edge)
+        self.graph.add_edge(*new_edge)
+
+    def _add_knowledge(
+        self, *formulae: Formula, world: World = None, join: Join = None
+    ):
+        for idx, f in enumerate(formulae):
+            _exceptions.AssertFormula(f)
             self.graph.add_node(f)
             self.graph.add_edges_from(f.edge_list)
-        self.nodes.update({node.name: node for node in self.graph.nodes})
-        if world is not World.OPEN:
-            [self[f.name]._set_world(world) for f in formulae]
+            self.num_formulae = f.set_formula_number(self.num_formulae) + 1
+        for node in self.graph.nodes:
+            if node.structure in self.node_structures:
+                if node not in self.node_structures[node.structure]:
+                    self.node_structures[node.structure].append(node)
+            else:
+                self.node_structures.update({node.structure: [node]})
+            if node.name in self.node_names:
+                if node not in self.node_names[node.name]:
+                    self.node_names[node.name].append(node)
+            else:
+                self.node_names.update({node.name: [node]})
+            self.nodes[node.formula_number] = node
 
-    def add_facts(
+        if world:
+            for f in formulae:
+                f.reset_world(world)
+
+        if join:
+            for f in formulae:
+                f.set_join(join)
+
+    def add_facts(self, *args, **kwds):
+        raise NameError(f"`add_facts` is deprecated, use `add_data` instead")
+
+    def add_data(
         self,
-        facts: Dict[
-            str,
+        data: Dict[
+            Formula,
             Union[
                 Union[Fact, Tuple[float, float]],
                 Dict[Union[str, Tuple[str, ...]], Union[Fact, Tuple[float, float]]],
             ],
         ],
     ):
-        r"""Append facts to the model
+        r"""Add data to select formulae in the model, in the form of classical facts or belief bounds.
 
-        Assumes that the formulae that require facts have already been inserted
-        into the model, see
-        [add_formulae](https://ibm.github.io/LNN/lnn/LNN.html#lnn.Model.add_formulae)  # noqa: E501
-        for more details
+        Data given is a Fact or belief bounds assumes a propositional formula.
+        Data given in a dict assumes a first-order logic formula,
+            keyed by the grounding and a value given as a Fact or belief bounds.
 
-        **Parameters**
+        Parameters
+        ----------
+        data : a dict of Fact, belief bounds or dict
+            The dict is keyed by the formula for which data is to be added, with the truths as the value. For propositional formulae, truths are given as either Facts or belief bounds (a tuple of 2 floats). For first-order logic formula, inputs truths are given as a dict. This is further keyed by the grounding (a str for unary formlae or tuple of strings of larger arities), with values also as Facts or bounds on beliefs.
 
-            # propositional
-            facts : dict
-                key : str
-                    This is the unique node name stored in the model
-                    can be reference either by the associated string in the
-                    model-scope or extracting the node`.name` stored in the
-                    user-scope
-                value :  Fact or Bounds
-                    Facts may be the flags for classical bounds or bounds can
-                    be directly set as a list of two floats, representing lower
-                    and upper bounds
-
-            # first-order logic
-            facts : dict
-                key : str
-                    This is the unique node name stored in the model
-                    can be reference either by the associated string in the
-                    model-scope or extracting the node`.name` stored in the
-                    user-scope
-                value :  dict
-                    key : str or tuple-of-str
-                        This inner key represents the first-order grounding or
-                        the propositionalised/instantiated binding that applies
-                        the the free variable. It represents a single row
-                        within the bounds table
-                    value :  Fact or Bounds
-                        This inner value represents the facts, given either as
-                        a flag for classical bounds or directly as a list of
-                        two floats, representing the lower and upper bounds.
-                        This fact is set as the associated truth for the
-                        grounding key above.
-
-        **Example**
-
+        Examples
+        --------
         ```python
         # propositional
-        P = Proposition('Person')
-        model.add_facts({'Person': Facts.TRUE})
+        P = Proposition("Person")
+        model.add_data({
+            P: Fact.TRUE
+        })
         ```
-
         ```python
         # first-order logic
-        P = Predicate('Person')
-        B = Predicate('Birthdate', arity=2)
-        model.add_facts(
-            {'Person': {
-                'Barack Obama': TRUE,
-                'Bo': FALSE},
-             B.name: {
-                 ('Barack Obama', '04 August 1961'): TRUE,
-                 ('Bo', '09 October 2008'): TRUE}
-            })
+        Person = Predicate("Person")
+        BD = Predicate("Birthdate", 2)
+        model.add_data({
+            Person: {
+                "Barack Obama": Fact.TRUE,
+                "Bo": (.1, .4)
+            },
+            BD: {
+                ("Barack Obama", "04 August 1961"): Fact.TRUE,
+                ("Bo", "09 October 2008"): (.6, .75)
+            }
+        })
         ```
 
+        Warning
+        -------
+        Assumes that the formulae have already been inserted into the model, see [add_knowledge](https://ibm.github.io/LNN/lnn/LNN.html#lnn.Model.add_knowledge) for more details.
+
         """
-        for formula, fact in facts.items():
+        for formula, fact in data.items():
+            if not isinstance(formula, Formula):
+                raise TypeError(
+                    "formula expected of type Formula, received "
+                    f"{formula.__class__.__name__}"
+                )
             _exceptions.AssertFormulaInModel(self, formula)
-            if self[formula].propositional:
+            if formula.propositional:
                 _exceptions.AssertBounds(fact)
             else:
                 _exceptions.AssertFOLFacts(fact)
-            self[formula]._add_facts(fact)
+            formula.add_data(fact)
 
     def add_labels(
         self,
-        labels: Union[
-            Dict[str, Union[Tuple[float, float], Fact]],
-            Dict[
-                str, Dict[Union[str, Tuple[str, ...]], Union[Tuple[float, float], Fact]]
+        labels: Dict[
+            Formula,
+            Union[
+                Union[Fact, Tuple[float, float]],
+                Dict[Union[str, Tuple[str, ...]], Union[Fact, Tuple[float, float]]],
             ],
         ],
     ):
-        r"""Append labels to the model
+        r"""Add labels to select formulae in the model, in the form of classical facts or belief bounds.
 
-        Adding labels to formulae in the model follows the same dictionary
-        input API as
-        [adding facts](https://ibm.github.io/LNN/lnn/LNN.html#lnn.Model.add_facts).  # noqa: E501
+        Labels given is a Fact or belief bounds assumes a propositional formula.
+        Labels given in a dict assumes a first-order logic formula,
+            keyed by the grounding and a value given as a Fact or belief bounds.
+
+        Parameters
+        ----------
+        labels : a dict of Fact, belief bounds or dict
+            The dict is keyed by the formula for which data is to be added, with the truths as the value. For propositional formulae, truths are given as either Facts or belief bounds (a tuple of 2 floats). For first-order logic formula, inputs truths are given as a dict. This is further keyed by the grounding (a str for unary formlae or tuple of strings of larger arities), with values also as Facts or bounds on beliefs.
+
+        Examples
+        --------
+        ```python
+        # propositional
+        P = Proposition("Person")
+        model.add_labels({
+            P: Fact.TRUE
+        })
+        ```
+        ```python
+        # first-order logic
+        Person = Predicate("Person")
+        BD = Predicate("Birthdate", 2)
+        model.add_labels({
+            Person: {
+                "Barack Obama": Fact.TRUE,
+                "Bo": (.1, .4)
+            },
+            BD: {
+                ("Barack Obama", "04 August 1961"): Fact.TRUE,
+                ("Bo", "09 October 2008"): (.6, .75)
+            }
+        })
+        ```
+
+        Warning
+        -------
+        Assumes that the formulae have already been inserted into the model, see [add_knowledge](https://ibm.github.io/LNN/lnn/LNN.html#lnn.Model.add_knowledge) for more details.
 
         """
         for formula, label in labels.items():
             _exceptions.AssertFormulaInModel(self, formula)
-            if self[formula].propositional:
+            if formula.propositional:
                 _exceptions.AssertBounds(label)
             else:
                 _exceptions.AssertFOLFacts(label)
-            self[formula]._add_labels(label)
+            formula.add_labels(label)
 
     def _traverse_execute(
         self,
         func: str,
         direction: Direction = Direction.UPWARD,
-        source: _Formula = None,
+        source: Formula = None,
         **kwds,
     ):
-        r"""Traverse over the model and execute a node operation
+        r"""Traverse over the model and execute a node operation.
 
         Traverses through graph from `source` in the given `direction`
             and execute `func` at each node
@@ -311,106 +436,148 @@ class Model:
         coalesce = torch.tensor(0.0)
         for node in nodes:
             val = getattr(node, func)(**kwds) if hasattr(node, func) else None
-            coalesce = coalesce + val if val is not None else coalesce + 0.0
+            coalesce = coalesce + val if val is not None else coalesce
+        if coalesce and func in [d.value.lower() for d in Direction]:
+            logging.info(f"{direction.value} INFERENCE RESULT:{coalesce}")
         return coalesce
 
-    def lifted_preprocessing(self, n: Union[float, int]):
-        print(f'\n{"*" * 75}\n{"":<20} Lifted Reasoning Preprocessing')
-        axioms = lifted_axioms()
-        subformulae = list()
-        for node in self.nodes:
-            if self[node].world is World.AXIOM:
-                subformulae.append(self[node])
-        if len(subformulae) == 0:
-            return
+    def lifted_processing(self, n: Union[float, int]) -> int:
+        axioms = lifted_axioms(self)
+        if len(self.nodes) == 0:
+            logging.debug("no formulae in the model to lift")
+            return 0
         for _ in range(int(n)):
             axiom, k = random.choice(list(axioms.items()))
-            nodes = random.choices(subformulae, k=k)
-            result = axiom(nodes)
-            if result and result.name not in self.nodes:
-                self.add_formulae(result)
-                subformulae.append(self[str(result)])
-                print(f"Added {str(result)}")
-        print(f'{"*" * 75}')
+            if k > len(self.nodes):
+                continue
+            nodes = random.sample(list(self.nodes.values()), k=k)
+            result = int(axiom(*nodes))
+            if result:
+                return result
+        return 0
+
+    def lift(self, lifted: Union[bool, int, float] = True, *args, **kwds):
+        r"""Lift the model without doing bounds-based inference.
+
+        This can be used when a model has TRUE axioms/rules and a query is expected to be answerable directly from the truth of those axioms, i.e. without needing to touch the groundiings/bounds.
+        This uses the LNN as a symbolic manipulation system to introduce new rules based on a set of [axiom schemata](https://en.wikipedia.org/wiki/Propositional_calculus).
+        """
+        self._infer(*args, lifted=lifted, **kwds)
 
     def infer(
         self,
         direction: Direction = None,
-        source: _Formula = None,
+        source: Formula = None,
         max_steps: int = None,
+        lifted: Union[bool, int, float] = False,
         **kwds,
-    ):
+    ) -> Tuple[Tuple[int, int], torch.Tensor]:
         r"""Reasons over all possible inferences until convergence
 
-        **Return**
+        Parameters
+        ----------
+        direction : {Direction.UPWARD, Direction.DOWNWARD}, optional
+            Can be specified as either UPWARD or DOWNWARD inference, a single pass of that direction will be applied. If unspecified, defaults to the LNN naive inference strategy of doing inference until convergence.
+        source : node, optional
+            Specifies starting node for [depth-first search traversal](https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.traversal.depth_first_search.dfs_postorder_nodes.html#networkx.algorithms.traversal.depth_first_search.dfs_postorder_nodes). Specifying a node here will compute reasoning (until convergence) on the subgraph, with the specified source is the root of the subgraph.
+        max_steps: int, optional
+            Limits the inference to a specified number of passes of the naive traversal strategy. If unspecified, the steps will not be limited, i.e. inference will take place until convergence.
+        lifted : bool or float, optional
+            Computes lifted inference processing to modify default truths via the UP/DOWN inference algorithm.
 
-            steps : int
-                The number of steps taken to converge
-            facts_inferred : Tensor
-                Sum of bounds tightening from inference updates
-
-        **Parameters**
-
-            direction : Direction
-                Can be specified as either UPWARD or DOWNWARD inference, a
-                single pass of that direction will be applied
-                If unspecified, None, defaults to the LNN naive inference
-                strategy of doing upward and downward inference until
-                convergence
-            source : node
-                Specifies starting node for
-                [depth-first search traversal](https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.traversal.depth_first_search.dfs_postorder_nodes.html#networkx.algorithms.traversal.depth_first_search.dfs_postorder_nodes)  # noqa: E501
-                The node can be extracted using __getitem__ from the node name
-            max_steps: int
-                Limits the inference to a specified number of passes of the
-                naive traversal strategy
-            kwds
-                lifted : bool or float
-                    Computes lifted inference preprocessing to expand the
-                    knowledge by randomly searching for axioms that can be
-                    applied to the network. If True, defaults to 1e3 random
-                    nodes.
+        Returns
+        -------
+        (steps, facts_inferred) : Tuple[tuple of 2 ints, torch.Tensor]
+            The returned `steps` are the number of steps to converge loops, reflecting `lifting steps`, `reasoning steps` accordingly. The `facts_inferred` provide a sum of bounds tightening from inference updates.
 
         """
-        lifted = kwds.get("lifted")
         if lifted:
-            self.lifted_preprocessing(1e3 if lifted is True else lifted)
+            self.lift(lifted)
+
+        return self._infer(
+            direction=direction,
+            source=source,
+            max_steps=max_steps,
+            lifted=False,
+            **kwds,
+        )
+
+    def _infer(
+        self,
+        direction: Direction = None,
+        source: Formula = None,
+        max_steps: int = None,
+        **kwds,
+    ) -> Tuple[Tuple[int, int], torch.Tensor]:
+        r"""Implementation of model inference.
+
+        A model can do inference with lifting, or to explicitly lift without explicitly doing inference (i.e. no bounds updates).
+        `infer` calls `_infer` to do bounds-based inference with/without lifting
+        but `lift` calls `_infer` explicitly without bounds-based inference
+        """
         direction = (
             [Direction.UPWARD, Direction.DOWNWARD] if not direction else [direction]
         )
-        converged = False
-        steps = 0
-        facts_inferred = torch.tensor(0)
+        converged, converged_lifting, converged_bounds = False, False, True
+        additional_axioms, steps, facts_inferred = 0, 0, 0
+        lifted = kwds.get("lifted")
+        logging.info(f"{'LIFTED' if lifted else 'BOUNDED'} REASONING LOOP")
         while not converged:
+            if self.query and self.query.is_classically_resolved and not self._converge:
+                logging.info("=" * 22)
+                logging.info(
+                    f"QUERY PROVED AS {self.query.world_state(True)} for "
+                    f"'{self.query.name}'"
+                )
+                break
+            logging.info("-" * 22)
+            logging.info(f"REASONING STEP:{steps}")
+            if lifted and converged_bounds is True:
+                is_new_axiom = self.lifted_processing(1e5 if lifted is True else lifted)
+                converged_lifting = True if is_new_axiom == 0 else False
+                additional_axioms += is_new_axiom
             bounds_diff = 0.0
             for d in direction:
-                bounds_diff = bounds_diff + self._traverse_execute(
+                bounds_diff += self._traverse_execute(
                     d.value.lower(), d, source, **kwds
                 )
-            converged = (
+            converged_bounds = (
                 True
                 if direction in ([[Direction.UPWARD], [Direction.DOWNWARD]])
-                else (bounds_diff <= 1e-7)
+                else bounds_diff <= 1e-7
             )
-            facts_inferred = facts_inferred + bounds_diff
-            steps = steps + 1
-            if max_steps is not None and steps >= max_steps:
+            if converged_bounds:
+                if converged_lifting or not lifted:
+                    converged = True
+                else:
+                    converged_bounds = True
+                    logging.info("NO UPDATES AVAILABLE, TRYING A NEW AXIOM")
+            facts_inferred += bounds_diff
+            steps += 1
+            if max_steps and steps >= max_steps:
                 break
+        logging.info("=" * 22)
+        logging.info(
+            f"INFERENCE CONVERGED WITH {facts_inferred} BOUNDS "
+            f"UPDATES IN {steps} REASONING STEPS "
+            + (f"BY ADDING {additional_axioms} AXIOMS" if lifted else "")
+        )
+        logging.info("*" * 78)
         return steps, facts_inferred
 
     def forward(self, *args, **kwds):
         return self.infer(*args, **kwds)
 
-    reason = inference = forward
-
     def upward(self, **kwds):
+        r"""Performs upward inference for each node in the model from leaf to root."""
         return self.infer(Direction.UPWARD, **kwds)
 
     def downward(self, **kwds):
+        r"""Performs downward inference for each node in the model from root to leaf."""
         return self.infer(Direction.DOWNWARD, **kwds)
 
-    def train(self, **kwds):
-        r"""Train the model
+    def train(self, losses: Union[Loss, List[Loss], Dict[List[Loss], float]], **kwds):
+        r"""Train the model.
 
         Reasons across the model until convergence using the standard inference
         strategy - equivalent to running a NN in the forward direction.
@@ -418,62 +585,62 @@ class Model:
         predefined or custom loss and model parameters are updated.
         An epoch constitutes all computation until parameters take a step.
 
-        **Parameters**
-            kwds
-                losses: list or dict
-                    predefined losses include
-                     ['contradiction', 'uncertainty', 'logical', 'supervised']
-                    If given in dict form, coefficients of each loss can be
-                    specified as a float value. The value can alternatively
-                    specify additional parameters for each loss calculation
-                    using a dict
+        Parameters
+        ------------
+        losses: Loss, list or dict of losses
+            Predefined losses expected from the fixed Loss constants. If given in dict form, coefficients of each loss can be specified as a float value. The value can alternatively specify additional parameters for each loss calculation using a dict.
+        optimizer : pytorch optimizer, optional
+            Custom optimizers should be instantiated with the model parameters using `model.parameters()`. If unspecified, defaults to [Adam](https://pytorch.org/docs/stable/generated/torch.optim.Adam.html#torch.optim.Adam).
+        learning_rate : float, optional
+            If unspecified, defaults to 5e-2.
+        epochs : float, optional
+            Number of training epochs. If unspecified, trains for 3e2 epochs.
+        pbar : bool, optional
+            Prints out a tqdm training progress bar. If unspecified, does not print out.
 
-        **Returns**
+        Returns
+        -------
+        (epochs, total_loss) : Tuple[int, Tuple[List, Tensor]]
+            A tuple of variables are returned. The `epochs` is number of epochs trained before stopped/converged + 1. The `total_loss` returns a tuple of 2 values: first is the `running_loss` as a list for the sum of loss at the end of each epoch; then the `loss_history`, which is a Tensor of individual loss components as specified by the `losses` argument.
 
-            epoch + 1: int
-            total_loss: tuple
-                running_loss: list
-                    sum of loss at the end of each epoch
-                loss_history: Tensor
-                    individual loss components as specified by `losses` kwd
-
-        **Example**
-
+        Examples
+        --------
         ```python
         # construct the model from formulae
         model = Model()
-        p1, p2 = map(Predicate, ['P1', 'P2'])
-        x = Variable('x')
-        model['AB'] = And(p1(x), p2(x))
+        p1, p2 = Predicates("P1", "P2")
+        x = Variable("x")
+        AB = And(p1(x), p2(x))
+        model.add_knowledge(AB)
 
         # add data to the model
-        model.add_facts({
-            p1.name: {
-                '0': TRUE,
-                '1': TRUE,
-                '2': FALSE,
-                '3': FALSE
+        model.add_data({
+            p1: {
+                "0": Fact.TRUE,
+                "1": Fact.TRUE,
+                '2': Fact.FALSE,
+                '3': Fact.FALSE
             },
-            p2.name: {
-                '0': TRUE,
-                '1': FALSE,
-                '2': TRUE,
-                '3': FALSE,
+            p2: {
+                '0': Fact.TRUE,
+                '1': Fact.FALSE,
+                '2': Fact.TRUE,
+                '3': Fact.FALSE,
             }
         })
 
         # add supervisory targets
         model.add_labels({
-            'AB': {
-                '0': TRUE,
-                '1': FALSE,
-                '2': TRUE,
-                '3': FALSE,
+            AB: {
+                '0': Fact.TRUE,
+                '1': Fact.FALSE,
+                '2': Fact.TRUE,
+                '3': Fact.FALSE,
             }
         })
 
         # train the model and output results
-        model.train(losses=['supervised'])
+        model.train(losses=Loss.SUPERVISED)
         model.print(params=True)
         ```
 
@@ -493,110 +660,159 @@ class Model:
         ):
             optimizer.zero_grad()
             if epoch > 0:
+                logging.info(" PARAMETER STEP ".join(["#" * 31] * 2))
                 self.reset_bounds()
             self.increment_param_history(kwds.get("parameter_history"))
             _, facts_inferred = self.infer(**kwds)
-            loss_fn = self.loss_fn(kwds.get("losses"))
+            loss_fn = self.loss_fn(losses)
             loss = sum(loss_fn)
             if not loss.grad_fn:
-                raise RuntimeError(
-                    "graph loss found no gradient... "
-                    "check learning flags, loss functions, labels "
-                    "or switch to reasoning without learning"
-                )
+                break
+            if loss and len(loss_fn) > 1:
+                logging.info(f"TOTAL LOSS: {loss}")
             loss.backward()
             optimizer.step()
             self._project_params()
             running_loss.append(loss.item())
             loss_history.append([L.clone().detach().tolist() for L in loss_fn])
             inference_history.append(facts_inferred.item())
-            if loss <= 1e-5 and kwds.get("stop_at_convergence", True):
+            if loss <= 1e-7 and kwds.get("stop_at_convergence", True):
                 break
+        self.reset_bounds()
+        self.infer()
         self.increment_param_history(kwds.get("parameter_history"))
         return (running_loss, loss_history), inference_history
 
     def parameters(self):
-        result = list(chain.from_iterable([self[n].parameters() for n in self.nodes]))
+        result = list(
+            itertools.chain.from_iterable([n.parameters() for n in self.nodes.values()])
+        )
         return result
 
     def parameters_grouped_by_neuron(self):
         result = list()
-        for n in self.nodes:
+        for n in self.nodes.values():
             param_group = dict()
             param_group["params"] = list()
             param_group["param_names"] = list()
-            for name, param in self[n].named_parameters():
+            for name, param in n.named_parameters():
                 param_group["params"].append(param)
                 param_group["param_names"].append(name)
-            param_group["neuron_type"] = self[n].__class__.__name__
+            param_group["neuron_type"] = n.__class__.__name__
             result.append(param_group)
         return result
 
     def named_parameters(self):
         result = dict()
-        for n in self.nodes:
+        for n in self.nodes.values():
             result.update(
-                {f"{n}.{name}": param for name, param in self[n].named_parameters()}
+                {f"{n}.{name}": param for name, param in n.named_parameters()}
             )
         return result
 
-    def fit(self, **kwds):
-        """Alias for train"""
-        return self.train(**kwds)
-
-    learn = fit
-
     def loss_fn(self, losses):
-        loss_names = ["contradiction", "uncertainty", "logical", "supervised", "custom"]
         if losses is None:
             raise Exception(
                 "no loss function given, "
-                f"expected losses from the following {loss_names}"
+                f"expected losses from the following {[l.name for l in Loss]}"
             )
+        elif isinstance(losses, Loss):
+            losses = [losses]
         elif isinstance(losses, list):
             losses = {c: None for c in losses}
         result = list()
         for loss in losses:
-            if loss in loss_names:
-                if loss == "custom":
-                    if not isinstance(losses[loss], dict):
-                        raise TypeError(
-                            "custom losses expected as a dict with keys as "
-                            "name of the loss and values as function "
-                            "definitions"
-                        )
-                    for loss_fn in losses[loss].values():
-                        coalesce = torch.tensor(0.0)
-                        for node in list(nx.dfs_postorder_nodes(self.graph)):
-                            coalesce = coalesce + loss_fn(node)
-                        result.append(coalesce)
-                else:
-                    kwds = (
-                        losses[loss]
-                        if (isinstance(losses[loss], dict))
-                        else ({"coeff": losses[loss]})
+            _exceptions.AssertLossType(loss)
+            if loss == Loss.CUSTOM:
+                if not isinstance(losses[loss], dict):
+                    raise TypeError(
+                        "custom losses expected as a dict with keys as "
+                        "name of the loss and values as function "
+                        "definitions"
                     )
-                    result.append(self._traverse_execute(f"{loss}_loss", **kwds))
+                for loss_fn in losses[loss].values():
+                    coalesce = torch.tensor(0.0)
+                    for node in list(nx.dfs_postorder_nodes(self.graph)):
+                        coalesce = coalesce + loss_fn(node)
+                    result.append(coalesce)
+            else:
+                kwds = (
+                    losses[loss]
+                    if (isinstance(losses[loss], dict))
+                    else ({"coeff": losses[loss]})
+                )
+                result.append(
+                    self._traverse_execute(f"_{loss.value.lower()}_loss", **kwds)
+                )
+            if result[-1]:
+                logging.info(f"{loss.value.upper()} LOSS {result[-1]}")
         return result
 
     def print(
         self,
+        source: Formula = None,
         header_len: int = 50,
         roundoff: int = 5,
         params: bool = False,
         grads: bool = False,
+        numbering: bool = False,
     ):
         n = header_len + 25
-        print("\n" + "*" * n + f'\n{"":<{n/2 - 5}}LNN {self.name}\n')
+        print("\n" + "*" * n + f'\n{"":<{n / 2 - 5}}LNN {self.name}\n')
         self._traverse_execute(
             "print",
             Direction.DOWNWARD,
+            source=source,
             header_len=header_len,
             roundoff=roundoff,
             params=params,
             grads=grads,
+            numbering=numbering,
         )
         print("*" * n)
+
+    def plot_graph(
+        self, formula_number: bool = False, edge_variables: bool = False, **kwds
+    ):
+        options = {
+            "with_labels": False,
+            "arrows": False,
+            "edge_color": "#d0e2ff",
+            "node_color": "#ffffff",
+            "node_size": 16,
+            "font_size": 9,
+        }
+        options.update(kwds)
+        pos = nx.drawing.nx_agraph.graphviz_layout(self.graph, prog="dot")
+        nx.draw(self.graph, pos, **options)
+        nx.draw_networkx_labels(
+            self.graph,
+            pos,
+            dict(
+                [
+                    (node, node.formula_number)
+                    if formula_number
+                    else (node, node.connective_str)
+                    if hasattr(node, "connective_str")
+                    else (node, node.name)
+                    for node in self.graph
+                ]
+            ),
+        )
+        if edge_variables:
+            labels = {
+                edge: _utils.list_to_str(
+                    edge[0].operand_map[edge[0].operands.index(edge[1])]
+                )
+                for edge in self.graph.edges
+                if isinstance(edge[1], Predicate)
+            }
+            nx.draw_networkx_edge_labels(
+                self.graph,
+                pos,
+                labels,
+            )
+        plt.show()
 
     def flush(self):
         self._traverse_execute("flush")
@@ -612,3 +828,10 @@ class Model:
             self._traverse_execute(
                 "increment_param_history", parameter_history=parameter_history
             )
+
+    def has_contradiction(self):
+        return (
+            True
+            if any([node.is_contradiction() for node in self.nodes.values()])
+            else False
+        )

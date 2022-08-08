@@ -1,11 +1,10 @@
 ##
-# Copyright 2021 IBM Corp. All Rights Reserved.
+# Copyright 2022 IBM Corp. All Rights Reserved.
 #
 # SPDX-License-Identifier: Apache-2.0
 ##
 
 from .neuron import _NeuronActivation
-
 
 """
 Static neuron activation function

@@ -1,10 +1,13 @@
 ##
-# Copyright 2021 IBM Corp. All Rights Reserved.
+# Copyright 2022 IBM Corp. All Rights Reserved.
 #
 # SPDX-License-Identifier: Apache-2.0
 ##
 
-from lnn import Model, Or, Proposition, TRUE, FALSE, UPWARD, CLOSED
+from lnn import Model, Or, Proposition, Fact, Direction, World, Loss
+
+TRUE = Fact.TRUE
+FALSE = Fact.FALSE
 
 
 def test_upward():
@@ -13,18 +16,15 @@ def test_upward():
     given And(A, B) - reduce the weight on B
     """
     model = Model()
-    model["A"] = Proposition("A")
-    model["B"] = Proposition("B")
-    model["AB"] = Or(
-        model["A"],
-        model["B"],
-        world=CLOSED,
-    )
-    model.add_facts({"A": TRUE, "B": FALSE})
-    model.train(direction=UPWARD, losses={"contradiction": 0.1})
+    A = Proposition("A")
+    B = Proposition("B")
+    AB = Or(A, B, world=World.FALSE)
+    model.add_knowledge(AB)
+    model.add_data({A: TRUE, B: FALSE})
+    model.train(direction=Direction.UPWARD, losses={Loss.CONTRADICTION: 0.1})
 
-    weights = model["AB"].params("weights")
-    bounds = model["A"].state()
+    weights = AB.params("weights")
+    bounds = A.state()
     assert (
         weights[0] <= 0.5
     ), f"expected input A to be downweighted <= 0., received {weights[0]}"

@@ -1,0 +1,17 @@
+Formula
+=======
+
+# Formula
+
+### Parameters
+
+### Attributes
+
+fully_grounded : bool
+unique_var_slots : tuple of int
+    returns the slot index of each unique variable
+
+### Warnings
+Formula should not be directly instantiated
+
+

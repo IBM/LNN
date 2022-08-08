@@ -1,10 +1,15 @@
 ##
-# Copyright 2021 IBM Corp. All Rights Reserved.
+# Copyright 2022 IBM Corp. All Rights Reserved.
 #
 # SPDX-License-Identifier: Apache-2.0
 ##
 
-from lnn import Proposition, Or, Model, TRUE, FALSE, UNKNOWN
+from lnn import Proposition, Or, Model, Fact
+
+
+TRUE = Fact.TRUE
+FALSE = Fact.FALSE
+UNKNOWN = Fact.UNKNOWN
 
 
 def test_upward():
@@ -23,7 +28,7 @@ def test_upward():
     # define the rules
     A = Proposition("A")
     B = Proposition("B")
-    AB = Or(A, B, name="AB")
+    AB = Or(A, B)
     formulae = [AB]
 
     for i, row in enumerate(TT):
@@ -31,14 +36,14 @@ def test_upward():
         GT = row[2]
 
         # load model and reason over facts
-        facts = {"A": row[0], "B": row[1]}
+        facts = {A: row[0], B: row[1]}
         model = Model()
-        model.add_formulae(*formulae)
-        model.add_facts(facts)
-        model["AB"].upward()
+        model.add_knowledge(*formulae)
+        model.add_data(facts)
+        AB.upward()
 
         # evaluate the conjunction
-        prediction = model["AB"].state()
+        prediction = AB.state()
         assert (
             prediction is GT
         ), f"{i} Or({row[0]}, {row[1]}) expected {GT}, received {prediction}"
@@ -59,26 +64,26 @@ def test_downward():
     # define the rules
     A = Proposition("A")
     B = Proposition("B")
-    AB = Or(A, B, name="AB")
+    AB = Or(A, B)
     formulae = [AB]
 
     for i, row in enumerate(TT):
         # load model and reason over facts
-        facts = {"B": row[0], "AB": row[1]}
+        facts = {B: row[0], AB: row[1]}
         model = Model()
-        model.add_formulae(*formulae)
-        model.add_facts(facts)
-        model["AB"].downward(index=0)
+        model.add_knowledge(*formulae)
+        model.add_data(facts)
+        AB.downward(index=0)
 
         # evaluate the conjunction
-        prediction = model["A"].state()
+        prediction = A.state()
         assert prediction is row[2], (
             f"{i}: Or(A, {row[0]}) = {row[1]}, Expected A={row[2]}, "
             f"received {prediction}"
         )
 
         # evaluate the conjunction
-        prediction = model["B"].state()
+        prediction = B.state()
         assert prediction is row[0], (
             f"{i}: Or(A, {row[0]}) = {row[1]}, Expected B={row[0]}, "
             f"received {prediction}"

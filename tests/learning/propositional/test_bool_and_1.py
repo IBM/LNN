@@ -1,12 +1,16 @@
 ##
-# Copyright 2021 IBM Corp. All Rights Reserved.
+# Copyright 2022 IBM Corp. All Rights Reserved.
 #
 # SPDX-License-Identifier: Apache-2.0
 ##
 
+from lnn import Model, And, Proposition, World, Fact, Direction, Loss
+
 import random
 
-from lnn import Model, And, Proposition, World, UPWARD, FALSE, TRUE, CLOSED
+TRUE = Fact.TRUE
+FALSE = Fact.FALSE
+UNKNOWN = Fact.UNKNOWN
 
 
 def test_1():
@@ -19,24 +23,24 @@ def test_1():
     model = Model()
 
     # rules
-    model["A"] = Proposition("A")
-    model["B"] = Proposition("B")
-    model["AB"] = And(model["A"], model["B"], world=World.AXIOM)
+    A = Proposition("A")
+    B = Proposition("B")
+    AB = And(A, B, world=World.AXIOM)
+    model.add_knowledge(AB)
 
     # facts
-    model.add_facts({"A": TRUE, "B": FALSE})
+    model.add_data({A: TRUE, B: FALSE})
 
     # train/inference
-    model.train(direction=UPWARD, losses={"contradiction": 1})
+    model.train(direction=Direction.UPWARD, losses={Loss.CONTRADICTION: 1})
+    model.print(params=True)
 
-    weights = model["AB"].params("weights")
-    bounds = model["B"].state()
+    weights = AB.params("weights")
+    bounds = B.state()
     assert (
         weights[1] <= 1 / 2
     ), f"expected input B to be downweighted <= 0., received {weights[1]}"
     assert bounds is FALSE, f"expected bounds to remain False, received {bounds}"
-
-    return model
 
 
 def test_2():
@@ -46,18 +50,15 @@ def test_2():
     training in both directions
     """
     model = Model()
-    model["A"] = Proposition("A")
-    model["B"] = Proposition("B")
-    model["AB"] = And(
-        model["A"],
-        model["B"],
-        world=World.AXIOM,
-    )
-    model.add_facts({"A": TRUE, "B": FALSE})
-    model.train(losses={"contradiction": 1})
+    A = Proposition("A")
+    B = Proposition("B")
+    AB = And(A, B, world=World.AXIOM)
+    model.add_knowledge(AB)
+    model.add_data({A: TRUE, B: FALSE})
+    model.train(losses={Loss.CONTRADICTION: 1})
 
-    weights = model["AB"].params("weights")
-    bounds = model["B"].state()
+    weights = AB.params("weights")
+    bounds = B.state()
     assert (
         weights[1] <= 1 / 2
     ), f"expected input B to be downweighted <= 0., received {weights[1]}"
@@ -71,27 +72,23 @@ def test_3():
     training in both directions
     """
     model = Model()
-    model["A"] = Proposition()
-    model["B"] = Proposition()
-    model["C"] = Proposition()
-    model["and"] = And(
-        model["A"],
-        model["B"],
-        model["C"],
-        world=World.AXIOM,
-    )
-    model.add_facts({"A": TRUE, "B": FALSE, "C": TRUE})
-    model.train(losses={"contradiction": 1})
+    A = Proposition("A")
+    B = Proposition("B")
+    C = Proposition("C")
+    ABC = And(A, B, C, world=World.AXIOM)
+    model.add_knowledge(ABC)
+    model.add_data({A: TRUE, B: FALSE, C: TRUE})
+    model.train(losses={Loss.CONTRADICTION: 1})
 
-    weights = model["and"].params("weights")
-    bounds = model["B"].state()
+    weights = ABC.params("weights")
+    bounds = B.state()
     assert (
         weights[1] <= 1 / 2
     ), f"expected input B to be downweighted <= 0., received {weights[1]}"
     assert bounds is FALSE, f"expected bounds to remain False, received {bounds}"
 
 
-def test_multiple(output=False):
+def test_multiple():
     """decrease weights for contradictory facts
 
     given And(n inputs) - reduce the weight on r random
@@ -101,35 +98,34 @@ def test_multiple(output=False):
     for n in inputs:
         r = n - 1
         model = Model()
-        neuron = {"alpha": 1 - 1e-5}
+        activation = {"alpha": 1 - 1e-5}
         prop = [f"P{i}" for i in range(n)]
         truths = [TRUE] * n
         truths[:r] = [FALSE] * r
         truths = random.sample(truths, n)
         from tqdm import tqdm
 
+        props = []
+
         for idx, p in tqdm(
             enumerate(prop), desc="populating graph", total=n, disable=True
         ):
-            model[f"{p}"] = Proposition(neuron=neuron)
-            model.add_facts({f"{p}": truths[idx]})
-        model["and"] = And(
-            *[model[f"{p}"] for p in prop], world=World.AXIOM, neuron=neuron
-        )
-        model.train(losses=["contradiction"], learning_rate=1e-1)
-
-        if output:
-            model.print(params=True)
+            props.append(Proposition(f"{p}", activation=activation))
+            props[-1].add_data(truths[idx])
+        _and = And(*props, world=World.AXIOM, activation=activation)
+        model.add_knowledge(_and)
+        model.train(losses=[Loss.CONTRADICTION], learning_rate=1e-1)
+        model.print(params=True)
 
         # test operator bounds
-        prediction = model["and"].state()
+        prediction = _and.state()
         assert prediction is TRUE, (
-            f"received {prediction} " f"{model['and'].get_facts().tolist()}"
+            f"received {prediction} " f"{_and.get_data().tolist()}"
         )
 
         # test operator weights
         false_idxs = [idx for idx, truth in enumerate(truths) if not truth]
-        weights = model["and"].params("weights", detach=True).numpy()
+        weights = _and.params("weights", detach=True).numpy()
         for w in weights[false_idxs]:
             assert (
                 w <= 0.5 + 1e-5
@@ -142,18 +138,16 @@ def test_bias():
     given a False And, for all True inputs
     """
     model = Model()
-    n = 1000
+    n = 500
     prop = [f"P{i}" for i in range(n)]
+    props = []
     for p in prop:
-        model[f"{p}"] = Proposition()
-        model.add_facts({f"{p}": TRUE})
-    model["and"] = And(
-        *[model[f"{p}"] for p in prop],
-        world=CLOSED,
-    )
-    model.train(losses={"contradiction": 1})
-    bias = model["and"].params("bias")
-    assert bias <= 1e-5, f"expected bias <= 0, received {bias}"
+        props.append(Proposition(f"{p}"))
+        props[-1].add_data(TRUE)
+    _and = And(*props, world=World.FALSE, activation={"bias_learning": True})
+    model.add_knowledge(_and)
+    model.train(losses=[Loss.CONTRADICTION])
+    assert _and.neuron.bias <= 1e-5, f"expected bias <= 0, received {_and.neuron.bias}"
 
 
 def test_all():
@@ -164,28 +158,26 @@ def test_all():
     model = Model()
     n = 1000
     prop = [f"P{i}" for i in range(n)]
+    props = []
     for p in prop:
-        model[f"{p}"] = Proposition()
-        model.add_facts({f"{p}": FALSE})
-    model["and"] = And(
-        *[model[f"{p}"] for p in prop],
-        world=World.AXIOM,
-    )
-    model.train(losses={"contradiction": 1})
-    bounds = model["and"].state()
+        props.append(Proposition(f"{p}"))
+        props[-1].add_data(FALSE)
+    _and = And(*props, world=World.AXIOM)
+    model.add_knowledge(_and)
+    model.train(losses={Loss.CONTRADICTION: 1})
+    bounds = _and.state()
     assert bounds is TRUE, f"expected bounds to remain True, received {bounds}"
-    weights = model["and"].params("weights")
+    weights = _and.params("weights")
     assert all(
         [w <= 0.5 + 1e-5 for w in weights]
     ), f"expected all inputs to be downweighted (±0.0), received {weights}"
 
 
 if __name__ == "__main__":
-    model = test_1()
-    model.print(params=True)
+    test_1()
     test_2()
     test_3()
-    test_multiple(output=True)
+    test_multiple()
     test_bias()
     test_all()
     print("success")

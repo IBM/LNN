@@ -1,10 +1,15 @@
 ##
-# Copyright 2021 IBM Corp. All Rights Reserved.
+# Copyright 2022 IBM Corp. All Rights Reserved.
 #
 # SPDX-License-Identifier: Apache-2.0
 ##
 
-from lnn import Model, Proposition, Not, TRUE, FALSE, UNKNOWN
+from lnn import Model, Proposition, Not, Fact
+
+
+TRUE = Fact.TRUE
+FALSE = Fact.FALSE
+UNKNOWN = Fact.UNKNOWN
 
 
 def test_upward():
@@ -12,10 +17,12 @@ def test_upward():
     inputs = [FALSE, TRUE, UNKNOWN]
     for i in range(3):
         model = Model()
-        model["not"] = Not(Proposition("A"))
-        model.add_facts({"A": inputs[i]})
-        model["not"].upward()
-        prediction = model["not"].state()
+        A = Proposition("A")
+        NotA = Not(A)
+        model.add_knowledge(NotA)
+        model.add_data({A: inputs[i]})
+        NotA.upward()
+        prediction = NotA.state()
         assert (
             prediction is GTs[i]
         ), f"expected Not({inputs[i]}) = {GTs[i]}, received {prediction}"
@@ -26,10 +33,12 @@ def test_downward():
     inputs = [FALSE, TRUE, UNKNOWN]
     for i in range(3):
         model = Model()
-        model["not"] = Not(Proposition("A"))
-        model.add_facts({"not": inputs[i]})
-        model["not"].downward()
-        prediction = model["A"].state()
+        A = Proposition("A")
+        NotA = Not(A)
+        model.add_knowledge(NotA)
+        model.add_data({NotA: inputs[i]})
+        NotA.downward()
+        prediction = A.state()
         assert (
             prediction is GTs[i]
         ), f"expected Not({inputs[i]}) = {GTs[i]}, received A={prediction}"
