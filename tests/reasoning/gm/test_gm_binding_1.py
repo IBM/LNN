@@ -57,8 +57,7 @@ def test():
     )
 
     p2_and_p2a.upward()
-    assert all([p2_and_p2a.state(groundings=g)
-               is GT[g] for g in GT]), "FAILED 😔"
+    assert all([p2_and_p2a.state(groundings=g) is GT[g] for g in GT]), "FAILED 😔"
     assert len(p2_and_p2a.state()) == len(GT), "FAILED 😔"
 
     model = Model()
@@ -92,14 +91,10 @@ def test():
 
     model.add_knowledge(p2_and_p2b)
 
-    GT = dict([
-        (('s1', 's7'), TRUE),
-        (('s3', 's7'), FALSE),
-        (('s4', 's7'), FALSE)])
+    GT = dict([(("s1", "s7"), TRUE), (("s3", "s7"), FALSE), (("s4", "s7"), FALSE)])
 
     model[p2_and_p2b].upward()
-    assert all([model[p2_and_p2b].state(groundings=g) is GT[g]
-                for g in GT]), "FAILED 😔"
+    assert all([model[p2_and_p2b].state(groundings=g) is GT[g] for g in GT]), "FAILED 😔"
     assert len(model[p2_and_p2b].state()) == len(GT), "FAILED 😔"
     # New test case
     model = Model()
@@ -130,12 +125,9 @@ def test():
     p2_and_p2c = And(p2(x, y), p2a(x, y, bind={x: ["s1", "s2"], y: "s6"}))
     model.add_knowledge(p2_and_p2c)
 
-    GT = dict([
-        (('s1', 's6'), FALSE),
-        (('s2', 's6'), FALSE)])
+    GT = dict([(("s1", "s6"), FALSE), (("s2", "s6"), FALSE)])
     model[p2_and_p2c].upward()
-    assert all([model[p2_and_p2c].state(groundings=g) is GT[g]
-                for g in GT]), "FAILED 😔"
+    assert all([model[p2_and_p2c].state(groundings=g) is GT[g] for g in GT]), "FAILED 😔"
     assert len(model[p2_and_p2c].state()) == len(GT), "FAILED 😔"
     # 1 variable vs 2 variables bound
     model = Model()
@@ -157,13 +149,9 @@ def test():
     p1_and_p2 = And(p1(x, bind={x: ["s1", "s2"]}), p2(x, y))
 
     model.add_knowledge(p1_and_p2)
-    GT = dict([
-        (('s1', 's6'), TRUE),
-        (('s2', 's6'), FALSE),
-        (('s1', 's7'), TRUE)])
+    GT = dict([(("s1", "s6"), TRUE), (("s2", "s6"), FALSE), (("s1", "s7"), TRUE)])
     model[p1_and_p2].upward()
-    assert all([model[p1_and_p2].state(groundings=g) is GT[g]
-                for g in GT]), "FAILED 😔"
+    assert all([model[p1_and_p2].state(groundings=g) is GT[g] for g in GT]), "FAILED 😔"
     assert len(model[p1_and_p2].state()) == len(GT), "FAILED 😔"
     # New test case
     model = Model()
@@ -194,10 +182,8 @@ def test():
     p2_and_p3 = And(p2(x, y), p3(x, z, y, bind={z: "s4"}))
     model.add_knowledge(p2_and_p3)
     model[p2_and_p3].upward()
-    GT = dict([
-        (('s1', 's7', 's4'), TRUE)])
-    assert all([model[p2_and_p3].state(groundings=g) is GT[g]
-                for g in GT]), "FAILED 😔"
+    GT = dict([(("s1", "s7", "s4"), TRUE)])
+    assert all([model[p2_and_p3].state(groundings=g) is GT[g] for g in GT]), "FAILED 😔"
     assert len(model[p2_and_p3].state()) == len(GT), "FAILED 😔"
     # New test case
     model = Model()
@@ -221,10 +207,8 @@ def test():
     model.add_knowledge(p2_and_p2r)
 
     p2_and_p2r.upward()
-    GT = dict([
-        (('s1', 's7'), FALSE)])
-    assert all([model[p2_and_p2r].state(groundings=g) is GT[g]
-                for g in GT]), "FAILED 😔"
+    GT = dict([(("s1", "s7"), FALSE)])
+    assert all([model[p2_and_p2r].state(groundings=g) is GT[g] for g in GT]), "FAILED 😔"
     assert len(model[p2_and_p2r].state()) == len(GT), "FAILED 😔"
     return
 

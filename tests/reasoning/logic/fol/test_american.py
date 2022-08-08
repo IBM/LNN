@@ -1,5 +1,4 @@
-from lnn import (Predicate, Variable, Join, And, Exists,
-                 Implies, ForAll, Model, Fact)
+from lnn import Predicate, Variable, Join, And, Exists, Implies, ForAll, Model, Fact
 
 
 def test_1():
@@ -26,8 +25,7 @@ def test_1():
         ForAll(
             x,
             y,
-            Implies(enemy(x, y, bind={y: "America"}), hostile(x),
-                    join=Join.OUTER),
+            Implies(enemy(x, y, bind={y: "America"}), hostile(x), join=Join.OUTER),
             join=Join.OUTER,
         ),
         ForAll(
@@ -36,8 +34,7 @@ def test_1():
             z,
             Implies(
                 And(
-                    american(x), weapon(y), sells(x, y, z), hostile(z),
-                    join=Join.OUTER
+                    american(x), weapon(y), sells(x, y, z), hostile(z), join=Join.OUTER
                 ),
                 criminal(x),
                 join=Join.OUTER,
@@ -49,15 +46,13 @@ def test_1():
             y,
             z,
             Implies(
-                And(missile(x), owns(y, x, bind={y: "Nono"}),
-                    join=Join.OUTER),
+                And(missile(x), owns(y, x, bind={y: "Nono"}), join=Join.OUTER),
                 sells(z, x, y, bind={z: "West", y: "Nono"}),
                 join=Join.OUTER,
             ),
             join=Join.OUTER,
         ),
-        ForAll(x, Implies(missile(x), weapon(x), join=Join.OUTER),
-               join=Join.OUTER),
+        ForAll(x, Implies(missile(x), weapon(x), join=Join.OUTER), join=Join.OUTER),
     )
 
     model.set_query(query)
@@ -76,8 +71,7 @@ def test_1():
     model.print()
     GT_o = dict([("West", Fact.TRUE)])
     model.print()
-    assert all([model.query.state(groundings=g) is GT_o[g] for g in GT_o]), \
-        "FAILED 😔"
+    assert all([model.query.state(groundings=g) is GT_o[g] for g in GT_o]), "FAILED 😔"
 
 
 def test_2():
@@ -111,9 +105,7 @@ def test_2():
             y,
             z,
             Implies(
-                And(
-                    american(x), weapon(y), sells(x, y, z), hostile(z)
-                ),
+                And(american(x), weapon(y), sells(x, y, z), hostile(z)),
                 criminal(x),
             ),
         ),
@@ -145,8 +137,7 @@ def test_2():
     model.print()
     GT_o = dict([("West", Fact.TRUE)])
     model.print()
-    assert all([model.query.state(groundings=g) is GT_o[g] for g in GT_o]), \
-        "FAILED 😔"
+    assert all([model.query.state(groundings=g) is GT_o[g] for g in GT_o]), "FAILED 😔"
 
 
 if __name__ == "__main__":
