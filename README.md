@@ -1,3 +1,4 @@
+[![Build Status](https://github.com/IBM/LNN/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/IBM/LNN/actions/workflows/build.yml?query=branch%3Amaster)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blueviolet)](https://github.com/IBM/LNN/blob/master/LICENSE)
 [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/5926/badge)](https://bestpractices.coreinfrastructure.org/projects/5926)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
@@ -21,27 +22,55 @@ properties of both neural nets (learning) and symbolic logic (knowledge and reas
 ## Quickstart
 To install the LNN:
 1. Install [GraphViz](https://www.graphviz.org/download/) and gmp (libgmp3-dev)
-      <details><summary>Tips for errors "'gmp.h' file not found" and "'graphviz/cgraph.h' file not found" on Mac</summary><div>
-
+      <details>
+      <summary>Tips for installing Graphviz</summary>
+      <div>
+      If you experience a "graphviz/cgraph.h" file not found error, try the following:
+      
       ```bash
+      # Using Conda
+      conda install -c anaconda graphviz
+      ```
+      Alternatively you can install the OS specific versions as follows:
+      ```bash
+      # Ubuntu and Debian
+      sudo apt-get install graphviz graphviz-dev
+      ```
+      ```bash
+      # MacOS
       brew install graphviz
-      # check the graphviz path from `brew info graphviz`
-      export GRAPHVIZ_DIR="/usr/local/Cellar/graphviz/3.0.0"
-      pip install pygraphviz --global-option=build_ext --global-option="-I$GRAPHVIZ_DIR/include" --global-option="-L$GRAPHVIZ_DIR/lib"
+      ```
+      ```bash
+      # Windows
+      sudo apt-get install python3-dev graphviz libgraphviz-dev pkg-config
+      ```
+      </div></details>
 
+      <details>
+      <summary>Tips for installing gmp</summary>
+      <div>
+
+      If you experience a "gmp.h" file not found error, try the following:
+      ```bash
+      # MacOS
       brew install gmp
       env "CFLAGS=-I/usr/local/include -L/usr/local/lib" pip install pycddlib
+      ```
+      ```bash
+      # Windows
+      sudo apt-get install python3-dev graphviz libgraphviz-dev pkg-config
+      sudo -H apt-get install libgmp-dev python3-dev
       ```
       </div></details>
 
 2. Make sure that the python version you use in line with our [setup](https://github.com/IBM/LNN/blob/master/setup.py) file, using a fresh environment is always a good idea:
     ```commandline
-    conda create -n lnn-contrib python=3.9 -y
-    conda activate lnn-contrib
+    conda create -n lnn python=3.9 -y
+    conda activate lnn
     ```
-3. Install the `develop` branch to keep up to date with the latest supported features:
+3. Install the LNN as a library:
     ```commandline
-    pip install git+https://github.com/IBM/LNN.git@develop
+    pip install git+https://github.com/IBM/LNN.git
     ```
 
 ## Contribution
@@ -66,9 +95,9 @@ reference paper:
 }
 ```
 
-[Docs]: https://pages.github.com/IBM/LNN/introduction.html
-[Papers]: https://pages.github.com/IBM/LNN/papers.html
-[Education]: https://pages.github.com/IBM/LNN/education/education.html
-[API]: https://pages.github.com/IBM/LNN/usage.html
-[Module]: https://pages.github.com/IBM/LNN/lnn/LNN.html
+[Docs]: https://ibm.github.io/LNN/introduction.html
+[Papers]: https://ibm.github.io/LNN/papers.html
+[Education]: https://ibm.github.io/LNN/education/education.html
+[API]: https://ibm.github.io/LNN/usage.html
+[Module]: https://ibm.github.io/LNN/lnn/LNN.html
 [Neuro-Symbolic AI]: https://research.ibm.com/teams/neuro-symbolic-ai
