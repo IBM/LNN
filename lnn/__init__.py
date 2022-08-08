@@ -1,88 +1,72 @@
 ##
-# Copyright 2021 IBM Corp. All Rights Reserved.
+# Copyright 2022 IBM Corp. All Rights Reserved.
 #
 # SPDX-License-Identifier: Apache-2.0
 ##
 
-from .model import Model
-from .symbolic import (
-    Proposition,
-    Predicate,
-    And,
-    Or,
-    Implies,
-    Bidirectional,
-    Not,
-    ForAll,
-    Exists,
-    Variable,
-    NeuralActivationClass,
-)
 from .utils import (
-    truth_table,
-    truth_table_dict,
-    predicate_truth_table,
-    plot_graph,
+    bool_to_fact,
+    fact_to_bool,
     plot_loss,
     plot_params,
-    fact_to_bool,
-    bool_to_fact,
+    predicate_truth_table,
+    truth_table,
+    truth_table_dict,
+    pretty_truth_table,
 )
-from .constants import Fact, World, Direction, Join
-
-
-# constants
-UPWARD = Direction.UPWARD
-DOWNWARD = Direction.DOWNWARD
-TRUE = Fact.TRUE
-FALSE = Fact.FALSE
-UNKNOWN = Fact.UNKNOWN
-CONTRADICTION = Fact.CONTRADICTION
-AXIOM = World.AXIOM
-OPEN = World.OPEN
-CLOSED = World.CLOSED
-Lukasiewicz = NeuralActivationClass.Lukasiewicz
-LukasiewiczTransparent = NeuralActivationClass.LukasiewiczTransparent
-OUTER = Join.OUTER
-INNER = Join.INNER
-OUTER_PRUNED = Join.OUTER_PRUNED
+from . import symbolic
+from .symbolic.logic import (
+    And,
+    Congruent,
+    Equivalent,
+    Exists,
+    ForAll,
+    Formula,
+    Function,
+    Implies,
+    NeuralActivation,
+    Not,
+    Or,
+    Proposition,
+    Propositions,
+    Predicate,
+    Predicates,
+    Variable,
+    Variables,
+)
+from .model import Model
+from .constants import Fact, World, Direction, Join, Loss
 
 __all__ = [
-    "Model",
-    "Proposition",
-    "Predicate",
-    "And",
-    "Or",
-    "Implies",
-    "Bidirectional",
-    "Not",
-    "ForAll",
-    "Exists",
-    "Variable",
-    "truth_table",
-    "truth_table_dict",
-    "predicate_truth_table",
-    "fact_to_bool",
     "bool_to_fact",
-    "plot_graph",
+    "fact_to_bool",
     "plot_loss",
     "plot_params",
+    "predicate_truth_table",
+    "pretty_truth_table",
+    "truth_table",
+    "truth_table_dict",
+    "And",
+    "Congruent",
     "Direction",
-    "UPWARD",
-    "DOWNWARD",
+    "Equivalent",
+    "Exists",
+    "ForAll",
+    "Formula",
+    "Implies",
+    "NeuralActivation",
+    "Not",
+    "Or",
+    "Model",
+    "Proposition",
+    "Propositions",
+    "Predicate",
+    "Predicates",
+    "Variable",
+    "Variables",
     "Fact",
     "World",
-    "OPEN",
-    "CLOSED",
-    "AXIOM",
-    "TRUE",
-    "FALSE",
-    "UNKNOWN",
-    "CONTRADICTION",
-    "Lukasiewicz",
-    "LukasiewiczTransparent",
     "Join",
-    "OUTER",
-    "INNER",
-    "OUTER_PRUNED",
+    "Loss",
+    "Function",
 ]

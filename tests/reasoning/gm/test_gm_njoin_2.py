@@ -1,20 +1,28 @@
 ##
-# Copyright 2021 IBM Corp. All Rights Reserved.
+# Copyright 2022 IBM Corp. All Rights Reserved.
 #
 # SPDX-License-Identifier: Apache-2.0
 ##
 
-from lnn import Model, And, Variable, Predicate, TRUE, FALSE, UNKNOWN
+from lnn import Model, And, Variable, Predicate, Fact
+
+
+TRUE = Fact.TRUE
+FALSE = Fact.FALSE
+UNKNOWN = Fact.UNKNOWN
 
 
 def test():
     model = Model()
     x, y, z = map(Variable, ("x", "y", "z"))
 
-    model["p2"] = Predicate("p2", arity=2)
-    model.add_facts(
+    p1_null = Predicate("p1_null")
+    p2 = Predicate("p2", arity=2)
+    p1_and_p2 = And(p1_null(x), p2(x, y))
+    model.add_knowledge(p1_and_p2)
+    model.add_data(
         {
-            "p2": {
+            p2: {
                 ("s1", "s7"): TRUE,
                 ("s1", "s6"): TRUE,
                 ("s2", "s6"): FALSE,
@@ -24,9 +32,7 @@ def test():
         }
     )
 
-    model["p1_null"] = Predicate("p1_null")
-    model["p1_and_p2"] = And(model["p1_null"](x), model["p2"](x, y))
-    model["p1_and_p2"].upward()
+    p1_and_p2.upward()
 
     GT = dict(
         [
@@ -38,17 +44,17 @@ def test():
         ]
     )
 
-    assert all(
-        [model["p1_and_p2"].state(groundings=g) is GT[g] for g in GT]
-    ), "FAILED 😔"
-    assert len(model["p1_and_p2"].state()) == len(GT), "FAILED 😔"
+    assert all([p1_and_p2.state(groundings=g) is GT[g] for g in GT]), "FAILED 😔"
+    assert len(p1_and_p2.state()) == len(GT), "FAILED 😔"
 
     # 2 variable vs 3 variables
-    model["p2_null"] = Predicate("p2_null", arity=2)
-    model["p3"] = Predicate("p3", arity=3)
-    model.add_facts(
+    p2_null = Predicate("p2_null", arity=2)
+    p3 = Predicate("p3", arity=3)
+    p2_and_p3 = And(p2_null(x, y), p3(x, z, y))
+    model.add_knowledge(p2_and_p3)
+    model.add_data(
         {
-            "p3": {
+            p3: {
                 ("s1", "s5", "s3"): TRUE,
                 ("s1", "s4", "s7"): TRUE,
                 ("s1", "s8", "s3"): FALSE,
@@ -58,8 +64,7 @@ def test():
         }
     )
 
-    model["p2_and_p3"] = And(model["p2_null"](x, y), model["p3"](x, z, y))
-    model["p2_and_p3"].upward()
+    p2_and_p3.upward()
     GT = dict(
         [
             (("s4", "s8", "s6"), FALSE),
@@ -70,18 +75,19 @@ def test():
         ]
     )
 
-    assert all(model["p2_and_p3"].state(groundings=g) is GT[g] for g in GT), "FAILED 😔"
-    assert len(model["p2_and_p3"].state()) == len(GT), "FAILED 😔"
+    assert all(p2_and_p3.state(groundings=g) is GT[g] for g in GT), "FAILED 😔"
+    assert len(p2_and_p3.state()) == len(GT), "FAILED 😔"
 
     # 1 vs 2 vs 3
     model = Model()  # Reset the model for each new test.
-    model["p1_null"] = Predicate("p1_null")
-
-    model["p2_null"] = Predicate("p2_null", arity=2)
-    model["p3"] = Predicate("p3", arity=3)
-    model.add_facts(
+    p1_null = model.add_predicates(1, "p1_null")
+    p2_null = model.add_predicates(2, "p2_null")
+    p3 = model.add_predicates(3, "p3")
+    p1_and_p2_and_p3 = And(p1_null(x), p2_null(x, y), p3(x, z, y))
+    model.add_knowledge(p1_and_p2_and_p3)
+    model.add_data(
         {
-            "p3": {
+            p3: {
                 ("s1", "s5", "s3"): TRUE,
                 ("s1", "s4", "s7"): TRUE,
                 ("s1", "s8", "s3"): FALSE,
@@ -91,15 +97,10 @@ def test():
         }
     )
 
-    model["p1_and_p2_and_p3"] = And(
-        model["p1_null"](x), model["p2_null"](x, y), model["p3"](x, z, y)
-    )
-    model["p1_and_p2_and_p3"].upward()
+    p1_and_p2_and_p3.upward()
 
-    assert all(
-        model["p1_and_p2_and_p3"].state(groundings=g) is GT[g] for g in GT
-    ), "FAILED 😔"
-    assert len(model["p1_and_p2_and_p3"].state()) == len(GT), "FAILED 😔"
+    assert all(p1_and_p2_and_p3.state(groundings=g) is GT[g] for g in GT), "FAILED 😔"
+    assert len(p1_and_p2_and_p3.state()) == len(GT), "FAILED 😔"
 
 
 if __name__ == "__main__":

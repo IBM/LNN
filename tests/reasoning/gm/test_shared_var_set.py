@@ -1,10 +1,4 @@
-##
-# Copyright 2021 IBM Corp. All Rights Reserved.
-#
-# SPDX-License-Identifier: Apache-2.0
-##
-
-from lnn import Predicate, Variable, And, Join, Implies, ForAll, Model, Fact, World
+from lnn import Predicate, Variable, And, Join, Implies, ForAll, Model, Fact
 
 
 def test_1():
@@ -17,16 +11,12 @@ def test_1():
     rectangle = Predicate(name="rectangle")
 
     square_rect = ForAll(
-        x,
-        Implies(square(x), rectangle(x), name="square-rect", join=Join.OUTER),
-        name="all-square-rect",
-        join=Join.OUTER,
-        world=World.AXIOM,
+        x, Implies(square(x), rectangle(x), join=Join.OUTER), join=Join.OUTER
     )
 
     model = Model()
-    model.add_formulae(square, rectangle, square_rect)
-    model.add_facts({"square": {"c": Fact.TRUE, "k": Fact.TRUE}})
+    model.add_knowledge(square, rectangle, square_rect)
+    model.add_data({square: {"c": Fact.TRUE, "k": Fact.TRUE}})
 
     model.upward()
 
@@ -42,21 +32,19 @@ def test_2():
     x, y = map(Variable, ["x", "y"])
     model = Model()  # Instantiate a model.
 
-    enemy = model["enemy"] = Predicate(arity=2, name="enemy")
-    hostile = model["hostile"] = Predicate(name="hostile")
+    enemy = Predicate("enemy", arity=2)
+    hostile = Predicate("hostile")
 
-    model["america-enemies"] = ForAll(
-        x,
-        Implies(
-            enemy(x, (y, "America")), hostile(x), name="enemy->hostile", join=Join.OUTER
-        ),
-        name="america-enemies",
-        join=Join.OUTER,
-        world=World.AXIOM,
+    model.add_knowledge(
+        ForAll(
+            x,
+            Implies(enemy(x, y, bind={y: "America"}), hostile(x), join=Join.OUTER),
+            join=Join.OUTER,
+        )
     )
 
     # Add facts to model.
-    model.add_facts({"enemy": {("Nono", "America"): Fact.TRUE}})
+    model.add_data({enemy: {("Nono", "America"): Fact.TRUE}})
 
     model.upward()
     assert len(hostile.groundings) == 1, "FAILED 😔"
@@ -71,13 +59,13 @@ def test_3():
     x, y, z = map(Variable, ["x", "y", "z"])
     model = Model()  # Instantiate a model.
 
-    f1 = Predicate(name="F1", arity=3)
-    f2 = Predicate(name="F2", arity=2)
+    f1 = Predicate("F1", 3)
+    f2 = Predicate("F2", 2)
 
     rule = And(f1(x, y, z), f2(x, y), join=Join.OUTER)
 
-    model.add_formulae(f1, f2, rule)
-    model.add_facts({"F1": {("x1", "y1", "z1"): Fact.TRUE}})
+    model.add_knowledge(f1, f2, rule)
+    model.add_data({f1: {("x1", "y1", "z1"): Fact.TRUE}})
 
     model.upward()
 
@@ -95,16 +83,16 @@ def test_4():
     american = Predicate("american")
     hostile = Predicate("hostile")
     weapon = Predicate("weapon")
-    sells = Predicate(arity=3, name="sells")
+    sells = Predicate("sells", 3)
 
     model = Model()  # Instantiate a model.
     rule = And(american(x), weapon(y), hostile(z), sells(x, y, z), join=Join.OUTER)
-    model.add_formulae(american, hostile, weapon, rule)
-    model.add_facts(
+    model.add_knowledge(american, hostile, weapon, rule)
+    model.add_data(
         {
-            "american": {"West": Fact.TRUE},
-            "hostile": {"Nono": Fact.TRUE},
-            "weapon": {"m1": Fact.TRUE},
+            american: {"West": Fact.TRUE},
+            hostile: {"Nono": Fact.TRUE},
+            weapon: {"m1": Fact.TRUE},
         }
     )
 

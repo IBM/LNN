@@ -1,15 +1,13 @@
 ##
-# Copyright 2021 IBM Corp. All Rights Reserved.
+# Copyright 2022 IBM Corp. All Rights Reserved.
 #
 # SPDX-License-Identifier: Apache-2.0
 ##
 
-from typing import Set, Tuple, Dict, Union
+from .constants import Fact, World, Direction, Join, NeuralActivation, Loss
 
 import torch
-import lnn
-
-from .constants import Fact, World, Direction
+from typing import Set, Tuple, Dict, Union
 
 
 class AssertWorld:
@@ -27,8 +25,23 @@ class AssertWorld:
             )
 
 
+class AssertJoin:
+    r"""AssertJoin(bounds)
+
+    Raised when world not given as World object
+    """
+
+    def __init__(self, join: Join):
+        if join not in Join:
+            raise KeyError(
+                "expects join object from "
+                f"{[j.name for j in Join]}, received "
+                f"{join.__class__.__name__} {join}"
+            )
+
+
 class AssertBoundsBroadcasting:
-    """AssertBoundsBroadcasting(bounds: Set)
+    r"""AssertBoundsBroadcasting(bounds: Set).
 
     Raised when FOL bounds given as set of more than 1 item
     """
@@ -40,21 +53,33 @@ class AssertBoundsBroadcasting:
 
 
 class AssertBoundsType:
-    """AssertBoundsType(bounds: Union[Fact, tuple])
+    r"""AssertBoundsType(bounds: Union[Fact, tuple])
 
-    Raised when bounds given in the incorrect type"""
+    Raised when bounds given in the incorrect type.
+    """
 
     def __init__(self, bounds: Union[Fact, tuple]):
-        options = [Fact, tuple]
+        options = [Fact, World, tuple]
         if type(bounds) not in options:
             raise TypeError(
-                f"fact expected from [lnn.Fact, tuple] "
+                f"fact expected from [lnn.Fact, lnn.World, tuple] "
+                f"received {bounds.__class__.__name__} {bounds}"
+            )
+
+
+class AssertTupledBounds:
+    r"""Raised when bounds given in the incorrect type."""
+
+    def __init__(self, bounds):
+        if not isinstance(bounds, tuple):
+            raise TypeError(
+                f"input expected as tuple, "
                 f"received {bounds.__class__.__name__} {bounds}"
             )
 
 
 class AssertBoundsLen:
-    """AssertBoundsLen(bounds: tuple)
+    r"""AssertBoundsLen(bounds: tuple)
 
     Raised when tuple of bounds given in the incorrect length
     """
@@ -69,7 +94,7 @@ class AssertBoundsLen:
 
 
 class AssertBoundsInputs:
-    """AssertBounds(bounds: Tuple[torch.Tensor, ...])
+    r"""AssertBoundsInputs: Tuple[torch.Tensor, ...]
 
     Raised when incorrect bounds given
     """
@@ -83,7 +108,7 @@ class AssertBoundsInputs:
 
 
 class AssertBounds:
-    """AssertBounds(bounds)
+    r"""AssertBounds(bounds)
 
     Raised when tuple of bounds given in the incorrect length
     """
@@ -111,24 +136,43 @@ class AssertPropositionalInheritance:
             )
 
 
+class AssertPropositionalType:
+    def __init__(self, propositional):
+        if not isinstance(propositional, bool):
+            raise TypeError(
+                "propositional expected as bool, received "
+                f"{propositional.__class__.__name__}"
+            )
+
+
 class AssertFormulaInModel:
-    """AssertFormulaInModel(model: lnn.Model, formula: lnn.symbolic.logic._Formula)
+    """AssertFormulaInModel(model: lnn.Model, formula: lnn.symbolic.logic.Formula)
 
     Raised when formula is not in the model
     """
 
-    def __init__(self, model: "lnn.Model", formula: "lnn.symbolic.logic._Formula"):
+    def __init__(self, model, formula):
         if formula not in model:
             raise Exception(f"{formula} is not a stored formula, can't set facts")
 
 
+class AssertFormula:
+    def __init__(self, formula):
+        if isinstance(formula, tuple):
+            raise Exception(
+                f"expected formula, received a called formula "
+                f"'{formula[0]}({formula[-1]})', "
+                f"try removing the variables and the parenthesis"
+            )
+
+
 class AssertGroundingKeyType:
-    """AssertGroundingKeyType(facts: Dict)
+    r"""AssertGroundingKeyType(facts: dict)
 
     Raised when fact keys are not valid groundings
     """
 
-    def __init__(self, facts: Dict):
+    def __init__(self, facts: dict):
         if isinstance(facts, dict):
             if all([type(f) not in [tuple, Fact] for f in facts.keys()]):
                 raise TypeError(
@@ -136,8 +180,24 @@ class AssertGroundingKeyType:
                 )
 
 
+class AssertBindingsInputType:
+    r"""AssertBindingsInputType(bindings)
+
+    Raised when binding inputs are not valid as able, Union[str, List[str]]]
+    """
+
+    def __init__(self, bindings):
+        for binding in bindings:
+            if not isinstance(binding, str) or (
+                isinstance(binding, list) and all([isinstance(b, str) for b in binding])
+            ):
+                raise TypeError(
+                    f"bindings expected as str or list of str, received {type(binding)}"
+                )
+
+
 class AssertFOLFacts:
-    """AssertFOLFacts(facts: Dict)
+    r"""AssertFOLFacts(bounds: dict)
 
     Raised when FOL bounds expected as a dict of {groundings: facts}
 
@@ -151,7 +211,7 @@ class AssertFOLFacts:
 
 
 class AssertDirection:
-    """AssertDirection(direction: Direction)
+    r"""AssertDirection(direction: Direction)
 
     Raised when direction input is not valid
     """
@@ -162,19 +222,20 @@ class AssertDirection:
 
 
 class AssertValidDirection:
-    """AssertValidDirection(direction: Direction)
+    r"""AssertValidDirection(direction: Direction)
 
     Raised when direction not upward/downward
     """
 
     def __init__(self, direction: Direction):
-        options = [Direction.UPWARD, Direction.DOWNWARD]
-        if direction not in options:
-            raise KeyError(f"direction expected from {options}, " f"found {direction}")
+        if not isinstance(direction, Direction):
+            raise KeyError(
+                f"direction expected from class 'Direction', " f"found {direction}"
+            )
 
 
 class AssertDirectionType:
-    """AssertDirectionType(direction: Direction)
+    r"""AssertDirectionType(direction: Direction)
 
     Raised when direction not a clarified str
     """
@@ -182,17 +243,42 @@ class AssertDirectionType:
     def __init__(self, direction: Direction):
         if not isinstance(direction, Direction):
             raise TypeError(
-                f"direction expected as Direction, " f"received {direction}"
+                f"direction expected from lnn.Direction, " f"received {direction}"
             )
 
 
-class AssertBias:
-    """AssertBias(bias: float)
+class AssertNeuronActivationType:
+    r"""AssertNeuronActivationType(_type: NeuralActivation)
 
-    Raised when bias is not float type
+    Raised when direction not a clarified str
     """
 
-    def __init__(self, bias: float):
+    def __init__(self, _type: NeuralActivation):
+        if not isinstance(_type, NeuralActivation):
+            raise TypeError(
+                f"Neural activation expected from lnn.NeuralActivation, "
+                f"received {_type}"
+            )
+
+
+class AssertLossType:
+    r"""AssertLossType(_type: Loss)
+
+    Raised when direction not a clarified str
+    """
+
+    def __init__(self, _type: Loss):
+        if not isinstance(_type, Loss):
+            raise TypeError(f"loss expected from lnn.Loss, " f"received {_type}")
+
+
+class AssertBias:
+    """AssertBias(direction: float)
+
+    Raised when direction not a clarified str
+    """
+
+    def __init__(self, bias):
         if not isinstance(bias, float):
             raise TypeError(f"bias expected as a float, received {type(bias)}: {bias}")
 
@@ -200,7 +286,7 @@ class AssertBias:
 class AssertWeights:
     """AssertWeights(weights: Tuple, arity: int)
 
-    Raised when weights are wrong type or length does not match arity
+    Raised when direction not a clarified str
     """
 
     def __init__(self, weights: Tuple, arity: int):
@@ -221,18 +307,18 @@ class AssertAlphaNodeValue:
     Raised when alpha not in range
     """
 
-    def __init__(self, alpha: torch.Tensor):
+    def __init__(self, alpha):
         if not (0.5 < alpha <= 1):
             raise ValueError(f"alpha expected between (.5, 1], received {alpha}")
 
 
 class AssertAlphaNeuronArityValue:
-    """AssertAlphaNeuronArityValue(alpha: torch.Tensor, arity: int)
+    """AssertAlphaNeuronArityValue(alpha, arity: int)
 
-    Raised when alpha is not larger than constraint
+    Raised when alpha not in range
     """
 
-    def __init__(self, alpha: torch.Tensor, arity: int):
+    def __init__(self, alpha, arity):
         constraint = arity / (arity + 1)
         if not (alpha >= constraint):
             raise ValueError(
@@ -241,16 +327,15 @@ class AssertAlphaNeuronArityValue:
             )
 
 
-class AssertCalledPredicate:
-    """AssertCalledPredicate(formula: Tuple[lnn.symbolic.logic._Formula])
+class AssertLeafFormulaNaming:
+    """AssertLeafFormulaNaming(formula: Formula, name: str, isLeaf: bool)
 
-    Raised when predicate in any subformula is not properly called
+    Raised when alpha not in range
     """
 
-    def __init__(self, formula: Tuple["lnn.symbolic.logic._Formula", ...]):
-        if formula:
-            for subformula in formula:
-                if isinstance(subformula, lnn.Predicate):
-                    raise ValueError(
-                        f"predicate {subformula} inside formula must be called"
-                    )
+    def __init__(self, formula, name, is_leaf):
+        if not is_leaf:
+            raise ValueError(
+                "Only Propositions and Predicates can be named, received "
+                f"{name} for {formula.__class__.__name__}"
+            )

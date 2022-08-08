@@ -1,17 +1,19 @@
 ##
-# Copyright 2021 IBM Corp. All Rights Reserved.
+# Copyright 2022 IBM Corp. All Rights Reserved.
 #
 # SPDX-License-Identifier: Apache-2.0
 ##
 
+# flake8: noqa: E501
+
 from typing import Tuple, List, Union
 
-import torch
-import numpy as np
-
+from ...constants import World, Bound
 from ..._utils import val_clamp
 from ..parameters.node import _NodeParameters
 
+import torch
+import numpy as np
 
 """
 Node level activation
@@ -20,7 +22,7 @@ Node level activation
 
 class _NodeActivation(_NodeParameters):
     def __init__(self, *args, **kwds):
-        super().__init__(*args, **kwds)
+        super().__init__(**kwds)
         self.Yt = self.alpha
         self.Yf = 1 - self.alpha
 
@@ -30,16 +32,25 @@ class _NodeActivation(_NodeParameters):
         new_bounds: torch.Tensor = None,
         bound: str = None,
         **kwds,
-    ) -> torch.Tensor:
-        """Proof aggregation to tighten existing bounds towards new bounds
+    ) -> float:
+        """Proof aggregation to tighten existing bounds towards new bounds.
 
-        **Parameters**
+        Parameters
+        ------------
+        new_bounds : torch.Tensor
+            The proposed bounds
+        grounding_rows : int
+            The mapped location of the grounding as stored in the bounds table.
+        bound: {Bound.LOWER, Bound.UPPER}, optional
+            Specifies an individual bound to aggregate from the `new_bounds`. If unspecified, then both lower and upper bounds aggregate.
 
-        bound: ['lower', 'upper', None]
-            specify individual bound to aggregate from
-            if None [default], then both 'lower' and 'upper' bounds aggregate
+        Returns
+        -------
+        tightened_bounds : float
+            The amount of bounds tightening that happens in the bounds table.
+
         """
-        prev_bounds = self.get_facts(grounding_rows).clone()
+        prev_bounds = self.get_data(grounding_rows).clone()
         if kwds.get("logical_aggregation", False):
             raise NotImplementedError(
                 "should not end here, logical" "aggregation not yet implemented"
@@ -47,17 +58,25 @@ class _NodeActivation(_NodeParameters):
         else:
             L = (
                 torch.max(prev_bounds[..., 0], new_bounds[..., 0])
-                if (bound in [None, "lower"])
+                if (bound in [None, Bound.LOWER])
                 else prev_bounds[..., 0]
             )
             U = (
                 torch.min(prev_bounds[..., 1], new_bounds[..., 1])
-                if (bound in [None, "upper"])
+                if (bound in [None, Bound.UPPER])
                 else prev_bounds[..., 1]
             )
             aggregate = torch.stack([L, U], dim=-1)
         self.update_bounds(grounding_rows, val_clamp(aggregate))
-        return (aggregate - prev_bounds).abs().sum()
+        return (aggregate - prev_bounds).abs().sum().tolist()
+
+    def aggregate_world(self, new_world: World):
+        prev_world = self.world
+        aggregate = (max(self.world[0], new_world[0]), min(self.world[1], new_world[1]))
+        self.update_world(aggregate)
+        return sum(
+            (abs(aggregate[0] - prev_world[0]), abs(aggregate[1] - prev_world[1]))
+        )
 
     def output_regions(self, y: torch.Tensor) -> torch.Tensor:
         """classical region of outputs for the given node inputs
@@ -88,7 +107,7 @@ class _NodeActivation(_NodeParameters):
     ) -> Tuple[
         torch.Tensor, np.ndarray, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor
     ]:
-        bounds = self.get_facts() if bounds is None else bounds
+        bounds = self.get_data() if bounds is None else bounds
         regions = self.output_regions(bounds).numpy().astype(dtype="<U3")
         L, U = regions[..., 0], regions[..., 1]
         result = np.zeros_like(L, dtype=float).astype(dtype="<U3")
@@ -107,8 +126,12 @@ class _NodeActivation(_NodeParameters):
             torch.Tensor,
         ] = None,
     ) -> torch.BoolTensor:
-        """check which bounds are in contradiction
-        classical contradiction removed from states: F, T"""
+        """
+        check which bounds are in contradiction classical
+            contradiction removed from states: F, T
+
+        """
+
         *_, L, U, L_bounds, U_bounds = args if args else (self._get_state_vars(bounds))
         contradictions = bool_and(
             L_bounds > U_bounds,
@@ -124,19 +147,19 @@ class _NodeActivation(_NodeParameters):
         overall node state and collapses the bounds dimension
 
 
-        **Returns**
-
+        Returns
+        -------
         numpy char array:
             classical states:
-                'T' = True
-                'F' = False
-                'U' = Unknown
-                'C' = Contradiction
+                "T" = True
+                "F" = False
+                "U" = Unknown
+                "C" = Contradiction
             fuzzy states:
-                '~T' = More True than not True
-                '~F' = More False than not False
-                '~U' = Unknown but not classical
-                '=U' = Unknown, exact midpoint
+                "~T" = More True than not True
+                "~F" = More False than not False
+                "~U" = Unknown but not classical
+                "=U" = Unknown, exact midpoint
 
         Warning
         -------

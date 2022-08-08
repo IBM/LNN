@@ -1,42 +1,40 @@
 ##
-# Copyright 2021 IBM Corp. All Rights Reserved.
+# Copyright 2022 IBM Corp. All Rights Reserved.
 #
 # SPDX-License-Identifier: Apache-2.0
 ##
 
-import numpy as np
 from lnn import Proposition, Or, Model, Fact
+import numpy as np
 
 
-def test_upward(output=False):
+def test_upward():
     """standard upward n-input disjunction boolean truth table"""
 
     n = 1000
-    propositions = list()
+    props = list()
     for i in range(0, n):
-        propositions.append(Proposition("p" + str(i)))
-    formulae = [Or(*propositions, name="Or_n")]
+        props.append(Proposition("p" + str(i)))
+    Or_n = Or(*props)
 
     dat = np.linspace(0.0001, 0.001, n)
     GT = dat[0]
     for i in range(1, n):
         GT = min(1, GT + dat[i])
-
-    if output:
-        print("Ground truth:", GT)
+    print("Ground truth:", GT)
 
     # load model and reason over facts
     facts = {}
     for i in range(0, n):
-        facts["p" + str(i)] = (dat[i], dat[i])
+        facts[props[i]] = (dat[i], dat[i])
 
     model = Model()
-    model.add_formulae(*formulae)
-    model.add_facts(facts)
-    model["Or_n"].upward()
+    model.add_knowledge(Or_n)
+    model.add_data(facts)
+    Or_n.upward()
 
     # evaluate the conjunction
-    prediction = model["Or_n"].get_facts()
+    prediction = Or_n.get_data()
     assert prediction[0] == prediction[1], (
         "Lower and upper bounds are not the same, "
         + f"got {prediction[0]}, {prediction[1]}"
@@ -47,38 +45,36 @@ def test_upward(output=False):
     model.flush()
 
 
-def test_downward(output=False):
+def test_downward():
     n = 1000
-    propositions = list()
+    props = list()
     for i in range(0, n):
-        propositions.append(Proposition("p" + str(i)))
-    formulae = [Or(*propositions, name="Or_n")]
+        props.append(Proposition("p" + str(i)))
+    Or_n = Or(*props)
 
     dat = np.linspace(0.0, 0.0, n)
     GT = dat[0]
     for i in range(1, n):
         GT = min(1, GT + dat[i])
-
-    if output:
-        print("Ground truth", GT)
+    print("Ground truth", GT)
 
     # load model and reason over facts
     facts = {}
     for i in range(0, n):
-        facts["p" + str(i)] = (dat[i], dat[i])
+        facts[props[i]] = (dat[i], dat[i])
 
     model = Model()
-    model.add_formulae(*formulae)
-    model.add_facts(facts)
-    model["Or_n"].upward()
+    model.add_knowledge(Or_n)
+    model.add_data(facts)
+    Or_n.upward()
 
     # now make one of the inputs unknown
-    p0 = model["p0"].get_facts()
-    model.add_facts({"p0": Fact.UNKNOWN})
+    p0 = props[0].get_data()
+    model.add_data({props[0]: Fact.UNKNOWN})
     model.downward()
 
     # evaluate
-    prediction = model["p0"].get_facts()
+    prediction = props[0].get_data()
     assert prediction[0] == prediction[1], (
         "Lower and upper bounds are not the same, "
         + f"got {prediction[0]}, {prediction[1]}"
@@ -93,26 +89,26 @@ def test_downward(output=False):
     # load model and reason over facts
     facts = {}
     for i in range(0, n):
-        facts["p" + str(i)] = (dat[i], dat[i])
+        facts[props[i]] = (dat[i], dat[i])
 
     model = Model()
-    model.add_formulae(*formulae)
-    model.add_facts(facts)
-    model["Or_n"].upward()
+    model.add_knowledge(Or_n)
+    model.add_data(facts)
+    Or_n.upward()
 
     # now make one of the inputs unknown
-    p0 = model["p0"].get_facts()
-    model.add_facts({"p0": Fact.UNKNOWN})
+    p0 = props[0].get_data()
+    model.add_data({props[0]: Fact.UNKNOWN})
     model.downward()
 
     # evaluate
-    prediction = model["p0"].get_facts()
+    prediction = props[0].get_data()
     assert (
         prediction[0].item() == 0 and prediction[1].item() == 1
     ), "p0 should be UNKNOWN"
 
 
 if __name__ == "__main__":
-    test_upward(output=True)
-    test_downward(output=True)
+    test_upward()
+    test_downward()
     print("success")

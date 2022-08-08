@@ -7,3 +7,4 @@ Education
    blogs/blogs.md
    tutorials/tutorials.md
    examples/examples.md
+   videos/videos.md

@@ -1,10 +1,10 @@
 ##
-# Copyright 2021 IBM Corp. All Rights Reserved.
+# Copyright 2022 IBM Corp. All Rights Reserved.
 #
 # SPDX-License-Identifier: Apache-2.0
 ##
 
-from lnn import Model, Predicate, And, Fact, Exists, Variable, Join
+from lnn import Model, And, Fact, Exists, Variable, Join
 
 
 def test_1():
@@ -14,32 +14,31 @@ def test_1():
 
     model = Model()
 
-    model["director"] = Predicate("director", arity=2)
-    model["starring"] = Predicate("starring", arity=2)
+    director, starring = model.add_predicates(2, "director", "starring")
 
     facts = {
-        "director": {("William_Shatner", "The_captains"): Fact.TRUE},
-        "starring": {
+        director: {("William_Shatner", "The_captains"): Fact.TRUE},
+        starring: {
             ("William_Shatner", "The_captains"): Fact.TRUE,
             ("Patrick_Stewart", "The_captains"): Fact.TRUE,
         },
     }
-    model.add_facts(facts)
+    model.add_data(facts)
 
-    query = Exists(
-        x,
-        And(
-            model["director"]((x, "William_Shatner"), y),
-            model["starring"](x, y),
-            join=join,
-        ),
-        name="Shatner-stars",
+    model.set_query(
+        Exists(
+            x,
+            And(
+                director(x, y, bind={x: "William_Shatner"}),
+                starring(x, y),
+                join=join,
+            ),
+        )
     )
-    model.add_formulae(query)
-
     model.infer()
-
-    assert query.true_groundings == {"William_Shatner"}
+    predictions = model.query.true_groundings
+    for p in predictions:
+        assert p[0] == "William_Shatner"
 
 
 def test_2():
@@ -50,33 +49,33 @@ def test_2():
 
     model = Model()
 
-    model["director"] = Predicate("director", arity=2)
-    model["starring"] = Predicate("starring", arity=2)
+    director, starring = model.add_predicates(2, "director", "starring")
 
-    model.add_facts(
+    model.add_data(
         {
-            "director": {("William_Shatner", "The_captains"): Fact.TRUE},
-            "starring": {
+            director: {("William_Shatner", "The_captains"): Fact.TRUE},
+            starring: {
                 ("William_Shatner", "The_captains"): Fact.TRUE,
                 ("Patrick_Stewart", "The_captains"): Fact.TRUE,
             },
         }
     )
 
-    query = Exists(
-        z,
-        And(
-            model["director"]((x, "William_Shatner"), y),
-            model["starring"](z, y),
-            join=join,
-        ),
-        name="Shatner-stars",
+    model.set_query(
+        Exists(
+            z,
+            And(
+                director(x, y, bind={x: "William_Shatner"}),
+                starring(z, y),
+                join=join,
+            ),
+        )
     )
-    model.add_formulae(query)
 
     model.infer()
-
-    assert query.true_groundings == {"William_Shatner", "Patrick_Stewart"}
+    predictions = model.query.true_groundings
+    for p in predictions:
+        assert p[-1] in {"William_Shatner", "Patrick_Stewart"}
 
 
 if __name__ == "__main__":

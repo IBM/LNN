@@ -1,37 +1,41 @@
 ##
-# Copyright 2021 IBM Corp. All Rights Reserved.
+# Copyright 2022 IBM Corp. All Rights Reserved.
 #
 # SPDX-License-Identifier: Apache-2.0
 ##
 
-from lnn import Model, And, Or, Proposition, World, TRUE, FALSE
+from lnn import Model, And, Or, Proposition, World, Fact, Loss
+
+TRUE = Fact.TRUE
+FALSE = Fact.FALSE
 
 
 def test_1():
     model = Model()
-    model["A"] = Proposition("A")
-    model["B"] = Proposition("B")
-    model["A&B"] = And(model["A"], model["B"], world=World.AXIOM)
-    model["A|B"] = Or(model["A"], model["B"])
-    model.add_facts({"A": TRUE})
-    model.add_facts({"B": FALSE})
-    model.train(epochs=11, losses={"contradiction": 1})
+    A = Proposition("A")
+    B = Proposition("B")
+    _and = And(A, B, world=World.AXIOM)
+    _or = Or(A, B)
+    model.add_knowledge(_and, _or)
+    model.add_data({A: TRUE, B: FALSE})
+    losses = [Loss.CONTRADICTION]
+    model.train(losses=losses)
+    model.print(params=True)
 
-    weights_and = model["A&B"].params("weights")[1]
-    weights_or, bias_or = model["A|B"].params("weights", "bias")
-    bounds = model["B"].state()
-    assert model["A|B"].is_unweighted(), (
+    weights_and = _and.neuron.weights
+    weights_or = _or.neuron.weights
+    bias_or = _or.neuron.bias
+    bounds = B.state()
+    assert _or.is_unweighted(), (
         "expected A|B to be unweighted, received " f"w: {weights_or}, b: {bias_or}"
     )
-    assert (
-        weights_and <= 1 / 2
-    ), f"expected input B in A&B to be downweighted, received {weights_and}"
-    assert bounds is FALSE, f"expected bounds to remain False, received {bounds}"
 
-    return model
+    assert (
+        weights_and[1] <= 1e-3
+    ), f"expected input B in A&B to be down-weighted, received {weights_and}"
+    assert bounds is FALSE, f"expected bounds to remain False, received {bounds}"
 
 
 if __name__ == "__main__":
-    model = test_1()
-    model.print(params=True)
+    test_1()
     print("success")

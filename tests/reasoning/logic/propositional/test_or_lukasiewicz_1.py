@@ -1,11 +1,11 @@
 ##
-# Copyright 2021 IBM Corp. All Rights Reserved.
+# Copyright 2022 IBM Corp. All Rights Reserved.
 #
 # SPDX-License-Identifier: Apache-2.0
 ##
 
-import numpy as np
 from lnn import Proposition, Or, Model
+import numpy as np
 
 
 def test():
@@ -18,7 +18,7 @@ def test():
     # define the rules
     A = Proposition("A")
     B = Proposition("B")
-    AB = Or(A, B, name="AB")
+    AB = Or(A, B)
 
     # rules per model
     formulae = [AB]
@@ -32,18 +32,18 @@ def test():
             GT = min(a + b, 1)
 
             # facts per model
-            facts = {"A": (a, a), "B": (b, b)}
+            facts = {A: (a, a), B: (b, b)}
 
             # load data into a new model
             model = Model()
-            model.add_formulae(*formulae)
-            model.add_facts(facts)
+            model.add_knowledge(*formulae)
+            model.add_data(facts)
 
             # evaluate the disjunction
-            model["AB"].upward()
+            AB.upward()
 
             # test the prediction
-            prediction = model["AB"].get_facts()[0]
+            prediction = AB.get_data()[0]
             assert (
                 prediction - GT <= 1e-7
             ), f"And({a}, {b}) expected {GT}, received {prediction}"

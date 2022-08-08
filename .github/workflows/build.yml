@@ -24,7 +24,11 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Upgrade pip
         run: python -m pip install --upgrade pip setuptools wheel
+      - name: Install graphviz
+        run: sudo apt-get install -y libgraphviz-dev
       - name: Install dependencies
         run: pip install -e .[test]
+      - name: Install dependencies
+        run: pip install pytest
       - name: Run tests with ${{ matrix.args }}
         run: pytest ${{ matrix.args }}

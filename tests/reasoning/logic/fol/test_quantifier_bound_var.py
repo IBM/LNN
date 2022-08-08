@@ -1,10 +1,14 @@
 ##
-# Copyright 2021 IBM Corp. All Rights Reserved.
+# Copyright 2022 IBM Corp. All Rights Reserved.
 #
 # SPDX-License-Identifier: Apache-2.0
 ##
 
-from lnn import Model, Variable, TRUE, FALSE, UNKNOWN, ForAll, Exists
+from lnn import Model, Variable, Fact, ForAll, Exists, World
+
+TRUE = Fact.TRUE
+FALSE = Fact.FALSE
+UNKNOWN = Fact.UNKNOWN
 
 
 def test_1():
@@ -14,17 +18,19 @@ def test_1():
     x = Variable("x")
     model = Model()
     A, S = model.add_predicates(1, "A", "S")
-    All = model["All"] = ForAll(x, A(x))
-    Some = model["Some"] = Exists(x, S(x))
+    All = ForAll(x, A(x), world=World.OPEN)
+    Some = Exists(x, S(x))
 
-    model.add_facts(
+    model.add_knowledge(All, Some)
+    model.add_data(
         {
-            "A": {"0": TRUE, "1": TRUE, "2": TRUE},
-            "S": {"0": FALSE, "1": FALSE, "2": FALSE},
+            A: {"0": TRUE, "1": TRUE, "2": TRUE},
+            S: {"0": FALSE, "1": FALSE, "2": FALSE},
         }
     )
 
     model.upward()
+    model.print()
     predictions = [All.state(), Some.state()]
     assert predictions[0] is UNKNOWN, (
         f"ForAll expected as UNKNOWN, received {predictions[0]}"
@@ -43,13 +49,13 @@ def test_2():
     x = Variable("x")
     model = Model()
     A, S = model.add_predicates(1, "A", "S")
-    All = model["All"] = ForAll(x, A(x))
-    Some = model["Some"] = Exists(x, S(x))
-
-    model.add_facts(
+    All = ForAll(x, A(x), world=World.OPEN)
+    Some = Exists(x, S(x))
+    model.add_knowledge(All, Some)
+    model.add_data(
         {
-            "A": {"0": TRUE, "1": TRUE, "2": FALSE},
-            "S": {"0": FALSE, "1": FALSE, "2": TRUE},
+            A: {"0": TRUE, "1": TRUE, "2": FALSE},
+            S: {"0": FALSE, "1": FALSE, "2": TRUE},
         }
     )
 

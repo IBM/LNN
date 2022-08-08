@@ -129,6 +129,9 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
+# TODO files
+TODO
+
 # tmp files
 *tmp.*
 ___*___

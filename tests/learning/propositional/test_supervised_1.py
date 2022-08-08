@@ -1,5 +1,5 @@
 ##
-# Copyright 2021 IBM Corp. All Rights Reserved.
+# Copyright 2022 IBM Corp. All Rights Reserved.
 #
 # SPDX-License-Identifier: Apache-2.0
 ##
@@ -10,34 +10,36 @@ from lnn import (
     And,
     Or,
     Implies,
-    TRUE,
-    FALSE,
+    Fact,
     World,
-    plot_params,
-    plot_loss,
+    Loss,
 )
+
+
+TRUE = Fact.TRUE
+FALSE = Fact.FALSE
 
 
 def test_1():
     """test supervised, contradiction and logical loss for all neurons"""
     model = Model()
-    A = model["A"] = Proposition()
-    B = model["B"] = Proposition()
-    model["A|B"] = Or(A, B, world=World.FALSE, neuron={"bias_learning": False})
-    model["A&B"] = And(A, B, world=World.AXIOM, neuron={"bias_learning": False})
-    model["A->B"] = Implies(A, B, world=World.FALSE)
-
-    model.add_facts({"A": FALSE, "B": TRUE})
+    A = Proposition("A")
+    B = Proposition("B")
+    _and = And(A, B, world=World.AXIOM, activation={"bias_learning": False})
+    _or = Or(A, B, world=World.FALSE, activation={"bias_learning": False})
+    _implies = Implies(A, B, world=World.FALSE)
+    model.add_knowledge(_and, _or, _implies)
+    model.add_data({A: FALSE, B: TRUE})
     model.add_labels(
         {
-            "A|B": FALSE,
-            "A&B": TRUE,
-            "A->B": FALSE,
+            _or: FALSE,
+            _and: TRUE,
+            _implies: FALSE,
         }
     )
 
     parameter_history = {"weights": True, "bias": True}
-    losses = {"contradiction": 1, "supervised": 1, "logical": 2e-2}
+    losses = {Loss.CONTRADICTION: 1, Loss.SUPERVISED: 1, Loss.LOGICAL: 2e-2}
     total_loss, _ = model.train(
         epochs=3e2,
         learning_rate=5e-2,
@@ -45,34 +47,31 @@ def test_1():
         parameter_history=parameter_history,
     )
 
-    state = model["A|B"].state()
+    model.print(params=True)
+
+    state = _or.state()
     eps = 1e-3
     assert state is FALSE, f"expected A|B to be FALSE, received {state}"
-    w = model["A|B"].neuron.weights
+    w = _or.neuron.weights
     assert (
         1 - eps <= w[0] and 0 <= w[1] <= eps
     ), f"expected A|B weights to be in [±1, <=.5], received {w}"
 
-    state = model["A&B"].state()
+    state = _and.state()
     assert state is TRUE, f"expected A&B to be TRUE, received {state}"
-    w = model["A&B"].neuron.weights
+    w = _and.neuron.weights
     assert (
         1 - eps <= w[1] and 0 <= w[0] <= eps
     ), f"expected A&B weights to be [<=.5, ±1], received {w}"
 
-    state = model["A->B"].state()
+    state = _implies.state()
     assert state is FALSE, f"expected A->B to be FALSE, received {state}"
-    w = model["A->B"].neuron.weights
+    w = _implies.neuron.weights
     assert all(
         (0 <= w) + (w <= eps)
     ), f"expected A->B weights to be in [0, .5], received {w}"
 
-    return model, total_loss, losses
-
 
 if __name__ == "__main__":
-    model, total_loss, losses = test_1()
-    model.print(params=True)
-    plot_params(model)
-    plot_loss(total_loss, losses)
+    test_1()
     print("success")

@@ -1,5 +1,5 @@
 ##
-# Copyright 2021 IBM Corp. All Rights Reserved.
+# Copyright 2022 IBM Corp. All Rights Reserved.
 #
 # SPDX-License-Identifier: Apache-2.0
 ##
@@ -7,11 +7,11 @@
 import math
 from typing import Union, Optional, Tuple, Iterator, List, Dict, Set
 
-import torch
-
 from ... import _utils
-from ...constants import Fact, World
 from ... import _exceptions
+from ...constants import Fact, World
+
+import torch
 
 
 class _NodeParameters:
@@ -32,19 +32,23 @@ class _NodeParameters:
 
         Propositional:
         1D: [bounds] (proposition)
-        2D: [batch, bounds] (batched proposition) `not implimented`
+        2D: [batch, bounds] (batched proposition) `not implemented`
 
         FOL:
         2D: [grounding, bounds] (predicate)
-        3D: [batch, grounding, bounds] (batched predicate) `not implimented`
+        3D: [batch, grounding, bounds] (batched predicate) `not implemented`
 
         Connective inputs (FOL + propositional) are extended on `dim = -1`
     """
 
-    def __init__(self, propositional: bool, world: World, **kwds):
+    def __init__(self, **kwds):
         self.params = {}
+        propositional = kwds.get("propositional")
+        _exceptions.AssertPropositionalType(propositional)
         self.propositional = propositional
-        self.world = world
+        world = kwds.get("world", World.OPEN)
+        _exceptions.AssertBounds(world)
+        self.update_world(world)
         self.alpha = self.add_param(
             "alpha",
             torch.tensor(
@@ -55,35 +59,42 @@ class _NodeParameters:
         _exceptions.AssertAlphaNodeValue(self.alpha)
         self.bounds_learning = kwds.get("bounds_learning", False)
         self.leaves = _utils.fact_to_bounds(
-            self.world, self.propositional, [0], requires_grad=self.bounds_learning
+            self.world,
+            self.propositional,
+            requires_grad=self.bounds_learning,
+            init_empty=True,
         )
         self.bounds_table = self.leaves.clone()
-        if propositional:
-            self.extend_groundings()
 
-    def set_world(self, world: World):
-        self.world = world
+    def reset_world(self, world: World):
+        self.update_world(world)
+        if self.bounds_table.shape[0] > 0:
+            self.flush(self.world)
+
+    def update_world(self, world: Union[Tuple, World]):
+        self.world = world if isinstance(world, tuple) else world.value
 
     def add_param(self, name, param):
         self.params[name] = param
         return param
 
-    def flush(self, bounds_table=None):
-        self.add_facts({Fact.UNKNOWN}, bounds_table)
+    def flush(self, fact=Fact.UNKNOWN):
+        if self.bounds_table.shape[0] > 0:
+            self.add_data({fact})
 
-    def get_facts(self, grounding_rows: List[int] = None):
+    def get_data(self, grounding_rows: List[int] = None):
         """returns tuple of all facts given by `grounding_rows`
         The `bounds_table` is returned if no `grounding_rows` given
         """
         if self.propositional:
-            return self.bounds_table[0]
+            return self.bounds_table
         if grounding_rows is None:
             return self.bounds_table
         if isinstance(grounding_rows, list):
             return self.bounds_table[grounding_rows]
         return self.bounds_table[grounding_rows]
 
-    def add_facts(self, facts: Union[Fact, Tuple, Set, Dict], update_leaves=False):
+    def add_data(self, facts: Union[Fact, Tuple, Set, Dict], update_leaves=True):
         """Populate formula with facts
 
         Facts given in bool, tuple or None, assumes a propositional formula
@@ -94,7 +105,7 @@ class _NodeParameters:
         if self.propositional:  # Propositional facts
             if isinstance(facts, set):
                 facts = next(iter(facts))
-            self.update_bounds(0, facts, update_leaves)
+            self.update_bounds(None, facts, update_leaves)
         else:  # FOL facts
             if isinstance(facts, dict):  # facts given per grounding
                 for grounding_row, fact in facts.items():
@@ -102,8 +113,8 @@ class _NodeParameters:
                         self.update_bounds(grounding_row, fact, update_leaves)
                     else:
                         raise Exception("groundings not extended correctly")
-        if isinstance(facts, set):  # broadcast facts across groundings
-            self.update_bounds(set(), next(iter(facts)), update_leaves)
+            if isinstance(facts, set):  # broadcast facts across groundings
+                self.update_bounds(set(), next(iter(facts)), update_leaves)
 
     def update_bounds(
         self,
@@ -122,16 +133,21 @@ class _NodeParameters:
                 fact = _utils.fact_to_bounds(
                     fact, self.propositional, requires_grad=self.bounds_learning
                 )
-                self.leaves[grounding_row] = fact
-                self.bounds_table[grounding_row] = fact.clone()
+                if self.propositional:
+                    self.leaves = fact
+                    self.bounds_table = fact.clone()
+                else:
+                    self.leaves[grounding_row] = fact
+                    self.bounds_table[grounding_row] = fact.clone()
             else:
                 fact = _utils.fact_to_bounds(fact, self.propositional)
-                self.bounds_table[grounding_row] = fact
+                if self.propositional:
+                    self.bounds_table = fact
+                else:
+                    self.bounds_table[grounding_row] = fact
 
         if isinstance(grounding_rows, set):
             facts = _utils.fact_to_bounds(facts, self.propositional)
-            if not self.propositional:
-                facts = facts[0]
             self.bounds_table[..., 0] = facts[0]
             self.bounds_table[..., 1] = facts[1]
         elif isinstance(grounding_rows, dict) or isinstance(grounding_rows, list):
@@ -139,14 +155,12 @@ class _NodeParameters:
         else:
             func(grounding_rows, facts)
 
-    def extend_groundings(self, n: int = 1):
+    def extend_groundings(self, n: int = None):
         """extend the `bounds_table` number of groundings by n
 
         returns list of new bounds_table row numbers
 
         """
-        if n <= 0:
-            raise Exception(f"n expected as int > 0, received {type(n), n}")
         n_groundings = self.bounds_table.shape[self._grounding_dims]
         new_leaves = _utils.fact_to_bounds(
             self.world, self.propositional, [n], requires_grad=self.bounds_learning

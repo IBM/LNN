@@ -1,13 +1,12 @@
 ##
-# Copyright 2021 IBM Corp. All Rights Reserved.
+# Copyright 2022 IBM Corp. All Rights Reserved.
 #
 # SPDX-License-Identifier: Apache-2.0
 ##
 
-from functools import reduce
-
-import numpy as np
 from lnn import Predicate, And, Model, Variable, truth_table, fact_to_bool, bool_to_fact
+from functools import reduce
+import numpy as np
 
 
 def test():
@@ -27,21 +26,21 @@ def test():
     model = Model()
     x = Variable("x")
 
+    preds = []
     for pred in range(n_preds):
-        model[f"P{pred}"] = Predicate()
-    model["AB"] = And(*[model[f"P{pred}"](x) for pred in range(n_preds)])
+        preds.append(Predicate(f"P{pred}"))
+    AB = And(*[preds[p](x) for p in range(n_preds)])
+    model.add_knowledge(AB)
 
     # set model facts
-    for pred in range(n_preds):
-        model.add_facts(
-            {f"P{pred}": {f"{row}": truth[pred] for row, truth in enumerate(TT)}}
-        )
+    for idx, pred in enumerate(preds):
+        model.add_data({pred: {f"{row}": truth[idx] for row, truth in enumerate(TT)}})
 
     # evaluate the conjunction
-    model["AB"].upward()
+    AB.upward()
 
     for row in range(len(TT)):
-        prediction = model["AB"].state(str(row))
+        prediction = AB.state(str(row))
         assert prediction is bool_to_fact(
             GT[row]
         ), f"And({TT[:,row]}) expected {GT}, received {prediction}"

@@ -1,10 +1,14 @@
 ##
-# Copyright 2021 IBM Corp. All Rights Reserved.
+# Copyright 2022 IBM Corp. All Rights Reserved.
 #
 # SPDX-License-Identifier: Apache-2.0
 ##
 
-from lnn import Proposition, Or, Model, TRUE, FALSE, UNKNOWN
+from lnn import Proposition, Or, Model, Fact
+
+TRUE = Fact.TRUE
+FALSE = Fact.FALSE
+UNKNOWN = Fact.UNKNOWN
 
 
 def test_upward():
@@ -22,26 +26,26 @@ def test_upward():
 
     # define the rules
     n = 1000
-    propositions = list()
-    for i in range(1, n):
-        propositions.append(Proposition("p" + str(i)))
-    formulae = [Or(*propositions, name="Or_n")]
+    props = list()
+    for i in range(n):
+        props.append(Proposition("p" + str(i)))
+    Or_n = Or(*props)
 
     for row in TT:
         # get ground truth
         GT = row[2]
 
         # load model and reason over facts
-        facts = {"p1": row[0]}
-        for i in range(2, n):
-            facts["p" + str(i)] = row[1]
+        facts = {props[0]: row[0]}
+        for i in range(1, n):
+            facts[props[i]] = row[1]
         model = Model()
-        model.add_formulae(*formulae)
-        model.add_facts(facts)
-        model["Or_n"].upward()
+        model.add_knowledge(Or_n)
+        model.add_data(facts)
+        Or_n.upward()
 
         # evaluate the conjunction
-        prediction = model["Or_n"].state()
+        prediction = Or_n.state()
         assert (
             prediction is GT
         ), f"Or({row[0]}, {row[1]}...) expected {GT}, received {prediction}"
@@ -61,26 +65,26 @@ def test_downward():
 
     # define the rules
     n = 1000
-    propositions = list()
-    for i in range(1, n):
-        propositions.append(Proposition("p" + str(i)))
-    formulae = [Or(*propositions, name="Or_n")]
+    props = list()
+    for i in range(n):
+        props.append(Proposition("p" + str(i)))
+    Or_n = Or(*props)
 
     for row in TT:
         # get ground truth
         GT = row[2]
 
         # load model and reason over facts
-        facts = {"Or_n": row[1]}
-        for i in range(2, n):
-            facts["p" + str(i)] = row[0]
+        facts = {Or_n: row[1]}
+        for i in range(1, n):
+            facts[props[i]] = row[0]
         model = Model()
-        model.add_formulae(*formulae)
-        model.add_facts(facts)
-        model["Or_n"].downward(index=0)
+        model.add_knowledge(Or_n)
+        model.add_data(facts)
+        Or_n.downward(index=0)
 
         # evaluate the conjunction
-        prediction = model["p1"].state()
+        prediction = props[0].state()
         assert prediction is GT, (
             f"Or(A, {row[0]}, ...)={row[1]} expected A={GT}, " + "received {prediction}"
         )

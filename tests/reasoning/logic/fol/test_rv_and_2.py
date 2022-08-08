@@ -1,11 +1,11 @@
 ##
-# Copyright 2021 IBM Corp. All Rights Reserved.
+# Copyright 2022 IBM Corp. All Rights Reserved.
 #
 # SPDX-License-Identifier: Apache-2.0
 ##
 
-import numpy as np
 from lnn import Predicate, And, Or, Implies, Model, Variable
+import numpy as np
 
 
 def test_and():
@@ -17,9 +17,10 @@ def test_and():
 
     x = Variable("x")
     model = Model()
-    model["A"] = Predicate()
-    model["B"] = Predicate()
-    model["AB"] = And(model["A"](x), model["B"](x))
+    A = Predicate("A")
+    B = Predicate("B")
+    AB = And(A(x), B(x))
+    model.add_knowledge(AB)
 
     for row in range(samples):
         for col in range(samples):
@@ -28,12 +29,12 @@ def test_and():
             a, b = x_grid[row][col], y_grid[row][col]
 
             # facts per model
-            model.add_facts(
+            model.add_data(
                 {
-                    "A": {
+                    A: {
                         f"({row}, {col})": (a, a),
                     },
-                    "B": {
+                    B: {
                         f"({row}, {col})": (b, b),
                     },
                 }
@@ -41,15 +42,15 @@ def test_and():
 
             # ground truth
             GT = float(max(0, a + b - 1))
-            model.add_labels({"AB": {f"({row}, {col})": (GT, GT)}})
+            model.add_labels({AB: {f"({row}, {col})": (GT, GT)}})
 
     # evaluate the conjunction
-    model["AB"].upward()
+    AB.upward()
 
     # test the prediction
-    for g in model["AB"].groundings:
-        prediction = model["AB"].get_facts(g)[0]
-        label = model["AB"].get_labels(g)[0]
+    for g in AB.groundings:
+        prediction = AB.get_data(g)[0]
+        label = AB.get_labels(g)[0]
         lower_bound = prediction[0].item()
         upper_bound = prediction[1].item()
         assert (
@@ -70,9 +71,10 @@ def test_or():
 
     x = Variable("x")
     model = Model()
-    model["A"] = Predicate()
-    model["B"] = Predicate()
-    model["AB"] = Or(model["A"](x), model["B"](x))
+    A = Predicate("A")
+    B = Predicate("B")
+    AB = Or(A(x), B(x))
+    model.add_knowledge(AB)
 
     for row in range(samples):
         for col in range(samples):
@@ -80,12 +82,12 @@ def test_or():
             a, b = x_grid[row][col], y_grid[row][col]
 
             # facts per model
-            model.add_facts(
+            model.add_data(
                 {
-                    "A": {
+                    A: {
                         f"({row}, {col})": (a, a),
                     },
-                    "B": {
+                    B: {
                         f"({row}, {col})": (b, b),
                     },
                 }
@@ -93,15 +95,15 @@ def test_or():
 
             # ground truth
             GT = float(min(1, a + b))
-            model.add_labels({"AB": {f"({row}, {col})": (GT, GT)}})
+            model.add_labels({AB: {f"({row}, {col})": (GT, GT)}})
 
     # evaluate the conjunction
-    model["AB"].upward()
+    AB.upward()
 
     # test the prediction
-    for g in model["AB"].groundings:
-        prediction = model["AB"].get_facts(g)[0]
-        label = model["AB"].get_labels(g)[0]
+    for g in AB.groundings:
+        prediction = AB.get_data(g)[0]
+        label = AB.get_labels(g)[0]
         lower_bound = prediction[0].item()
         upper_bound = prediction[1].item()
         assert (
@@ -122,9 +124,10 @@ def test_implies():
 
     x = Variable("x")
     model = Model()
-    model["A"] = Predicate()
-    model["B"] = Predicate()
-    model["AB"] = Implies(model["A"](x), model["B"](x))
+    A = Predicate("A")
+    B = Predicate("B")
+    AB = Implies(A(x), B(x))
+    model.add_knowledge(AB)
 
     for row in range(samples):
         for col in range(samples):
@@ -132,12 +135,12 @@ def test_implies():
             a, b = x_grid[row][col], y_grid[row][col]
 
             # facts per model
-            model.add_facts(
+            model.add_data(
                 {
-                    "A": {
+                    A: {
                         f"({row}, {col})": (a, a),
                     },
-                    "B": {
+                    B: {
                         f"({row}, {col})": (b, b),
                     },
                 }
@@ -145,15 +148,15 @@ def test_implies():
 
             # ground truth
             GT = float(min(1, 1 - a + b))
-            model.add_labels({"AB": {f"({row}, {col})": (GT, GT)}})
+            model.add_labels({AB: {f"({row}, {col})": (GT, GT)}})
 
     # evaluate the conjunction
-    model["AB"].upward()
+    AB.upward()
 
     # test the prediction
-    for g in model["AB"].groundings:
-        prediction = model["AB"].get_facts(g)[0]
-        label = model["AB"].get_labels(g)[0]
+    for g in AB.groundings:
+        prediction = AB.get_data(g)[0]
+        label = AB.get_labels(g)[0]
         lower_bound = prediction[0].item()
         upper_bound = prediction[1].item()
         assert (

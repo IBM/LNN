@@ -1,0 +1,1416 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <meta content="width=device-width,initial-scale=1" name="viewport"/>
+  <meta content="ie=edge" http-equiv="x-ua-compatible"/>
+  <meta content="Copy to clipboard" name="lang:clipboard.copy"/>
+  <meta content="Copied to clipboard" name="lang:clipboard.copied"/>
+  <meta content="en" name="lang:search.language"/>
+  <meta content="True" name="lang:search.pipeline.stopwords"/>
+  <meta content="True" name="lang:search.pipeline.trimmer"/>
+  <meta content="No matching documents" name="lang:search.result.none"/>
+  <meta content="1 matching document" name="lang:search.result.one"/>
+  <meta content="# matching documents" name="lang:search.result.other"/>
+  <meta content="[\s\-]+" name="lang:search.tokenizer"/>
+  <link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css?family=Roboto+Mono:400,500,700|Roboto:300,400,400i,700&amp;display=fallback" rel="stylesheet"/>
+  <style>
+   body,
+      input {
+        font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif
+      }
+
+      code,
+      kbd,
+      pre {
+        font-family: "Roboto Mono", "Courier New", Courier, monospace
+      }
+  </style>
+  <link href="../../../../_static/stylesheets/application.css" rel="stylesheet"/>
+  <link href="../../../../_static/stylesheets/application-palette.css" rel="stylesheet"/>
+  <link href="../../../../_static/stylesheets/application-fixes.css" rel="stylesheet"/>
+  <link href="../../../../_static/fonts/material-icons.css" rel="stylesheet"/>
+  <meta content="#3f51b5" name="theme-color"/>
+  <script src="../../../../_static/javascripts/modernizr.js">
+  </script>
+  <title>
+   lnn.symbolic.logic.formula — Logical Neural Networks Docs
+  </title>
+  <link href="../../../../_static/pygments.css" rel="stylesheet" type="text/css"/>
+  <link href="../../../../_static/material.css" rel="stylesheet" type="text/css"/>
+  <link href="../../../../_static/copybutton.css" rel="stylesheet" type="text/css"/>
+  <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js">
+  </script>
+  <script src="../../../../_static/jquery.js">
+  </script>
+  <script src="../../../../_static/underscore.js">
+  </script>
+  <script src="../../../../_static/doctools.js">
+  </script>
+  <script src="../../../../_static/clipboard.min.js">
+  </script>
+  <script src="../../../../_static/copybutton.js">
+  </script>
+  <link href="../../../../genindex.html" rel="index" title="Index"/>
+  <link href="../../../../search.html" rel="search" title="Search"/>
+ </head>
+ <body data-md-color-accent="cyan" data-md-color-primary="blue" dir="ltr">
+  <svg class="md-svg">
+   <defs data-children-count="0">
+    <svg height="448" id="__github" viewbox="0 0 416 448" width="416" xmlns="http://www.w3.org/2000/svg">
+     <path d="M160 304q0 10-3.125 20.5t-10.75 19T128 352t-18.125-8.5-10.75-19T96 304t3.125-20.5 10.75-19T128 256t18.125 8.5 10.75 19T160 304zm160 0q0 10-3.125 20.5t-10.75 19T288 352t-18.125-8.5-10.75-19T256 304t3.125-20.5 10.75-19T288 256t18.125 8.5 10.75 19T320 304zm40 0q0-30-17.25-51T296 232q-10.25 0-48.75 5.25Q229.5 240 208 240t-39.25-2.75Q130.75 232 120 232q-29.5 0-46.75 21T56 304q0 22 8 38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0 37.25-1.75t35-7.375 30.5-15 20.25-25.75T360 304zm56-44q0 51.75-15.25 82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5T212 416q-19.5 0-35.5-.75t-36.875-3.125-38.125-7.5-34.25-12.875T37 371.5t-21.5-28.75Q0 312 0 260q0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25 30.875Q171.5 96 212 96q37 0 70 8 26.25-20.5 46.75-30.25T376 64q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34 99.5z" fill="currentColor">
+     </path>
+    </svg>
+   </defs>
+  </svg>
+  <input class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+  <input class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+  <label class="md-overlay" data-md-component="overlay" for="__drawer">
+  </label>
+  <a class="md-skip" href="#_modules/lnn/symbolic/logic/formula" tabindex="1">
+   Skip to content
+  </a>
+  <header class="md-header" data-md-component="header">
+   <nav class="md-header-nav md-grid">
+    <div class="md-flex navheader">
+     <div class="md-flex__cell md-flex__cell--shrink">
+      <a class="md-header-nav__button md-logo" href="../../../../index.html" title="Logical Neural Networks Docs">
+      </a>
+     </div>
+     <div class="md-flex__cell md-flex__cell--shrink">
+      <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer">
+      </label>
+     </div>
+     <div class="md-flex__cell md-flex__cell--stretch">
+      <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+       <span class="md-header-nav__topic">
+        Logical Neural Networks
+       </span>
+       <span class="md-header-nav__topic">
+        lnn.symbolic.logic.formula
+       </span>
+      </div>
+     </div>
+     <div class="md-flex__cell md-flex__cell--shrink">
+      <label class="md-icon md-icon--search md-header-nav__button" for="__search">
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+       <label class="md-search__overlay" for="__search">
+       </label>
+       <div class="md-search__inner" role="search">
+        <form action="../../../../search.html" class="md-search__form" method="get" name="search">
+         <input autocapitalize="off" autocomplete="off" class="md-search__input" data-md-component="query" data-md-state="active" name="q" placeholder="Search" spellcheck="false" type="text"/>
+         <label class="md-icon md-search__icon" for="__search">
+         </label>
+         <button class="md-icon md-search__icon" data-md-component="reset" tabindex="-1" type="reset">
+          
+         </button>
+        </form>
+        <div class="md-search__output">
+         <div class="md-search__scrollwrap" data-md-scrollfix="">
+          <div class="md-search-result" data-md-component="result">
+           <div class="md-search-result__meta">
+            Type to start searching
+           </div>
+           <ol class="md-search-result__list">
+           </ol>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="md-flex__cell md-flex__cell--shrink">
+      <div class="md-header-nav__source">
+       <a class="md-source" data-md-source="github" href="https://github.com/ibm/LNN/tree/master" title="Go to repository">
+        <div class="md-source__icon">
+         <svg height="28" viewbox="0 0 24 24" width="28" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+          <use height="24" width="24" xlink:href="#__github">
+          </use>
+         </svg>
+        </div>
+        <div class="md-source__repository">
+         LNN
+        </div>
+       </a>
+      </div>
+     </div>
+     <script src="../../../../_static/javascripts/version_dropdown.js">
+     </script>
+     <script>
+      var json_loc = "../../../../"versions.json"",
+        target_loc = "../../../../../",
+        text = "Versions";
+    $( document ).ready( add_version_dropdown(json_loc, target_loc, text));
+     </script>
+    </div>
+   </nav>
+  </header>
+  <div class="md-container">
+   <nav class="md-tabs" data-md-component="tabs">
+    <div class="md-tabs__inner md-grid">
+     <ul class="md-tabs__list">
+      <li class="md-tabs__item">
+       <a class="md-tabs__link" href="../../../../index.html">
+        Logical Neural Networks Docs
+       </a>
+      </li>
+      <li class="md-tabs__item">
+       <a class="md-tabs__link" href="../../../index.html">
+        Module code
+       </a>
+      </li>
+     </ul>
+    </div>
+   </nav>
+   <main class="md-main">
+    <div class="md-main__inner md-grid" data-md-component="container">
+     <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+      <div class="md-sidebar__scrollwrap">
+       <div class="md-sidebar__inner">
+        <nav class="md-nav md-nav--primary" data-md-level="0">
+         <label class="md-nav__title md-nav__title--site" for="__drawer">
+          <a class="md-nav__button md-logo" href="../../../../index.html" title="Logical Neural Networks Docs">
+           <img alt=" logo" height="48" src="../../../../_static/" width="48"/>
+          </a>
+          <a href="../../../../index.html" title="Logical Neural Networks Docs">
+           Logical Neural Networks
+          </a>
+         </label>
+         <div class="md-nav__source">
+          <a class="md-source" data-md-source="github" href="https://github.com/ibm/LNN/tree/master" title="Go to repository">
+           <div class="md-source__icon">
+            <svg height="28" viewbox="0 0 24 24" width="28" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+             <use height="24" width="24" xlink:href="#__github">
+             </use>
+            </svg>
+           </div>
+           <div class="md-source__repository">
+            LNN
+           </div>
+          </a>
+         </div>
+         <ul class="md-nav__list">
+          <li class="md-nav__item">
+           <a class="md-nav__link" href="../../../../introduction.html">
+            Logical Neural Networks
+           </a>
+          </li>
+          <li class="md-nav__item">
+           <a class="md-nav__link" href="../../../../usage.html">
+            Python API
+           </a>
+          </li>
+          <li class="md-nav__item">
+           <a class="md-nav__link" href="../../../../papers.html">
+            Papers
+           </a>
+          </li>
+          <li class="md-nav__item">
+           <a class="md-nav__link" href="../../../../education/education.html">
+            Education
+           </a>
+          </li>
+          <li class="md-nav__item">
+           <a class="md-nav__link" href="../../../../lnn/LNN.html">
+            LNN Module
+           </a>
+          </li>
+         </ul>
+        </nav>
+       </div>
+      </div>
+     </div>
+     <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+      <div class="md-sidebar__scrollwrap">
+       <div class="md-sidebar__inner">
+        <nav class="md-nav md-nav--secondary">
+         <ul class="md-nav__list" data-md-scrollfix="">
+          <li class="md-nav__item" id="searchbox">
+          </li>
+         </ul>
+        </nav>
+       </div>
+      </div>
+     </div>
+     <div class="md-content">
+      <article class="md-content__inner md-typeset" role="main">
+       <h1 id="modules-lnn-symbolic-logic-formula--page-root">
+        Source code for lnn.symbolic.logic.formula
+       </h1>
+       <div class="highlight">
+        <pre>
+<span></span><span class="c1">##</span>
+<span class="c1"># Copyright 2022 IBM Corp. All Rights Reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># SPDX-License-Identifier: Apache-2.0</span>
+<span class="c1">##</span>
+
+<span class="c1"># flake8: noqa: E501</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">typing</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">Set</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span>
+
+<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span>
+
+<span class="kn">from</span> <span class="nn">.grounding</span> <span class="kn">import</span> <span class="n">_Grounding</span>
+<span class="kn">from</span> <span class="nn">.variable</span> <span class="kn">import</span> <span class="n">Variable</span>
+<span class="kn">from</span> <span class="nn">.function</span> <span class="kn">import</span> <span class="n">Function</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">_trace</span>
+<span class="kn">from</span> <span class="nn">.._bindings</span> <span class="kn">import</span> <span class="n">get_bindings</span>
+<span class="kn">from</span> <span class="nn">...</span> <span class="kn">import</span> <span class="n">_utils</span><span class="p">,</span> <span class="n">_exceptions</span><span class="p">,</span> <span class="n">utils</span>
+<span class="kn">from</span> <span class="nn">...constants</span> <span class="kn">import</span> <span class="n">Fact</span><span class="p">,</span> <span class="n">World</span><span class="p">,</span> <span class="n">Join</span>
+
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">_utils</span><span class="o">.</span><span class="n">logger_setup</span><span class="p">()</span>
+<span class="n">subclasses</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">object</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+
+<span class="k">def</span> <span class="nf">_isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">class_str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="sd">"""</span>
+<span class="sd">    Returns True if an object is an instance of a class give that class name as a</span>
+<span class="sd">    string, otherwise False. The check is performed using the subclasses dictionary.</span>
+<span class="sd">    To see what the subclasses dictionary is populated with, refer to the init file of</span>
+<span class="sd">    this module.</span>
+<span class="sd">    """</span>
+    <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">subclasses</span><span class="p">[</span><span class="n">class_str</span><span class="p">])</span>
+
+
+<div class="viewcode-block" id="Formula"><a class="viewcode-back" href="../../../../lnn/LNN.html#lnn.Formula">[docs]</a><span class="k">class</span> <span class="nc">Formula</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">"""Symbolic container for a generic formula."""</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">formulae</span><span class="p">:</span> <span class="s2">"Formula"</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span> <span class="n">arity</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span>
+    <span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">join</span><span class="p">:</span> <span class="n">Join</span> <span class="o">=</span> <span class="n">kwds</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"join"</span><span class="p">,</span> <span class="n">Join</span><span class="o">.</span><span class="n">INNER</span><span class="p">)</span>
+
+        <span class="c1"># construct edge and operand list for each formula</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edge_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">operands</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Formula</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+
+        <span class="c1"># formula arity</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">arity</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">arity</span>
+
+        <span class="c1"># inherit propositional, variables, and graphs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">propositional</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">kwds</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"propositional"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Variable</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwds</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"variables"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_inherit_from_subformulae</span><span class="p">(</span><span class="o">*</span><span class="n">formulae</span><span class="p">)</span>
+
+        <span class="c1"># formula naming</span>
+        <span class="k">if</span> <span class="n">_isinstance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"_LeafFormula"</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">name</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_formula_structure</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">name</span> <span class="k">if</span> <span class="n">name</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_formula_structure</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="p">)</span>
+
+        <span class="c1"># formula grounding table maps grounded objects to table rows</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">grounding_table</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">propositional</span> <span class="k">else</span> <span class="nb">dict</span><span class="p">()</span>
+
+        <span class="c1"># placeholder for neural variables and functions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">neuron</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">func</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">func_inv</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">formula_number</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">operands_by_number</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">congruent_nodes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+
+    <span class="c1">##</span>
+    <span class="c1"># External function definitions</span>
+    <span class="c1">##</span>
+
+    <span class="k">def</span> <span class="nf">add_facts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"`add_facts` is deprecated, use `add_data` instead"</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Formula.add_data"><a class="viewcode-back" href="../../../../lnn/LNN.html#lnn.Formula.add_data">[docs]</a>    <span class="k">def</span> <span class="nf">add_data</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">data</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span>
+            <span class="n">Union</span><span class="p">[</span><span class="n">Fact</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]],</span>
+            <span class="n">Dict</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]],</span> <span class="n">Union</span><span class="p">[</span><span class="n">Fact</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]],</span>
+        <span class="p">],</span>
+    <span class="p">):</span>
+        <span class="sa">r</span><span class="sd">"""Add data to the formula in the form of classical facts or belief bounds.</span>
+
+<span class="sd">        Data given is a Fact or belief bounds assumes a propositional formula.</span>
+<span class="sd">        Data given in a dict assumes a first-order logic formula,</span>
+<span class="sd">            keyed by the grounding and a value given as a Fact or belief bounds.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        data : Fact, belief bounds or dict</span>
+<span class="sd">            For propositional formulae, truths is given as either Facts or belief bounds (a tuple of 2 floats). For first-order logic formula, inputs truths are given as a dict. It is keyed by the grounding (a str for unary formlae or tuple of strings of larger arities), with values also as Facts or bounds on beliefs.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        ```python</span>
+<span class="sd">        # propositional</span>
+<span class="sd">        P, Q = Propositions("P", "Q")</span>
+<span class="sd">        P.add_data(Fact.TRUE)</span>
+<span class="sd">        Q.add_data((.1, .4))</span>
+<span class="sd">        ```</span>
+<span class="sd">        ```python</span>
+<span class="sd">        # first-order logic</span>
+<span class="sd">        Person = Predicate("Person")</span>
+<span class="sd">        Person.add_data({</span>
+<span class="sd">            "Barack Obama": Fact.TRUE,</span>
+<span class="sd">            "Bo": (.1, .4)</span>
+<span class="sd">        })</span>
+
+<span class="sd">        # FOL with arity &gt; 2</span>
+<span class="sd">        BD = Predicate("Birthdate", 2)</span>
+<span class="sd">        BD.add_data({</span>
+<span class="sd">            ("Barack Obama", "04 August 1961"): Fact.TRUE,</span>
+<span class="sd">            ("Bo", "09 October 2008"): (.6, .75)</span>
+<span class="sd">        })</span>
+<span class="sd">        ```</span>
+
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">propositional</span><span class="p">:</span>  <span class="c1"># Propositional facts</span>
+            <span class="n">_exceptions</span><span class="o">.</span><span class="n">AssertBounds</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">neuron</span><span class="o">.</span><span class="n">add_data</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># FOL facts</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>  <span class="c1"># facts given per grounding</span>
+                <span class="c1"># replace fact keys (str -&gt; _Groundings)</span>
+                <span class="n">groundings</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+                <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">groundings</span><span class="p">:</span>
+                    <span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_ground</span><span class="p">(</span><span class="n">g</span><span class="p">)]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+
+                <span class="c1"># add missing groundings to `grounding_table`</span>
+                <span class="n">groundings</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_add_groundings</span><span class="p">(</span><span class="o">*</span><span class="n">groundings</span><span class="p">)</span>
+
+                <span class="c1"># set facts for all groundings</span>
+                <span class="n">table_facts</span> <span class="o">=</span> <span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">grounding_table</span><span class="p">[</span><span class="n">g</span><span class="p">]:</span> <span class="n">data</span><span class="p">[</span><span class="n">g</span><span class="p">]</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">groundings</span><span class="p">}</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+                    <span class="s2">"FOL facts should be from [dict, set], "</span>
+                    <span class="sa">f</span><span class="s1">'"</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s1">" received </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="si">}</span><span class="s1">'</span>
+                <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">neuron</span><span class="o">.</span><span class="n">add_data</span><span class="p">(</span><span class="n">table_facts</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Formula.add_labels"><a class="viewcode-back" href="../../../../lnn/LNN.html#lnn.Formula.add_labels">[docs]</a>    <span class="k">def</span> <span class="nf">add_labels</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">labels</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span>
+            <span class="n">Union</span><span class="p">[</span><span class="n">Fact</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]],</span>
+            <span class="n">Dict</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]],</span> <span class="n">Union</span><span class="p">[</span><span class="n">Fact</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]],</span>
+        <span class="p">],</span>
+    <span class="p">):</span>
+        <span class="sa">r</span><span class="sd">"""Store labels as data within the symbolic container.</span>
+
+<span class="sd">        Labels given is a Fact or belief bounds assumes a propositional formula.</span>
+<span class="sd">        Labels given in a dict assumes a first-order logic formula,</span>
+<span class="sd">            keyed by the grounding and a value given as a Fact or belief bounds.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        labels : Fact, belief bounds or dict</span>
+<span class="sd">            For propositional formulae, facts are given as either Facts or bounds on beliefs (a tuple of 2 floats). For first-order logic formula, inputs are given as a dict. It is keyed by the grounding (a str for unary formlae or tuple of strings of larger arities), with values also as Facts or bounds on beliefs.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        ```python</span>
+<span class="sd">        # propositional</span>
+<span class="sd">        P, Q = Propositions("P", "Q")</span>
+<span class="sd">        P.add_labels(Fact.TRUE)</span>
+<span class="sd">        Q.add_labels((.1, .4))</span>
+<span class="sd">        ```</span>
+<span class="sd">        ```python</span>
+<span class="sd">        # first-order logic</span>
+<span class="sd">        Person = Predicate("Person")</span>
+<span class="sd">        Person.add_labels({</span>
+<span class="sd">            "Barack Obama": Fact.TRUE,</span>
+<span class="sd">            "Bo": (.1, .4)</span>
+<span class="sd">        })</span>
+
+<span class="sd">        # FOL with arity &gt; 2</span>
+<span class="sd">        BD = Predicate("Birthdate", 2)</span>
+<span class="sd">        BD.add_labels({</span>
+<span class="sd">            ("Barack Obama", "04 August 1961"): Fact.TRUE,</span>
+<span class="sd">            ("Bo", "09 October 2008"): (.6, .75)</span>
+<span class="sd">        })</span>
+<span class="sd">        ```</span>
+
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">propositional</span><span class="p">:</span>  <span class="c1"># Propositional labels</span>
+            <span class="n">_exceptions</span><span class="o">.</span><span class="n">AssertBounds</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">labels</span> <span class="o">=</span> <span class="n">_utils</span><span class="o">.</span><span class="n">fact_to_bounds</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">propositional</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># FOL labels</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"labels"</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">labels</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>  <span class="c1"># labels given per grounding</span>
+                <span class="n">_labels</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">_labels</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+                    <span class="c1"># set labels for groundings, replace str keys -&gt; Groundings</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">labels</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_ground</span><span class="p">(</span><span class="n">g</span><span class="p">)]</span> <span class="o">=</span> <span class="n">_utils</span><span class="o">.</span><span class="n">fact_to_bounds</span><span class="p">(</span>
+                        <span class="n">_labels</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">g</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">propositional</span>
+                    <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+                    <span class="s2">"FOL facts should be from [dict, set], "</span>
+                    <span class="sa">f</span><span class="s1">'"</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s1">" received </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span><span class="si">}</span><span class="s1">'</span>
+                <span class="p">)</span></div>
+
+<div class="viewcode-block" id="Formula.flush"><a class="viewcode-back" href="../../../../lnn/LNN.html#lnn.Formula.flush">[docs]</a>    <span class="k">def</span> <span class="nf">flush</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">"""Set all facts in formula to `Fact.UNKNOWN`."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">neuron</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="nf">get_facts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"`get_facts` is deprecated, use `get_data` instead"</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Formula.get_data"><a class="viewcode-back" href="../../../../lnn/LNN.html#lnn.Formula.get_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_data</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">groundings</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">_Grounding</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="sa">r</span><span class="sd">"""Returns the current beliefs of the formula.</span>
+
+<span class="sd">        Uses the given groundings or the entire `groundind_table` to slice out the</span>
+<span class="sd">        current belief bounds from the `bounds_table`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        -------</span>
+<span class="sd">        ``*groundings``: str or tuple of str</span>
+<span class="sd">            NB - if unspecified, defaults to returning all the facts for the given formula. If specified, the table will be ordered according to the input grounding order.</span>
+
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">propositional</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">groundings</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">neuron</span><span class="o">.</span><span class="n">get_data</span><span class="p">()</span>
+        <span class="n">table_rows</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">grounding_table</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ground</span><span class="p">(</span><span class="n">g</span><span class="p">))</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">groundings</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">row</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">table_rows</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">world</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">neuron</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="n">table_rows</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+<div class="viewcode-block" id="Formula.get_labels"><a class="viewcode-back" href="../../../../lnn/LNN.html#lnn.Formula.get_labels">[docs]</a>    <span class="k">def</span> <span class="nf">get_labels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">groundings</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="sa">r</span><span class="sd">"""Returns the stored labels from the symbolic container."""</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">propositional</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">groundings</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">labels</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">labels</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ground</span><span class="p">(</span><span class="n">g</span><span class="p">))</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">groundings</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">groundings</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">result</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">groundings</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]]]:</span>
+        <span class="sa">r</span><span class="sd">"""Returns the groundings to the user as str or tuple of str."""</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">grounding_table</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">_Grounding</span><span class="o">.</span><span class="n">eval</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">grounding_table</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+
+        <span class="k">return</span> <span class="nb">set</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_classically_resolved</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">"""Checks if the query node is in a classical state besides `Fact.UNKNOWN`."""</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">propositional</span> <span class="ow">and</span> <span class="n">_utils</span><span class="o">.</span><span class="n">is_classical_proposition</span><span class="p">(</span>
+            <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_data</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+        <span class="p">):</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+<div class="viewcode-block" id="Formula.is_contradiction"><a class="viewcode-back" href="../../../../lnn/LNN.html#lnn.Formula.is_contradiction">[docs]</a>    <span class="k">def</span> <span class="nf">is_contradiction</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">bounds</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">stacked</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">BoolTensor</span><span class="p">:</span>
+        <span class="sa">r</span><span class="sd">"""Check if there are any bounds in contradiction."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">contradicting_bounds</span><span class="p">(</span><span class="n">bounds</span><span class="p">,</span> <span class="n">stacked</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Formula.contradicting_bounds"><a class="viewcode-back" href="../../../../lnn/LNN.html#lnn.Formula.contradicting_bounds">[docs]</a>    <span class="k">def</span> <span class="nf">contradicting_bounds</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">bounds</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">stacked</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">BoolTensor</span><span class="p">:</span>
+        <span class="sa">r</span><span class="sd">"""Check which bounds are in contradiction."""</span>
+        <span class="k">if</span> <span class="n">stacked</span><span class="p">:</span>
+            <span class="n">tensor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">neuron</span><span class="o">.</span><span class="n">is_contradiction</span><span class="p">(</span><span class="n">bounds</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">]),</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">neuron</span><span class="o">.</span><span class="n">is_contradiction</span><span class="p">(</span><span class="n">bounds</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="n">tensor</span><span class="o">.</span><span class="n">type</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">neuron</span><span class="o">.</span><span class="n">is_contradiction</span><span class="p">(</span><span class="n">bounds</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Formula.contradicting_stacked_bounds"><a class="viewcode-back" href="../../../../lnn/LNN.html#lnn.Formula.contradicting_stacked_bounds">[docs]</a>    <span class="k">def</span> <span class="nf">contradicting_stacked_bounds</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">bounds</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">BoolTensor</span><span class="p">:</span>
+        <span class="sa">r</span><span class="sd">"""Check if bounds are in contradiction."""</span></div>
+
+<div class="viewcode-block" id="Formula.is_equal"><a class="viewcode-back" href="../../../../lnn/LNN.html#lnn.Formula.is_equal">[docs]</a>    <span class="k">def</span> <span class="nf">is_equal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="s2">"Formula"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sa">r</span><span class="sd">"""Returns True if two nodes are symbolically equivalent.</span>
+
+<span class="sd">        Formulae can be symbolically equivalent yet neurally different, example:</span>
+<span class="sd">        ```python</span>
+<span class="sd">        f = And(A, B, activation={"type": NeuralActivation.Lukasiewicz})</span>
+<span class="sd">        g = And(A, B, activation={"type": NeuralActivation.Godel})</span>
+<span class="sd">        ```</span>
+<span class="sd">        The above will return `True`, since `f` is symbolically equivalent to `g`</span>
+<span class="sd">        despite different neural configurations.</span>
+
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="bp">self</span> <span class="ow">is</span> <span class="n">other</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">congruent_nodes</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">_isinstance</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s2">"Congruent"</span><span class="p">):</span>
+                <span class="n">result</span> <span class="o">+=</span> <span class="p">[</span>
+                    <span class="n">other</span><span class="o">.</span><span class="n">structure</span> <span class="o">==</span> <span class="n">operand</span><span class="o">.</span><span class="n">structure</span> <span class="k">for</span> <span class="n">operand</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="n">operands</span>
+                <span class="p">]</span>
+        <span class="k">return</span> <span class="nb">any</span><span class="p">(</span><span class="n">result</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">is_unweighted</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">all</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">neuron</span><span class="o">.</span><span class="n">bias</span> <span class="o">==</span> <span class="n">w</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">neuron</span><span class="o">.</span><span class="n">weights</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">negation_absorption</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">store</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="s2">"Formula"</span><span class="p">]]):</span>
+        <span class="n">n_negations</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">edge_replace</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">operands</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">def</span> <span class="nf">recurse</span><span class="p">(</span><span class="n">formula</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">operand</span> <span class="ow">in</span> <span class="n">formula</span><span class="o">.</span><span class="n">operands</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">_isinstance</span><span class="p">(</span><span class="n">operand</span><span class="p">,</span> <span class="s2">"Not"</span><span class="p">):</span>
+                    <span class="n">recurse</span><span class="p">(</span><span class="n">operand</span><span class="p">)</span>
+                    <span class="n">root_idx</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">n_negations</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+                    <span class="n">n_negations</span><span class="p">[</span><span class="n">root_idx</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="n">condition</span> <span class="o">=</span> <span class="p">[</span><span class="kc">True</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">neuron</span><span class="o">.</span><span class="n">weights</span><span class="p">)</span>
+                    <span class="n">condition</span><span class="p">[</span><span class="n">root_idx</span><span class="p">]</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">root_idx</span> <span class="o">%</span> <span class="mi">2</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">store</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">neuron</span><span class="o">.</span><span class="n">update_weights_where</span><span class="p">(</span>
+                            <span class="n">condition</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">neuron</span><span class="o">.</span><span class="n">weights</span>
+                        <span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">operands</span><span class="p">[</span><span class="n">root_idx</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">operands</span><span class="p">[</span><span class="n">root_idx</span><span class="p">]</span><span class="o">.</span><span class="n">operands</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">edge_replace</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">edge_list</span><span class="p">[</span><span class="n">root_idx</span><span class="p">],</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">operands</span><span class="p">[</span><span class="n">root_idx</span><span class="p">]))</span>
+                    <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">n_negations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                    <span class="n">operands</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">operand</span><span class="p">)</span>
+
+        <span class="n">recurse</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">store</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">edge_replace</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"ABSORBED NEGATIONS INTO WEIGHTS FOR: '</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">'"</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">edge_replace</span><span class="p">,</span> <span class="n">n_negations</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">operands</span><span class="p">,</span> <span class="n">edge_replace</span><span class="p">,</span> <span class="n">n_negations</span>
+
+    <span class="k">def</span> <span class="nf">named_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]]:</span>
+        <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">neuron</span><span class="o">.</span><span class="n">named_parameters</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">param</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">neuron</span><span class="o">.</span><span class="n">named_parameters</span><span class="p">():</span>
+            <span class="k">yield</span> <span class="n">param</span>
+
+    <span class="k">def</span> <span class="nf">params</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">params</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">detach</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]]:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">param</span> <span class="ow">in</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">neuron</span><span class="o">.</span><span class="n">named_parameters</span><span class="p">()):</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">neuron</span><span class="p">,</span> <span class="n">param</span><span class="p">)</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="n">detach</span>
+                    <span class="k">else</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">neuron</span><span class="p">,</span> <span class="n">param</span><span class="p">)</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> has no attribute: </span><span class="si">{</span><span class="n">param</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">params</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">result</span>
+
+<div class="viewcode-block" id="Formula.print"><a class="viewcode-back" href="../../../../lnn/LNN.html#lnn.Formula.print">[docs]</a>    <span class="k">def</span> <span class="nf">print</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">header_len</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">50</span><span class="p">,</span>
+        <span class="n">roundoff</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
+        <span class="n">params</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">grads</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">numbering</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sa">r</span><span class="sd">"""Print the states of groundings in a formula.</span>
+
+<span class="sd">        ```</span>
+<span class="sd">        OPEN   Proposition: A                 UNKNOWN (L, U)</span>
+
+<span class="sd">        CLOSED Proposition: B                   FALSE (L, U)</span>
+
+<span class="sd">        OPEN   Predicate: P1 (x)</span>
+<span class="sd">        "const_1"                                TRUE (L, U)</span>
+<span class="sd">        "const_2"                       CONTRADICTION (L, U)</span>
+<span class="sd">        "const_3"                               FALSE (L, U)</span>
+
+<span class="sd">        OPEN   Predicate: P2 (x, y)</span>
+<span class="sd">        ("const_1", "const_5")                   TRUE (L, U)</span>
+<span class="sd">        ("const_2", "const_6")          CONTRADICTION (L, U)</span>
+<span class="sd">        ("const_3", "const_7")                  FALSE (L, U)</span>
+
+<span class="sd">        OPEN   And: And_0 (x, y)</span>
+<span class="sd">        Bindings: P1 (x: "const_1"), P2 (x: 'const_2', y: ['const_3', ...])</span>
+<span class="sd">        ('const_1', 'const_3')                   TRUE (L, U)</span>
+<span class="sd">        ('const_2', 'const_3')          CONTRADICTION (L, U)</span>
+<span class="sd">        ('const_1', 'const_7')                  FALSE (L, U)</span>
+
+<span class="sd">        TRUE   ForAll: ForAll_0 (y)           UNKNOWN (L, U)</span>
+<span class="sd">        ```</span>
+
+<span class="sd">        """</span>
+
+        <span class="k">def</span> <span class="nf">state_wrapper</span><span class="p">(</span><span class="n">grounding</span><span class="p">:</span> <span class="n">_Grounding</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"'</span><span class="si">{</span><span class="n">grounding</span><span class="si">}</span><span class="s2">'"</span> <span class="k">if</span> <span class="n">grounding</span><span class="o">.</span><span class="n">grounding_arity</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">grounding</span><span class="si">}</span><span class="s2">"</span>
+            <span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">round_bounds</span><span class="p">(</span><span class="n">grounding</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="nb">round</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">roundoff</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="n">grounding</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">propositional</span>
+                        <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="n">grounding</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+                <span class="p">]</span>
+            <span class="p">)</span>
+
+        <span class="n">header</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">world_state</span><span class="p">(</span><span class="kc">True</span><span class="p">))</span><span class="si">}</span><span class="s2"> "</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">"</span>
+            <span class="sa">f</span><span class="s2">": </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">"</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">params</span><span class="p">:</span>
+            <span class="n">params</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">symbol</span> <span class="ow">in</span> <span class="n">_utils</span><span class="o">.</span><span class="n">param_symbols</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">neuron</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+                    <span class="n">val</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">neuron</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+                    <span class="n">params</span><span class="p">[</span><span class="n">symbol</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">around</span><span class="p">(</span><span class="n">val</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span> <span class="n">roundoff</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span> <span class="o">+</span> <span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">" grads </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">around</span><span class="p">(</span><span class="n">val</span><span class="o">.</span><span class="n">grad</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span> <span class="n">roundoff</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
+                        <span class="k">if</span> <span class="n">grads</span> <span class="ow">and</span> <span class="n">val</span><span class="o">.</span><span class="n">grad</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                        <span class="k">else</span> <span class="s2">""</span>
+                    <span class="p">)</span>
+            <span class="n">params</span> <span class="o">=</span> <span class="s2">"params  "</span> <span class="o">+</span> <span class="s2">",  "</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">"</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">params</span><span class="o">.</span><span class="n">items</span><span class="p">()])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">params</span> <span class="o">=</span> <span class="s2">""</span>
+        <span class="n">number</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">formula_number</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">operands_by_number</span><span class="si">}</span><span class="s2">: "</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">formula_number</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">numbering</span>
+            <span class="k">else</span> <span class="s2">""</span>
+        <span class="p">)</span>
+
+        <span class="c1"># print propositional node - single bounds</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">propositional</span><span class="p">:</span>
+            <span class="n">states</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">header</span><span class="si">:</span><span class="s2">&lt;</span><span class="si">{</span><span class="n">header_len</span><span class="si">}}</span><span class="s2"> "</span>
+                <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">()</span><span class="o">.</span><span class="n">name</span><span class="si">:</span><span class="s2">&gt;13</span><span class="si">}</span><span class="s2"> "</span>
+                <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">round_bounds</span><span class="p">()</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span>
+                <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">params</span><span class="si">}</span><span class="s2">"</span>
+            <span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">number</span><span class="si">}{</span><span class="n">states</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+        <span class="c1"># print FOL node - table of bounds</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">facts</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="p">[</span><span class="s2">""</span><span class="p">]</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">grounding_table</span> <span class="ow">is</span> <span class="kc">None</span>
+                <span class="k">else</span> <span class="p">(</span>
+                    <span class="p">[</span>
+                        <span class="p">(</span>
+                            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">state_wrapper</span><span class="p">(</span><span class="n">g</span><span class="p">)</span><span class="si">:{</span><span class="n">header_len</span><span class="si">}}</span><span class="s2"> "</span>
+                            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">(</span><span class="n">g</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="si">:</span><span class="s2">&gt;13</span><span class="si">}</span><span class="s2"> "</span>
+                            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">round_bounds</span><span class="p">(</span><span class="n">g</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span>
+                        <span class="p">)</span>
+                        <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">grounding_table</span>
+                    <span class="p">]</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">binder</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">op_idx</span><span class="p">,</span> <span class="n">op</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">operands</span><span class="p">):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">propositional</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_bindings</span><span class="p">(</span><span class="n">op_idx</span><span class="p">):</span>
+                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">var_remap</span><span class="p">[</span><span class="n">op_idx</span><span class="p">])):</span>
+                        <span class="k">if</span> <span class="kc">None</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">bindings</span><span class="p">[</span><span class="n">op_idx</span><span class="p">][</span><span class="n">i</span><span class="p">]:</span>
+                            <span class="n">binder</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                                <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">op</span><span class="p">)</span><span class="si">}</span><span class="s2"> "</span>
+                                <span class="s2">"{"</span>
+                                <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">operand_map</span><span class="p">[</span><span class="n">op_idx</span><span class="p">][</span><span class="n">i</span><span class="p">])</span><span class="si">}</span><span class="s2">: "</span>
+                                <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bindings</span><span class="p">[</span><span class="n">op_idx</span><span class="p">][</span><span class="n">i</span><span class="p">]))</span><span class="si">}</span><span class="s2">"</span>
+                                <span class="s2">"}"</span>
+                            <span class="p">)</span>
+            <span class="n">bind_str</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Bindings: "</span> <span class="o">+</span> <span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">binder</span><span class="p">))</span> <span class="k">if</span> <span class="n">binder</span> <span class="k">else</span> <span class="s2">""</span>
+            <span class="n">header</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">header</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">bind_str</span><span class="si">}</span><span class="s2">"</span>
+            <span class="n">params</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="si">{</span><span class="n">params</span><span class="si">}</span><span class="s2">"</span> <span class="k">if</span> <span class="n">params</span> <span class="k">else</span> <span class="s2">""</span>
+            <span class="n">header</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">header</span><span class="si">}{</span><span class="n">params</span><span class="si">}</span><span class="s2">"</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">header</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span> <span class="o">+</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">facts</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">number</span><span class="si">}{</span><span class="n">result</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">project_params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">neuron</span><span class="o">.</span><span class="n">project_params</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">rename</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+
+    <span class="k">def</span> <span class="nf">reset_bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">neuron</span><span class="o">.</span><span class="n">reset_bounds</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">reset_world</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">world</span><span class="p">:</span> <span class="n">World</span><span class="p">):</span>
+        <span class="n">_exceptions</span><span class="o">.</span><span class="n">AssertBoundsLen</span><span class="p">(</span><span class="n">world</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">world</span> <span class="o">=</span> <span class="n">world</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">world</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="k">else</span> <span class="n">world</span><span class="o">.</span><span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">neuron</span><span class="o">.</span><span class="n">reset_world</span><span class="p">(</span><span class="n">world</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">set_formula_number</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">formula_number</span> <span class="o">=</span> <span class="n">idx</span>
+        <span class="k">for</span> <span class="n">operand</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">operands</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">operand</span><span class="o">.</span><span class="n">formula_number</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">idx</span> <span class="o">=</span> <span class="n">operand</span><span class="o">.</span><span class="n">set_formula_number</span><span class="p">(</span><span class="n">idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">operands_by_number</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">operand</span><span class="o">.</span><span class="n">formula_number</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">idx</span>
+
+    <span class="k">def</span> <span class="nf">set_join</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">join</span><span class="p">:</span> <span class="n">Join</span><span class="p">):</span>
+        <span class="n">_exceptions</span><span class="o">.</span><span class="n">AssertJoin</span><span class="p">(</span><span class="n">join</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">join</span> <span class="o">=</span> <span class="n">join</span>
+
+<div class="viewcode-block" id="Formula.set_negative_weights"><a class="viewcode-back" href="../../../../lnn/LNN.html#lnn.Formula.set_negative_weights">[docs]</a>    <span class="k">def</span> <span class="nf">set_negative_weights</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">is_negative</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">store</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="s2">"Formula"</span><span class="p">]]):</span>
+        <span class="sd">"""absorb `Not` into weights and allow negative computation"""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">neuron</span><span class="o">.</span><span class="n">set_negative_weights</span><span class="p">(</span><span class="n">is_negative</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">negation_absorption</span><span class="p">(</span><span class="n">store</span><span class="o">=</span><span class="n">store</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Formula.set_propositional"><a class="viewcode-back" href="../../../../lnn/LNN.html#lnn.Formula.set_propositional">[docs]</a>    <span class="k">def</span> <span class="nf">set_propositional</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">propositional</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">"""Set's the neuron's world parameter."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">propositional</span> <span class="o">=</span> <span class="n">propositional</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">shape</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">neuron</span><span class="o">.</span><span class="n">bounds_table</span><span class="o">.</span><span class="n">shape</span>
+
+<div class="viewcode-block" id="Formula.state"><a class="viewcode-back" href="../../../../lnn/LNN.html#lnn.Formula.state">[docs]</a>    <span class="k">def</span> <span class="nf">state</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">groundings</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span>
+            <span class="nb">str</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]]</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">to_bool</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">bounds</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]],</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]]:</span>
+        <span class="sa">r</span><span class="sd">"""Returns the state of a single grounded fact.</span>
+
+<span class="sd">        if to_bool flag is True, will map classical Facts to bool:</span>
+<span class="sd">            i.e. {Fact.True: True, FALSE': False}</span>
+<span class="sd">        The rest of the node states will return as str</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        see section [F.2](https://arxiv.org/abs/2006.13155) for more</span>
+<span class="sd">            information on node states</span>
+
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">propositional</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">neuron</span><span class="o">.</span><span class="n">state</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">bounds</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">groundings</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">groundings</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                    <span class="n">result</span> <span class="o">=</span> <span class="p">{</span>
+                        <span class="nb">str</span><span class="p">(</span><span class="n">g</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+                        <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="p">(</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">grounding_table</span> <span class="k">if</span> <span class="n">groundings</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">groundings</span>
+                        <span class="p">)</span>
+                    <span class="p">}</span>
+                    <span class="k">return</span> <span class="n">result</span>
+                <span class="n">groundings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ground</span><span class="p">(</span><span class="n">groundings</span><span class="p">)</span>
+                <span class="n">bounds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="n">groundings</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">bounds</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">LookupError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"grounding </span><span class="si">{</span><span class="n">groundings</span><span class="si">}</span><span class="s2"> not found in </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">neuron</span><span class="o">.</span><span class="n">state</span><span class="p">(</span><span class="n">bounds</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:])[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">_utils</span><span class="o">.</span><span class="n">node_state</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">utils</span><span class="o">.</span><span class="n">fact_to_bool</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="k">if</span> <span class="n">to_bool</span> <span class="k">else</span> <span class="n">result</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">unique_var_map</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">{</span><span class="n">u</span><span class="p">:</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">u</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">unique_vars</span><span class="p">)}</span>
+        <span class="k">if</span> <span class="n">_isinstance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"_Quantifier"</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">):</span>
+                <span class="n">result</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="n">idx</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">unique_vars</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">world</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">World</span><span class="p">:</span>
+        <span class="sa">r</span><span class="sd">"""Proxy to get the neuron's world parameter."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">neuron</span><span class="o">.</span><span class="n">world</span>
+
+    <span class="nd">@world</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">world</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_world</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Tuple</span><span class="p">,</span> <span class="n">World</span><span class="p">]):</span>
+        <span class="sa">r</span><span class="sd">"""Proxy to set the neuron's world parameter."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">neuron</span><span class="o">.</span><span class="n">world</span> <span class="o">=</span> <span class="n">new_world</span>
+
+<div class="viewcode-block" id="Formula.world_state"><a class="viewcode-back" href="../../../../lnn/LNN.html#lnn.Formula.world_state">[docs]</a>    <span class="k">def</span> <span class="nf">world_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">"""Returns the state of the `world` variable."""</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">w</span> <span class="o">=</span> <span class="n">World</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">world</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">w</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="n">name</span> <span class="k">else</span> <span class="n">w</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">world</span></div>
+
+    <span class="k">def</span> <span class="nf">And</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">formulae</span><span class="p">:</span> <span class="s2">"Formula"</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"And"</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">subclasses</span><span class="p">[</span><span class="s2">"And"</span><span class="p">](</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_formula_vars</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">formulae</span><span class="p">),</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">Or</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">formulae</span><span class="p">:</span> <span class="s2">"Formula"</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"Or"</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">subclasses</span><span class="p">[</span><span class="s2">"Or"</span><span class="p">](</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_formula_vars</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">formulae</span><span class="p">),</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">Implies</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">formula</span><span class="p">:</span> <span class="s2">"Formula"</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"Implies"</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">subclasses</span><span class="p">[</span><span class="s2">"Implies"</span><span class="p">](</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_formula_vars</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">formula</span><span class="p">),</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">Not</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"Not"</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">subclasses</span><span class="p">[</span><span class="s2">"Not"</span><span class="p">](</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_formula_vars</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">Equivalent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">formula</span><span class="p">:</span> <span class="s2">"Formula"</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"Equivalent"</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">subclasses</span><span class="p">[</span><span class="s2">"Equivalent"</span><span class="p">](</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_formula_vars</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">formula</span><span class="p">),</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">Exists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"Exists"</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">subclasses</span><span class="p">[</span><span class="s2">"Exists"</span><span class="p">](</span><span class="bp">self</span><span class="o">.</span><span class="n">unique_vars</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">ForAll</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"ForAll"</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">subclasses</span><span class="p">[</span><span class="s2">"ForAll"</span><span class="p">](</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">unique_vars</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span>
+
+    <span class="c1">##</span>
+    <span class="c1"># Internal function definitions</span>
+    <span class="c1">##</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="n">variables</span><span class="p">:</span> <span class="n">Variable</span><span class="p">,</span>
+        <span class="n">bind</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Variable</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span>
+        <span class="s2">"Formula"</span><span class="p">,</span>
+        <span class="n">List</span><span class="p">[</span><span class="n">Variable</span><span class="p">],</span>
+        <span class="n">Tuple</span><span class="p">[</span><span class="n">Variable</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
+        <span class="n">Tuple</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">_Grounding</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="kc">None</span><span class="p">]]],</span>
+    <span class="p">]:</span>
+        <span class="sa">r</span><span class="sd">"""Variable remapping between operator and operand variables.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        FOL formulae that appear in connectives are callable:</span>
+<span class="sd">            Note `A`, `B` in the `And`</span>
+<span class="sd">        ```python</span>
+<span class="sd">        x = Variable('x')</span>
+<span class="sd">        model['A'] = Predicate('A')</span>
+<span class="sd">        model['B'] = Predicate('B')</span>
+<span class="sd">        model['AB'] = And(A(x), B(x))</span>
+<span class="sd">        ```</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Formula:</span>
+<span class="sd">            reference to the child object</span>
+<span class="sd">        variables:</span>
+<span class="sd">            tuple of child's Variables</span>
+<span class="sd">        var_remap:</span>
+<span class="sd">            tuple of parent-to-child remapping Variables</span>
+<span class="sd">        bindings:</span>
+<span class="sd">            tuple of parent-to-child groundings to bind inference to single groundings are _Grounding multiple groundings are list(_Grounding)</span>
+
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">variables</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_unique_vars</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"please check if the FOL arity of </span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> is correctly set "</span>
+                <span class="s2">"for the number of variables "</span>
+                <span class="sa">f</span><span class="s2">"variables length (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">variables</span><span class="p">)</span><span class="si">}</span><span class="s2">) must be the same "</span>
+                <span class="sa">f</span><span class="s2">"length as `num_unique_vars` (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">num_unique_vars</span><span class="si">}</span><span class="s2">)"</span>
+            <span class="p">)</span>
+        <span class="n">bindings</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">bind</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">bind</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
+        <span class="n">variable_objects</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">variables</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">bindings</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_ground</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">arity_match</span><span class="o">=</span><span class="kc">False</span><span class="p">)])</span>
+                <span class="k">continue</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">Variable</span><span class="p">):</span>
+                <span class="n">variable_objects</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"expected variable, received </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">bind</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bind</span><span class="p">[</span><span class="n">v</span><span class="p">],</span> <span class="nb">str</span><span class="p">):</span>  <span class="c1"># a single binding</span>
+                    <span class="n">bindings</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_ground</span><span class="p">(</span><span class="n">bind</span><span class="p">[</span><span class="n">v</span><span class="p">],</span> <span class="n">arity_match</span><span class="o">=</span><span class="kc">False</span><span class="p">)])</span>
+                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bind</span><span class="p">[</span><span class="n">v</span><span class="p">],</span> <span class="nb">list</span><span class="p">):</span>  <span class="c1"># multiple bindings</span>
+                    <span class="n">bindings</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_ground</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">arity_match</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">bind</span><span class="p">[</span><span class="n">v</span><span class="p">]]</span>
+                    <span class="p">)</span>
+                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bind</span><span class="p">[</span><span class="n">v</span><span class="p">],</span> <span class="n">Function</span><span class="p">):</span>  <span class="c1"># A single function</span>
+                    <span class="n">bindings</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">bind</span><span class="p">[</span><span class="n">v</span><span class="p">]])</span>
+                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bind</span><span class="p">[</span><span class="n">v</span><span class="p">],</span> <span class="nb">tuple</span><span class="p">):</span>  <span class="c1"># A bound function</span>
+                    <span class="n">bindings</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">bind</span><span class="p">[</span><span class="n">v</span><span class="p">]])</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">"bindings expected as str, "</span>
+                        <span class="sa">f</span><span class="s2">"Function or list of str or "</span>
+                        <span class="sa">f</span><span class="s2">"Function, received </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">bind</span><span class="p">[</span><span class="n">v</span><span class="p">])</span><span class="si">}</span><span class="s2">"</span>
+                    <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">bindings</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="kc">None</span><span class="p">])</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">variable_objects</span><span class="p">),</span> <span class="n">bindings</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
+
+    <span class="k">def</span> <span class="nf">_add_groundings</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">groundings</span><span class="p">:</span> <span class="n">_Grounding</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">"""Adds missing groundings to `grounding_table` for those not yet stored.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        ```python</span>
+<span class="sd">        # for formulae with arity == 1:</span>
+<span class="sd">        formula._add_groundings(_Grounding_1, _Grounding_2)</span>
+<span class="sd">        ```</span>
+<span class="sd">        ```python</span>
+<span class="sd">        # for formulae with arity &gt; 1:</span>
+<span class="sd">        groundings = ((_Grounding_1, _Grounding_7),</span>
+<span class="sd">                      (_Grounding_2, _Grounding_8))</span>
+<span class="sd">        formula._add_groundings(*groundings)</span>
+<span class="sd">        ```</span>
+
+<span class="sd">        Warning</span>
+<span class="sd">        -------</span>
+<span class="sd">        groundings must be given in grounded form: `self._ground(grounding)`</span>
+
+<span class="sd">        """</span>
+        <span class="n">missing_groundings</span> <span class="o">=</span> <span class="p">{</span><span class="n">g</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">groundings</span> <span class="k">if</span> <span class="n">g</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">grounding_table</span><span class="p">}</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">missing_groundings</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_has_new_groundings</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_has_new_groundings</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">table_rows</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">neuron</span><span class="o">.</span><span class="n">extend_groundings</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">missing_groundings</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">grounding_table</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+            <span class="p">{</span><span class="n">g</span><span class="p">:</span> <span class="n">table_rows</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">g</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">missing_groundings</span><span class="p">)}</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_formula_structure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">as_int</span><span class="p">,</span> <span class="n">get_str</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">structure</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sa">r</span><span class="sd">"""Determine a name for input formula(e)."""</span>
+
+        <span class="k">def</span> <span class="nf">subformula_structure</span><span class="p">(</span>
+            <span class="n">subformula</span><span class="p">:</span> <span class="n">Formula</span><span class="p">,</span>
+            <span class="n">operator</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">subformula_vars</span><span class="p">:</span> <span class="n">Tuple</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">root_var_remap</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">subformula_vars</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">root_var_remap</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+                    <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">expanded_unique_vars</span>
+                        <span class="k">if</span> <span class="n">_isinstance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"_Quantifier"</span><span class="p">)</span>
+                        <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_vars</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">_isinstance</span><span class="p">(</span><span class="n">subformula</span><span class="p">,</span> <span class="s2">"_Quantifier"</span><span class="p">):</span>
+                    <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">subformula</span><span class="o">.</span><span class="n">expanded_unique_vars</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">v</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">root_var_remap</span><span class="p">:</span>
+                            <span class="n">root_var_remap</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+                <span class="k">if</span> <span class="n">subformula_vars</span> <span class="o">!=</span> <span class="n">subformula</span><span class="o">.</span><span class="n">unique_vars</span><span class="p">:</span>
+                    <span class="n">root_var_remap</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+                        <span class="p">(</span>
+                            <span class="p">(</span>
+                                <span class="n">subformula</span><span class="o">.</span><span class="n">unique_vars</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                                <span class="n">root_var_remap</span><span class="p">[</span><span class="n">subformula_vars</span><span class="p">[</span><span class="n">i</span><span class="p">]],</span>
+                            <span class="p">)</span>
+                            <span class="k">if</span> <span class="n">subformula</span><span class="o">.</span><span class="n">unique_vars</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="n">subformula_vars</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                            <span class="k">else</span> <span class="p">(</span><span class="n">subformula_vars</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">subformula_vars</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">subformula_vars</span><span class="p">))</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">("</span>
+                    <span class="o">+</span> <span class="n">_utils</span><span class="o">.</span><span class="n">list_to_str</span><span class="p">(</span>
+                        <span class="p">[</span>
+                            <span class="n">root_var_remap</span><span class="p">[</span><span class="n">v</span><span class="p">]</span>
+                            <span class="k">if</span> <span class="ow">not</span> <span class="n">as_int</span>
+                            <span class="k">else</span> <span class="n">subformula</span><span class="o">.</span><span class="n">unique_var_map</span><span class="p">[</span><span class="n">root_var_remap</span><span class="p">[</span><span class="n">v</span><span class="p">]]</span>
+                            <span class="k">if</span> <span class="n">_isinstance</span><span class="p">(</span><span class="n">subformula</span><span class="p">,</span> <span class="s2">"_Quantifier"</span><span class="p">)</span>
+                            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_var_map</span><span class="p">[</span><span class="n">root_var_remap</span><span class="p">[</span><span class="n">v</span><span class="p">]]</span>
+                            <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="p">[</span>
+                                <span class="n">subformula</span><span class="o">.</span><span class="n">expanded_unique_vars</span><span class="p">[</span><span class="n">_</span><span class="p">]</span>
+                                <span class="k">if</span> <span class="n">_isinstance</span><span class="p">(</span><span class="n">subformula</span><span class="p">,</span> <span class="s2">"_Quantifier"</span><span class="p">)</span>
+                                <span class="k">else</span> <span class="n">subformula</span><span class="o">.</span><span class="n">unique_vars</span><span class="p">[</span><span class="n">_</span><span class="p">]</span>
+                                <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">subformula</span><span class="o">.</span><span class="n">operand_map</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                            <span class="p">]</span>
+                        <span class="p">]</span>
+                        <span class="k">if</span> <span class="n">subformula</span><span class="o">.</span><span class="n">operand_map</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                        <span class="k">else</span> <span class="p">[]</span>
+                    <span class="p">)</span>
+                    <span class="o">+</span> <span class="s2">")"</span>
+                <span class="p">)</span>
+                <span class="k">if</span> <span class="n">_isinstance</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s2">"Predicate"</span><span class="p">)</span>
+                <span class="k">else</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">"</span>
+                <span class="k">if</span> <span class="n">_isinstance</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s2">"Proposition"</span><span class="p">)</span>
+                <span class="k">else</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">structure</span><span class="si">}</span><span class="s2">"</span>
+                <span class="k">if</span> <span class="n">_isinstance</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s2">"_Quantifier"</span><span class="p">)</span>
+                <span class="k">else</span> <span class="p">(</span>
+                    <span class="s2">"("</span>
+                    <span class="o">+</span> <span class="n">subformula_structure</span><span class="p">(</span>
+                        <span class="n">f</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">connective_str</span><span class="p">,</span> <span class="n">subformula</span><span class="o">.</span><span class="n">var_remap</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">root_var_remap</span>
+                    <span class="p">)</span>
+                    <span class="o">+</span> <span class="s2">")"</span>
+                <span class="p">)</span>
+                <span class="k">if</span> <span class="n">_isinstance</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s2">"_ConnectiveNeuron"</span><span class="p">)</span>
+                <span class="k">else</span> <span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">connective_str</span><span class="si">}</span><span class="s2">"</span>
+                    <span class="o">+</span> <span class="n">subformula_structure</span><span class="p">(</span>
+                        <span class="n">f</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">subformula</span><span class="o">.</span><span class="n">var_remap</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">root_var_remap</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+                <span class="k">if</span> <span class="n">_isinstance</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s2">"Not"</span><span class="p">)</span>
+                <span class="k">else</span> <span class="s2">""</span>
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">f</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">subformula</span><span class="o">.</span><span class="n">operands</span><span class="p">)</span>
+            <span class="p">]</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">" </span><span class="si">{</span><span class="n">operator</span><span class="si">}</span><span class="s2"> "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="k">if</span> <span class="n">operator</span> <span class="k">else</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">_isinstance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"_Quantifier"</span><span class="p">):</span>
+            <span class="n">quantified_idxs</span> <span class="o">=</span> <span class="n">_utils</span><span class="o">.</span><span class="n">list_to_str</span><span class="p">(</span>
+                <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">unique_var_map</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">],</span> <span class="s2">","</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">connective_str</span><span class="si">}{</span><span class="n">quantified_idxs</span><span class="si">}</span><span class="s2">, "</span>
+                <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">subformula_structure</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s2">)"</span>
+            <span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">_isinstance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"Not"</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">connective_str</span><span class="si">}{</span><span class="n">get_str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">operands</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="si">}</span><span class="s2">"</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">propositional</span>
+                <span class="k">else</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">connective_str</span><span class="si">}{</span><span class="n">subformula_structure</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="p">(</span>
+                <span class="s2">"("</span>
+                <span class="o">+</span> <span class="sa">f</span><span class="s2">" </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">connective_str</span><span class="si">}</span><span class="s2"> "</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">get_str</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">operands</span><span class="p">])</span>
+                <span class="o">+</span> <span class="s2">")"</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">propositional</span>
+            <span class="k">else</span> <span class="sa">f</span><span class="s2">"(</span><span class="si">{</span><span class="n">subformula_structure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">connective_str</span><span class="p">)</span><span class="si">}</span><span class="s2">)"</span>
+        <span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_formula_vars</span><span class="p">(</span><span class="o">*</span><span class="n">formulae</span><span class="p">:</span> <span class="s2">"Formula"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="s2">"Formula"</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">]]:</span>
+        <span class="sa">r</span><span class="sd">"""Returns a list of formulae as wither called (when predicates)</span>
+<span class="sd">        or uncalled as connectives.</span>
+<span class="sd">        """</span>
+        <span class="n">variables</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
+            <span class="n">Variable</span><span class="p">(</span><span class="sa">f</span><span class="s2">"?</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">max</span><span class="p">([</span><span class="n">f</span><span class="o">.</span><span class="n">arity</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">formulae</span><span class="p">]))</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">variables</span><span class="p">[:</span> <span class="n">f</span><span class="o">.</span><span class="n">arity</span><span class="p">])</span>
+            <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">f</span><span class="o">.</span><span class="n">propositional</span> <span class="ow">and</span> <span class="n">_isinstance</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s2">"Predicate"</span><span class="p">))</span>
+            <span class="k">else</span> <span class="n">f</span>
+            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">formulae</span>
+        <span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_ground</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">grounding</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">_Grounding</span><span class="p">],</span>
+        <span class="n">arity_match</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_Grounding</span><span class="p">:</span>
+        <span class="sa">r</span><span class="sd">"""Returns a single grounded object given a grounding in str form.</span>
+
+<span class="sd">        If the grounding is already an internal "Grounding" object, it will simply be</span>
+<span class="sd">        returned to the user as is.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        ```python</span>
+<span class="sd">        # for arity == 1</span>
+<span class="sd">        self._ground('str_1')</span>
+<span class="sd">        ```</span>
+<span class="sd">        ```python</span>
+<span class="sd">        # for arity &gt; 1</span>
+<span class="sd">        grounding = ('str_1', 'str_2', ...)</span>
+<span class="sd">        self._ground(grounding)</span>
+<span class="sd">        ```</span>
+
+<span class="sd">        Warning</span>
+<span class="sd">        -------</span>
+<span class="sd">        This function can only ground one object at a time due to tuple confusion</span>
+<span class="sd">        for multiple objects</span>
+
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="n">Formula</span><span class="o">.</span><span class="n">_is_grounded</span><span class="p">(</span><span class="n">grounding</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">grounding</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">grounding</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">([</span><span class="nb">type</span><span class="p">(</span><span class="n">g</span><span class="p">)</span> <span class="ow">in</span> <span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">grounding</span><span class="p">]):</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+                    <span class="s2">"expected groundings as tuple of str for num_unique_vars "</span>
+                    <span class="sa">f</span><span class="s2">" &gt; 1, received </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">grounding</span><span class="p">)</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">grounding</span><span class="si">}</span><span class="s2">"</span>
+                <span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">grounding</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_unique_vars</span> <span class="ow">and</span> <span class="n">arity_match</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+                    <span class="s2">"expected grounding length to be of "</span>
+                    <span class="sa">f</span><span class="s2">"arity </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">num_unique_vars</span><span class="si">}</span><span class="s2">, received </span><span class="si">{</span><span class="n">grounding</span><span class="si">}</span><span class="s2">"</span>
+                <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_unique_vars</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">arity_match</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> received str as grounding, expected grounding "</span>
+                    <span class="sa">f</span><span class="s2">"(</span><span class="si">{</span><span class="n">grounding</span><span class="si">}</span><span class="s2">) as a tuple of len </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">num_unique_vars</span><span class="si">}</span><span class="s2">"</span>
+                <span class="p">)</span>
+        <span class="k">return</span> <span class="n">_Grounding</span><span class="p">(</span><span class="n">grounding</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_ground_functions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">"""Grounds a "Function" if given bindings that are fully bound."""</span>
+        <span class="n">tmp_bindings</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="nb">tuple</span><span class="p">([</span><span class="n">get_bindings</span><span class="p">(</span><span class="n">g</span><span class="p">)</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">op</span><span class="p">])</span> <span class="k">if</span> <span class="n">op</span> <span class="k">else</span> <span class="p">([</span><span class="kc">None</span><span class="p">],)</span>
+            <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">bindings</span>
+        <span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">op_id</span><span class="p">,</span> <span class="n">op</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">operands</span><span class="p">):</span>
+
+            <span class="c1"># If there are groundings and partial bindings we can still</span>
+            <span class="c1"># create new groundings by combining the partials from</span>
+            <span class="c1"># groundings and bindings. But we need the ability</span>
+            <span class="c1"># to extract partial groundings without the grounding string.</span>
+            <span class="c1"># bindings = [g for g in product(*tmp_bindings[op_id])]</span>
+            <span class="c1"># for g in op.groundings:  # Tuple</span>
+            <span class="c1">#     for binding in bindings:</span>
+            <span class="c1">#         new_g = [g[b] if binding[b] is None else binding[b]</span>
+            <span class="c1">#                  for b in range(len(binding))]</span>
+            <span class="c1">#         op._add_groundings(tuple(new_g))</span>
+
+            <span class="k">if</span> <span class="nb">all</span><span class="p">([</span><span class="kc">False</span> <span class="k">if</span> <span class="n">g</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">True</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">tmp_bindings</span><span class="p">[</span><span class="n">op_id</span><span class="p">]]):</span>
+                <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="o">*</span><span class="n">tmp_bindings</span><span class="p">[</span><span class="n">op_id</span><span class="p">]):</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">g</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="n">op</span><span class="o">.</span><span class="n">_add_groundings</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">_ground</span><span class="p">(</span><span class="n">g</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">op</span><span class="o">.</span><span class="n">_add_groundings</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">_ground</span><span class="p">(</span><span class="n">g</span><span class="p">))</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">_groundings</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="n">_Grounding</span><span class="p">]:</span>
+        <span class="sd">"""Internal usage to extract groundings as _Grounding object"""</span>
+        <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">grounding_table</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+    <span class="k">def</span> <span class="nf">_has_bindings</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">slot</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sa">r</span><span class="sd">"""Returns True if Formula has any bindings."""</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">slot</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+
+            <span class="k">return</span> <span class="p">(</span>
+                <span class="kc">True</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bindings</span><span class="p">[</span><span class="n">slot</span><span class="p">]</span>
+                <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span>
+                    <span class="p">[</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">bindings</span><span class="p">[</span><span class="n">slot</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span>
+                        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bindings</span><span class="p">[</span><span class="n">slot</span><span class="p">]))</span>
+                        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bindings</span><span class="p">[</span><span class="n">slot</span><span class="p">][</span><span class="n">i</span><span class="p">]))</span>
+                    <span class="p">]</span>
+                <span class="p">)</span>
+                <span class="k">else</span> <span class="kc">False</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="nb">any</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_has_bindings</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bindings</span><span class="p">))])</span>
+
+    <span class="k">def</span> <span class="nf">_inherit_from_subformulae</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">subformula</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="s2">"Formula"</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">]):</span>
+        <span class="sa">r</span><span class="sd">"""Builds the local context for a formula using subformulae.</span>
+
+<span class="sd">        provides manual variable remapping if given with variables:</span>
+<span class="sd">            i.e. Formula used as a function via `__call__`</span>
+<span class="sd">        alternatively inherits remapping from operands if formula is not called</span>
+
+<span class="sd">        """</span>
+
+        <span class="c1"># inheritance variables</span>
+        <span class="n">subformulae</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="n">_operand_vars</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Variable</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="kc">None</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">arity</span>
+        <span class="n">_var_remap</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Variable</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="kc">None</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">arity</span>
+        <span class="n">_bindings</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">_Grounding</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="kc">None</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">arity</span>
+
+        <span class="k">for</span> <span class="n">slot</span><span class="p">,</span> <span class="n">f</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">subformula</span><span class="p">):</span>
+
+            <span class="c1"># variable remapping from `called` operands:</span>
+            <span class="c1">#</span>
+            <span class="c1">#     ```python</span>
+            <span class="c1">#     P = Predicate("P", arity=2)</span>
+            <span class="c1">#     Q = Predicate("P", arity=2)</span>
+            <span class="c1">#     And(P(x, y), Q(y, z))</span>
+            <span class="c1">#     ```</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+                <span class="n">subformulae</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="n">_operand_vars</span><span class="p">[</span><span class="n">slot</span><span class="p">]</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">_var_remap</span><span class="p">[</span><span class="n">slot</span><span class="p">]</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+                <span class="n">_bindings</span><span class="p">[</span><span class="n">slot</span><span class="p">]</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">edge_list</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">operands</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+            <span class="c1"># automatically inherit variable remapping from `uncalled` operands</span>
+            <span class="c1">#   for higher level connective formulae:</span>
+            <span class="c1">#</span>
+            <span class="c1">#     ```python</span>
+            <span class="c1">#     Implies(And(...), Or(...))</span>
+            <span class="c1">#     ```</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">f</span><span class="o">.</span><span class="n">propositional</span><span class="p">:</span>
+                    <span class="n">_var_remap</span><span class="p">[</span><span class="n">slot</span><span class="p">]</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">unique_vars</span>
+                    <span class="n">_operand_vars</span><span class="p">[</span><span class="n">slot</span><span class="p">]</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">unique_vars</span>
+                    <span class="n">_bindings</span><span class="p">[</span><span class="n">slot</span><span class="p">]</span> <span class="o">=</span> <span class="p">[[</span><span class="kc">None</span><span class="p">]]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">unique_vars</span><span class="p">)</span>
+                <span class="n">subformulae</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">edge_list</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">operands</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">operands</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Formula</span><span class="p">]</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">operands</span><span class="p">)</span>
+
+        <span class="c1"># set class variables as read-only tuples</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">operand_vars</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Variable</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">_operand_vars</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">var_remap</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Variable</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">_var_remap</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bindings</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">_Grounding</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">_bindings</span><span class="p">)</span>
+
+        <span class="c1"># inherit propositional flag from children</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">propositional</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">_isinstance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"_Quantifier"</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">set_propositional</span><span class="p">(</span>
+                    <span class="ow">not</span> <span class="n">subclasses</span><span class="p">[</span><span class="s2">"_Quantifier"</span><span class="p">]</span><span class="o">.</span><span class="n">_has_free_variables</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">operands</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">set_propositional</span><span class="p">(</span>
+                    <span class="kc">False</span> <span class="k">if</span> <span class="nb">any</span><span class="p">([</span><span class="ow">not</span> <span class="n">f</span><span class="o">.</span><span class="n">propositional</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">subformulae</span><span class="p">])</span> <span class="k">else</span> <span class="kc">True</span>
+                <span class="p">)</span>
+
+        <span class="c1"># inherit variables from children</span>
+        <span class="k">if</span> <span class="n">_isinstance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"_Quantifier"</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
+            <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">propositional</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">_isinstance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"_LeafFormula"</span><span class="p">)</span>
+        <span class="p">):</span>
+            <span class="n">remap</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">var_remap</span>
+            <span class="k">if</span> <span class="n">_isinstance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"_Quantifier"</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"variables"</span><span class="p">):</span>
+                <span class="n">remap</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">subclasses</span><span class="p">[</span><span class="s2">"_Quantifier"</span><span class="p">]</span><span class="o">.</span><span class="n">_unique_variables_overlap</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">var_remap</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="p">),</span>
+                <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_update_variables</span><span class="p">(</span><span class="o">*</span><span class="n">remap</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_update_map</span><span class="p">()</span>
+
+        <span class="c1"># expand formula graph to include all subformulae</span>
+        <span class="k">if</span> <span class="n">subformulae</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">edge_list</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">edge</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">subformulae</span> <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="n">edge_list</span><span class="p">])</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_is_grounded</span><span class="p">(</span><span class="n">groundings</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">_Grounding</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sa">r</span><span class="sd">"""Returns True if the grounding is given in internal "Grounded" form."""</span>
+        <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">groundings</span><span class="p">,</span> <span class="n">_Grounding</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_unique_variables</span><span class="p">(</span><span class="o">*</span><span class="n">variables</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Variable</span><span class="p">,</span> <span class="o">...</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">:</span>
+        <span class="sa">r</span><span class="sd">"""Combines all predicate variables into a unique tuple</span>
+<span class="sd">        the tuple is sorted by the order of appearance of variables in</span>
+<span class="sd">        the operands.</span>
+<span class="sd">        """</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">op_vars</span> <span class="ow">in</span> <span class="n">variables</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">op_vars</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">op_vars</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">v</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
+                        <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_update_map</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sa">r</span><span class="sd">"""Update the 'operand_map' to map parent groundings to operand groundings."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">operand_map</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">operand_vars</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">op_idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">var_remap</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">var_remap</span><span class="p">[</span><span class="n">op_idx</span><span class="p">]:</span>
+                <span class="n">op_map</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">unique_vars</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">op_var</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">op_var</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_vars</span>
+                    <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">op_var</span><span class="p">)</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">unique_vars</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">op_var</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">var_remap</span><span class="p">[</span><span class="n">op_idx</span><span class="p">]</span>
+                <span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">operand_map</span><span class="p">[</span><span class="n">op_idx</span><span class="p">]</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">op_map</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_update_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">variables</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Variable</span><span class="p">,</span> <span class="o">...</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sa">r</span><span class="sd">"""</span>
+<span class="sd">        **Notes**</span>
+
+<span class="sd">        If the formula grounding_arity is not specified, it will be inherited</span>
+<span class="sd">            from the variables. If variables are not specified, both the</span>
+<span class="sd">            `grounding_arity` and variables are inherited from groundings</span>
+
+<span class="sd">        """</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">unique_vars</span> <span class="o">=</span> <span class="n">Formula</span><span class="o">.</span><span class="n">_unique_variables</span><span class="p">(</span><span class="o">*</span><span class="n">variables</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_unique_vars</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">unique_vars</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_contradiction_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coeff</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="sa">r</span><span class="sd">"""Contradiction loss."""</span>
+        <span class="k">if</span> <span class="n">coeff</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">coeff</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">bounds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_data</span><span class="p">()</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">bounds</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">bounds</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">is_contradiction</span><span class="p">()</span> <span class="o">*</span> <span class="n">coeff</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_uncertainty_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coeff</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="sa">r</span><span class="sd">"""Uncertainty loss."""</span>
+        <span class="k">if</span> <span class="n">coeff</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">coeff</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">bounds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_data</span><span class="p">()</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">bounds</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">bounds</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">is_contradiction</span><span class="p">()</span><span class="o">.</span><span class="n">logical_not</span><span class="p">()</span> <span class="o">*</span> <span class="n">coeff</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_supervised_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coeff</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
+        <span class="sa">r</span><span class="sd">"""Supervised loss."""</span>
+        <span class="k">if</span> <span class="n">coeff</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">coeff</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">MSELoss</span><span class="p">()</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"labels"</span><span class="p">)</span>
+            <span class="ow">or</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">propositional</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">labels</span><span class="o">.</span><span class="n">numel</span><span class="p">())</span>
+            <span class="ow">or</span> <span class="p">(</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">propositional</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">labels</span><span class="p">)</span>
+        <span class="p">):</span>
+            <span class="k">return</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_labels</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">propositional</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">coeff</span> <span class="o">*</span> <span class="n">loss</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_data</span><span class="p">(),</span> <span class="n">labels</span><span class="p">)</span>
+        <span class="n">groundings</span> <span class="o">=</span> <span class="p">[</span><span class="n">g</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">labels</span> <span class="k">if</span> <span class="n">g</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">grounding_table</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">groundings</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="k">return</span> <span class="n">coeff</span> <span class="o">*</span> <span class="n">loss</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="o">*</span><span class="n">groundings</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_labels</span><span class="p">(</span><span class="o">*</span><span class="n">groundings</span><span class="p">))</span>
+
+    <span class="n">increment_param_history</span> <span class="o">=</span> <span class="n">_trace</span><span class="o">.</span><span class="n">increment_param_history</span></div>
+</pre>
+       </div>
+      </article>
+     </div>
+    </div>
+   </main>
+  </div>
+  <footer class="md-footer">
+   <div class="md-footer-nav">
+    <nav class="md-footer-nav__inner md-grid">
+    </nav>
+   </div>
+   <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+     <div class="md-footer-copyright">
+      <div class="md-footer-copyright__highlight">
+       © Copyright 2020, IBM Research.
+      </div>
+      Created using
+      <a href="http://www.sphinx-doc.org/">
+       Sphinx
+      </a>
+      4.3.0.
+             and
+      <a href="https://github.com/bashtage/sphinx-material/">
+       Material for
+              Sphinx
+      </a>
+     </div>
+    </div>
+   </div>
+  </footer>
+  <script src="../../../../_static/javascripts/application.js">
+  </script>
+  <script>
+   app.initialize({version: "1.0.4", url: {base: ".."}})
+  </script>
+ </body>
+</html>
