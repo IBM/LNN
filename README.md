@@ -57,7 +57,7 @@ To install the LNN:
       env "CFLAGS=-I/usr/local/include -L/usr/local/lib" pip install pycddlib
       ```
       ```bash
-      # Windows
+      # Windows #Ubuntu and Debian
       sudo apt-get install python3-dev graphviz libgraphviz-dev pkg-config
       sudo -H apt-get install libgmp-dev python3-dev
       ```
