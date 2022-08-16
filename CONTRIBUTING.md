@@ -18,14 +18,9 @@ Implies(Contributions(x), Growth)
     conda create -n lnn-contrib python=3.9 -y
     conda activate lnn-contrib
     ```
-2. Clone the `develop` branch to keep up to date with the latest supported features:
+3. Install the LNN module as editable
     ```commandline
-    git clone https://github.ibm.com/Naweed-Khan/LNN.git -b develop
-    ```
-3. Install the LNN module as editable and use the `develop` branch
-    ```commandline
-    cd LNN
-    pip install -e .
+    pip install -e git+https://github.com/IBM/LNN.git
     ```
 * Install [Black](https://black.readthedocs.io/en/stable/integrations/editors.html) as an external tool/keyboard shortcut to keep to our code style - this automates our pep8 compliance so that you can code without the styling overhead
 * Install and run pytest to ensure that the build is working correctly:
@@ -59,7 +54,6 @@ You are now ready to contribute changes to the codebase
 
 To create a new feature branch:
    ```commandline
-   git checkout develop
    git checkout -b feature/my_branch
    ```
 
@@ -69,10 +63,11 @@ Please be mindful of existing branches when creating a new branch.
 
 1. Use `Black` formatting to ensure that code contributions abide by our code style
 2. Commits should contain one of the following tags before the commit message: `ADD`, `FIX`, `MAINT`
-3. Run `pytest` locally to ensure all changes pass
+3. **All commits require a [developer certificate of origin](https://github.com/apps/dco)**, please use the `git commit -s` flag appropriately.
+4. Run `pytest` locally to ensure all changes pass
 
    NB: All code contributions corresponding to `enhancement` issues should have additional tests accompanying the code changes, located in the `tests/` folder.
-4. Propose your code changes as a `Pull Request DRAFT` that merge into the `develop` branch.
+4. Propose your code changes as a `Pull Request DRAFT`.
 5. A passed draft can be changed to a formal `Pull Request`.
 6. Add a reviewer to your code so that they can get notified of the proposal - the individual should correspond to the those charged with the yellow tag
 
