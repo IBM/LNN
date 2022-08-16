@@ -61,7 +61,7 @@ To install the LNN:
       conda install --channel conda-forge pygraphviz
       ```
       ```bash
-      # Ubuntu
+      # Ubuntu and Debian
       sudo apt-get install python3-dev graphviz libgraphviz-dev pkg-config
       sudo -H apt-get install libgmp-dev python3-dev
       ```
