@@ -5,7 +5,7 @@ Thank you for considering a contribution to Logical Neural Networks, with your a
 We commit to growing LNNs functionality, but we'd also love to see your name expanding into `x`, adding to growing our list of contributors:
 ```python
 Contributions = Predicate("Contribution")
-Growth = Propostion("LNNs Growth", world=World.TRUE)
+Growth = Proposition("LNNs Growth", world=World.TRUE)
 
 Implies(Contributions(x), Growth)
 ```
