@@ -82,7 +82,7 @@ model.add_data({square: {'c': Fact.TRUE, 'k': Fact.TRUE}})
 steps, facts_inferred = model.infer()
 
 # Inspect the query node
-print(model['foursided_objects'].true_groundings)
+print(model[query].true_groundings)
 ```
 
 Expected output: `{'c', 'k'}`
