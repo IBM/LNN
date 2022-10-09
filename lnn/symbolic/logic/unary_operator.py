@@ -329,8 +329,10 @@ class Not(_UnaryOperator):
                 for g in groundings:
                     if g not in self.operands[0]._groundings:
                         self.operands[0]._add_groundings(g)
+
+            table_rows = list(self.operands[0].grounding_table.get(self._ground(g)) for g in groundings) 
             bounds = self.operands[0].neuron.aggregate_bounds(
-                None, _utils.negate_bounds(self.get_data(*groundings))
+                table_rows, _utils.negate_bounds(self.get_data(*groundings))
             )
             if self.operands[0].is_contradiction():
                 logging.info(
