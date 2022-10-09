@@ -29,7 +29,8 @@ To install the LNN:
       
       ```bash
       # Using Conda
-      conda install -c anaconda graphviz
+      conda install --channel conda-forge pygraphviz
+
       ```
       Alternatively you can install the OS specific versions as follows:
       ```bash
