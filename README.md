@@ -43,7 +43,7 @@ To install the LNN:
       ```
       ```bash
       # Windows
-      sudo apt-get install python3-dev graphviz libgraphviz-dev pkg-config
+      conda install --channel conda-forge pygraphviz
       ```
       </div></details>
 
