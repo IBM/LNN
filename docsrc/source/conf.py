@@ -37,6 +37,7 @@ extensions = [
     "sphinx_copybutton",
     "myst_parser",
     "sphinx_material",
+    "sphinx.ext.autosectionlabel",
 ]
 
 html_sidebars = {"**": ["globaltoc.html", "localtoc.html", "searchbox.html"]}
