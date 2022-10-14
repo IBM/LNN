@@ -73,7 +73,7 @@ rect_foursides = ForAll(x, Implies(rectangle(x), foursides(x)))
 query = Exists(x, foursides(x))
 
 # Add predicates and rules to the model
-model.add_knowledge(square, rectangle, square_rect, rect_foursides, query)
+model.add_knowledge(square_rect, rect_foursides, query)
 
 # Add facts to the model
 model.add_data({square: {'c': Fact.TRUE, 'k': Fact.TRUE}})
