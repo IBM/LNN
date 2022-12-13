@@ -15,7 +15,7 @@ setuptools.setup(
     description="A `Neural = Symbolic` framework for weighted real-valued logic",
     long_description=pathlib.Path("README.md").read_text(),
     long_description_content_type="text/markdown",
-    url="https://github.com/IBM/LNN",
+    url="https://github.com/lamoghaighoroje/LNN",
     packages=setuptools.find_packages(),
     install_requires=pathlib.Path("requirements.txt").read_text().replace("==", ">="),
     classifiers=[
