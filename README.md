@@ -21,6 +21,8 @@ properties of both neural nets (learning) and symbolic logic (knowledge and reas
   knowledge.
 
 ## Quickstart
+You can install the LNN locally on your machine or inside a container.
+### Install on Local Machine
 To install the LNN:
 
 1. Make sure that the python version you use in line with our [setup](https://github.com/IBM/LNN/blob/master/setup.py) file, using a fresh environment is always a good idea:
@@ -32,7 +34,22 @@ To install the LNN:
     ```commandline
     pip install git+https://github.com/IBM/LNN
     ```
+### Run in Container
+Download or clone the repository using the command below:
+```commandline
+git clone https://github.com/IBM/LNN.git
+```
 
+and then run
+```commandline
+cd docker && docker-compose up
+```
+
+Then open the address below in your browser:
+```
+http://localhost:8888/
+```
+This should open the Jupyter Notebook UI with all environment ready to work with LNN.
 ## Contribution
 Contributions to the LNN codebase are welcome!
 

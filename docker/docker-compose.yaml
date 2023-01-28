@@ -1,0 +1,17 @@
+version: '3.3'
+
+services:
+  ibm_lnn:
+    container_name: ibm_lnn
+    build: 
+      context: ../
+      dockerfile: docker/Dockerfile
+    ports:
+      - "8888:8888"
+    volumes:
+      - ../:/home/LNN
+
+
+
+
+  
