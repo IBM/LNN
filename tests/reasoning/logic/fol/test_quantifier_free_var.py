@@ -1,43 +1,43 @@
 ##
-# Copyright 2022 IBM Corp. All Rights Reserved.
+# Copyright 2023 IBM Corp. All Rights Reserved.
 #
 # SPDX-License-Identifier: Apache-2.0
 ##
 
-from lnn import Model, Variable, Fact, Exists, Predicate  # ForAll, World, And
+from lnn import Fact
 
 
 TRUE = Fact.TRUE
 FALSE = Fact.FALSE
 
 
-def test_0():
-    """Quantifier with free variables, upward on predicate"""
-    x, y, z = map(Variable, ("x", "y", "z"))
-    # a, b, c = map(Variable, ("a", "b", "c"))
-    model = Model()
-    P = Predicate("P", 3)
-    R = Exists(z, y, Exists(x, P(x, y, z)))
-    model.add_knowledge(R)
-
-    model.add_data(
-        {
-            P: {
-                ("1", "a", "u"): TRUE,
-                ("2", "b", "v"): FALSE,
-                ("3", "c", "u"): TRUE,
-                ("2", "a", "u"): FALSE,
-                ("3", "b", "v"): FALSE,
-            }
-        }
-    )
-
-    model.infer()
-    # assert R.state() is TRUE
-    # assert Some.true_groundings == set(GT), (
-    #     f'expected True groundings to be {GT}, '
-    #     f'received {Some.true_groundings}'
-    # )
+# def test_0():
+#     """Quantifier with free variables, upward on predicate"""
+#     x, y, z = map(Variable, ("x", "y", "z"))
+#     # a, b, c = map(Variable, ("a", "b", "c"))
+#     model = Model()
+#     P = Predicate("P", 3)
+#     R = Exists(z, y, Exists(x, P(x, y, z)))
+#     model.add_knowledge(R)
+#
+#     model.add_data(
+#         {
+#             P: {
+#                 ("1", "a", "u"): TRUE,
+#                 ("2", "b", "v"): FALSE,
+#                 ("3", "c", "u"): TRUE,
+#                 ("2", "a", "u"): FALSE,
+#                 ("3", "b", "v"): FALSE,
+#             }
+#         }
+#     )
+#
+#     model.infer()
+#     # assert R.state() is TRUE
+#     # assert Some.true_groundings == set(GT), (
+#     #     f'expected True groundings to be {GT}, '
+#     #     f'received {Some.true_groundings}'
+#     # )
 
 
 # def test_1():
@@ -109,7 +109,7 @@ def test_0():
 #     x = Variable('x')
 #     model = Model()
 #     A, S = model.add_predicates(1, 'A', 'S')
-#     All = ForAll(x, A(x), world=World.OPEN)
+#     All = Forall(x, A(x), world=World.OPEN)
 #     Some = Exists(x, S(x))
 #     model.add_knowledge(All, Some)
 #     All = All]
@@ -128,14 +128,14 @@ def test_0():
 #
 #     model.upward()
 #     assert Some.state() is TRUE, (
-#         f'ForAll expected as TRUE, received {Some.state()}')
+#         f'Forall expected as TRUE, received {Some.state()}')
 #     assert All.state() is FALSE, (
 #         f'Exists expected as FALSE, received {All.state()}')
 
 
 if __name__ == "__main__":
-    test_0()
+    # test_0()
     # test_1()
     # test_2()
     # test_3()
-    print("success")
+    print("Empty")

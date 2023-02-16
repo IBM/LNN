@@ -1,5 +1,5 @@
 ##
-# Copyright 2022 IBM Corp. All Rights Reserved.
+# Copyright 2023 IBM Corp. All Rights Reserved.
 #
 # SPDX-License-Identifier: Apache-2.0
 ##
@@ -13,9 +13,7 @@ import torch
 
 from .connective_formula import _ConnectiveFormula
 from .neural_activation import _NeuralActivation
-from .grounding import _Grounding
 from .. import _gm
-from .. import _bindings
 from ... import _utils
 from ...constants import Direction
 
@@ -59,8 +57,6 @@ class _ConnectiveNeuron(_ConnectiveFormula):
         ----------
         groundings : str or tuple of str, optional
             restrict upward inference to a specific grounding or row in the truth table
-        lifted : bool, optional
-            flag that determines if lifting should be done on this node.
 
         Returns
         -------
@@ -68,57 +64,33 @@ class _ConnectiveNeuron(_ConnectiveFormula):
             The amount of bounds tightening or new information that is leaned by the inference step.
 
         """
-        # Create (potentially) new groundings from functions
-        if not self.propositional:
-            self._ground_functions()
-
-        if kwds.get("lifted"):
-            result = self.neuron.aggregate_world(
-                tuple(
-                    self.func(
-                        torch.stack(
-                            [torch.tensor(op.world) for op in self.operands], dim=-1
-                        )[None]
-                    ).tolist()[0]
-                )
+        upward_bounds = _gm.upward_bounds(self, self.operands, groundings)
+        if upward_bounds is None:  # contradiction arresting
+            return 0.0
+        input_bounds, groundings = upward_bounds
+        grounding_rows = (
+            None
+            if self.propositional
+            else (
+                self.grounding_table.values()
+                if groundings is None
+                else [self.grounding_table.get(g) for g in groundings]
             )
-            if result:
-                logging.info(
-                    "↑ WORLD FREE-VARIABLE UPDATED "
-                    f"TIGHTENED:{result} "
-                    f"FOR:'{self.name}' "
-                    f"FORMULA:{self.formula_number} "
-                )
-        else:
-            upward_bounds = _gm.upward_bounds(self, self.operands, groundings)
-            if upward_bounds is None:  # contradiction arresting
-                return 0.0
-            input_bounds, groundings = upward_bounds
-            grounding_rows = (
-                None
-                if self.propositional
-                else (
-                    self.grounding_table.values()
-                    if groundings is None
-                    else [self.grounding_table.get(g) for g in groundings]
-                )
+        )
+        result = self.neuron.aggregate_bounds(grounding_rows, self.func(input_bounds))
+        if result:
+            logging.info(
+                "↑ BOUNDS UPDATED "
+                f"TIGHTENED:{result} "
+                f"FOR:'{self.name}' "
+                f"FORMULA:{self.formula_number} "
             )
-            result = self.neuron.aggregate_bounds(
-                grounding_rows, self.func(input_bounds)
+        if self.is_contradiction():
+            logging.info(
+                "↑ CONTRADICTION "
+                f"FOR:'{self.name}' "
+                f"FORMULA:{self.formula_number} "
             )
-            if result:
-                logging.info(
-                    "↑ BOUNDS UPDATED "
-                    f"TIGHTENED:{result} "
-                    f"FOR:'{self.name}' "
-                    f"FORMULA:{self.formula_number} "
-                )
-            if self.is_contradiction():
-                logging.info(
-                    "↑ CONTRADICTION "
-                    f"FOR:'{self.name}' "
-                    f"FORMULA:{self.formula_number} "
-                )
         return result
 
     def downward(
@@ -135,8 +107,6 @@ class _ConnectiveNeuron(_ConnectiveFormula):
             restricts downward inference to an operand at the specified index. If unspecified, all operands are updated.
         groundings : str or tuple of str, optional
             restrict upward inference to a specific grounding or row in the truth table
-        lifted : bool, optional
-            flag that determines if lifting should be done on this node.
 
         Returns
         -------
@@ -144,101 +114,57 @@ class _ConnectiveNeuron(_ConnectiveFormula):
             The amount of bounds tightening or new information that is leaned by the inference step.
 
         """
-        # Create (potentially) new groundings from functions
-        if not self.propositional:
-            self._ground_functions()
+        downward_bounds = _gm.downward_bounds(self, self.operands, groundings)
+        if downward_bounds is None:  # contradiction arresting
+            return 0.0
+        out_bounds, input_bounds, groundings = downward_bounds
+        new_bounds = self.func_inv(out_bounds, input_bounds)
+        op_indices = (
+            enumerate(self.operands)
+            if index is None
+            else ([(index, self.operands[index])])
+        )
+        result = 0.0
+        for op_index, op in op_indices:
+            op_grounding_rows = None
+            duplicates = False
+            unique_grounding_rows = set()
 
-        if kwds.get("lifted"):
-            result = 0.0
-            new_worlds = self.func_inv(
-                torch.tensor(self.world)[None],
-                torch.stack([torch.tensor(op.world) for op in self.operands], dim=-1)[
-                    None
-                ],
-            )
-            for op_idx, op in enumerate(self.operands):
-                op_aggregate = op.neuron.aggregate_world(
-                    tuple(new_worlds[..., op_idx].tolist()[0])
-                )
-                result += op_aggregate
-                if op_aggregate:
-                    logging.info(
-                        "↓ WORLD FREE-VARIABLE UPDATED "
-                        f"TIGHTENED:{op_aggregate} "
-                        f"FOR:'{op.name}' "
-                        f"FROM:'{self.name}' "
-                        f"FORMULA:{op.formula_number} "
-                        f"PARENT:{self.formula_number} "
-                    )
-        else:
-            downward_bounds = _gm.downward_bounds(self, self.operands, groundings)
-            if downward_bounds is None:  # contradiction arresting
-                return 0.0
-            out_bounds, input_bounds, groundings = downward_bounds
-            new_bounds = self.func_inv(out_bounds, input_bounds)
-            op_indices = (
-                enumerate(self.operands)
-                if index is None
-                else ([(index, self.operands[index])])
-            )
-            result = 0.0
-            for op_index, op in op_indices:
-                if op.propositional:
-                    op_grounding_rows = None
+            if not op.propositional:
+                if groundings is None:
+                    op_grounding_rows = op.grounding_table.values()
                 else:
-                    if groundings is None:
-                        op_grounding_rows = op.grounding_table.values()
-                    else:
-                        tmp_bindings = [
-                            tuple([_bindings.get_bindings(g) for g in op])
-                            for op in self.bindings
-                        ]
-                        op_grounding_rows = [None] * len(groundings)
-                        for g_i, g in enumerate(groundings):
-                            if self.operand_map[op_index]:
-                                op_g = [
-                                    str(g.partial_grounding[slot])
-                                    for slot in self.operand_map[op_index]
-                                ]
-                                if len(op_g):
-                                    if len(tmp_bindings[op_index]) > len(op_g):
-                                        i = 0
-                                        op_g_adjusted = list()
-                                        for binding in tmp_bindings[op_index]:
-                                            if binding[0]:
-                                                op_g_adjusted.append(binding[0])
-                                            else:
-                                                op_g_adjusted.append(op_g[i])
-                                                i += 1
-                                        op_g = op_g_adjusted
+                    op_grounding_rows = [None] * len(groundings)
+                    for g_i, g in enumerate(groundings):
+                        if self.operand_map[op_index]:
+                            op_g = [g[slot] for slot in self.operand_map[op_index]]
+                            op_g = tuple(op_g)
+                            row = op.grounding_table.get(op_g)
+                            op_grounding_rows[g_i] = row
+                            duplicates = duplicates or row in unique_grounding_rows
+                            unique_grounding_rows.add(row)
 
-                                    op_g = _Grounding(
-                                        tuple(op_g) if len(op_g) > 1 else op_g[0]
-                                    )
-                                    op_grounding_rows[g_i] = op.grounding_table.get(
-                                        op_g
-                                    )
-                op_aggregate = op.neuron.aggregate_bounds(
-                    op_grounding_rows, new_bounds[..., op_index]
+            op_aggregate = op.neuron.aggregate_bounds(
+                op_grounding_rows, new_bounds[..., op_index], duplicates=duplicates
+            )
+            if op_aggregate:
+                logging.info(
+                    "↓ BOUNDS UPDATED "
+                    f"TIGHTENED:{op_aggregate} "
+                    f"FOR:'{op.name}' "
+                    f"FROM:'{self.name}' "
+                    f"FORMULA:{op.formula_number} "
+                    f"PARENT:{self.formula_number} "
                 )
-                if op_aggregate:
-                    logging.info(
-                        "↓ BOUNDS UPDATED "
-                        f"TIGHTENED:{op_aggregate} "
-                        f"FOR:'{op.name}' "
-                        f"FROM:'{self.name}' "
-                        f"FORMULA:{op.formula_number} "
-                        f"PARENT:{self.formula_number} "
-                    )
-                if op.is_contradiction():
-                    logging.info(
-                        "↓ CONTRADICTION "
-                        f"FOR:'{op.name}' "
-                        f"FROM:'{self.name}' "
-                        f"FORMULA:{op.formula_number} "
-                        f"PARENT:{self.formula_number} "
-                    )
-                result = result + op_aggregate
+            if op.is_contradiction():
+                logging.info(
+                    "↓ CONTRADICTION "
+                    f"FOR:'{op.name}' "
+                    f"FROM:'{self.name}' "
+                    f"FORMULA:{op.formula_number} "
+                    f"PARENT:{self.formula_number} "
+                )
+            result = result + op_aggregate
         return result
 
     def _logical_loss(

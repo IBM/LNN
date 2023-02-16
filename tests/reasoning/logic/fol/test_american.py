@@ -1,4 +1,4 @@
-from lnn import Predicate, Variable, Join, And, Exists, Implies, ForAll, Model, Fact
+from lnn import Predicate, Variable, And, Exists, Implies, Forall, Model, Fact, World
 
 
 def test_1():
@@ -19,40 +19,38 @@ def test_1():
 
     # Define and add the background knowledge to  the model.
 
-    query = Exists(x, criminal(x), join=Join.OUTER)
+    query = Exists(
+        x,
+        criminal(x),
+    )
 
     model.add_knowledge(
-        ForAll(
+        Forall(
             x,
-            y,
-            Implies(enemy(x, y, bind={y: "America"}), hostile(x), join=Join.OUTER),
-            join=Join.OUTER,
+            Implies(enemy(x, "America"), hostile(x)),
         ),
-        ForAll(
+        Forall(
             x,
-            y,
-            z,
-            Implies(
-                And(
-                    american(x), weapon(y), sells(x, y, z), hostile(z), join=Join.OUTER
+            Forall(
+                y,
+                Forall(
+                    z,
+                    Implies(
+                        And(american(x), weapon(y), sells(x, y, z), hostile(z)),
+                        criminal(x),
+                    ),
                 ),
-                criminal(x),
-                join=Join.OUTER,
             ),
-            join=Join.OUTER,
         ),
-        ForAll(
+        Forall(x, Implies(And(missile(x), owns("Nono", x)), sells("West", x, "Nono"))),
+        Forall(
             x,
-            y,
-            z,
             Implies(
-                And(missile(x), owns(y, x, bind={y: "Nono"}), join=Join.OUTER),
-                sells(z, x, y, bind={z: "West", y: "Nono"}),
-                join=Join.OUTER,
+                missile(x),
+                weapon(x),
             ),
-            join=Join.OUTER,
         ),
-        ForAll(x, Implies(missile(x), weapon(x), join=Join.OUTER), join=Join.OUTER),
+        world=World.AXIOM,
     )
 
     model.set_query(query)
@@ -68,9 +66,7 @@ def test_1():
     )
 
     model.infer()
-    model.print()
     GT_o = dict([("West", Fact.TRUE)])
-    model.print()
     assert all([model.query.state(groundings=g) is GT_o[g] for g in GT_o]), "FAILED 😔"
 
 
@@ -95,30 +91,32 @@ def test_2():
     query = Exists(x, criminal(x))
 
     model.add_knowledge(
-        ForAll(
+        Forall(
             x,
-            y,
-            Implies(enemy(x, y, bind={y: "America"}), hostile(x)),
+            Implies(enemy(x, "America"), hostile(x)),
         ),
-        ForAll(
+        Forall(
             x,
-            y,
-            z,
-            Implies(
-                And(american(x), weapon(y), sells(x, y, z), hostile(z)),
-                criminal(x),
+            Forall(
+                y,
+                Forall(
+                    z,
+                    Implies(
+                        And(american(x), weapon(y), sells(x, y, z), hostile(z)),
+                        criminal(x),
+                    ),
+                ),
             ),
         ),
-        ForAll(
+        Forall(
             x,
-            y,
-            z,
             Implies(
-                And(missile(x), owns(y, x, bind={y: "Nono"})),
-                sells(z, x, y, bind={z: "West", y: "Nono"}),
+                And(missile(x), owns("Nono", x)),
+                sells("West", x, "Nono"),
             ),
         ),
-        ForAll(x, Implies(missile(x), weapon(x))),
+        Forall(x, Implies(missile(x), weapon(x))),
+        world=World.AXIOM,
     )
 
     model.set_query(query)
@@ -134,13 +132,10 @@ def test_2():
     )
 
     model.infer()
-    model.print()
     GT_o = dict([("West", Fact.TRUE)])
-    model.print()
     assert all([model.query.state(groundings=g) is GT_o[g] for g in GT_o]), "FAILED 😔"
 
 
 if __name__ == "__main__":
     test_1()
     test_2()
-    print("success")

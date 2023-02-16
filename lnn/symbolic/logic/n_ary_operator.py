@@ -1,5 +1,5 @@
 ##
-# Copyright 2022 IBM Corp. All Rights Reserved.
+# Copyright 2023 IBM Corp. All Rights Reserved.
 #
 # SPDX-License-Identifier: Apache-2.0
 ##
@@ -13,7 +13,6 @@ import torch
 
 from .connective_formula import _ConnectiveFormula
 from .formula import Formula
-from .grounding import _Grounding
 from .node_activation import _NodeActivation
 from .. import _gm
 from ... import _utils
@@ -62,8 +61,6 @@ class Congruent(_NAryOperator):
         ----------
         groundings : str or tuple of str
             restrict upward inference to a specific grounding or row in the truth table
-        lifted : bool, optional
-            flag that determines if lifting should be done on this node.
 
         Returns
         -------
@@ -71,57 +68,34 @@ class Congruent(_NAryOperator):
             The amount of bounds tightening or new information that is leaned by the inference step.
 
         """
-        if kwds.get("lifted"):
-            operands_world = torch.stack(
-                [torch.tensor(op.world) for op in self.operands], dim=-1
+        upward_bounds = _gm.upward_bounds(self, self.operands, groundings)
+        if upward_bounds is None:  # contradiction arresting
+            return
+        input_bounds, groundings = upward_bounds
+        grounding_rows = (
+            None
+            if self.propositional
+            else (
+                self.grounding_table.values()
+                if groundings is None
+                else [self.grounding_table.get(g) for g in groundings]
             )
-            result = self.neuron.aggregate_world(
-                tuple(
-                    torch.stack(
-                        [
-                            operands_world[..., 0, :].max(),
-                            operands_world[..., 1, :].min(),
-                        ],
-                        dim=-1,
-                    ).tolist()
-                )
+        )
+        input_bounds = torch.stack(
+            [
+                input_bounds[..., 0, :].max(-1)[0],
+                input_bounds[..., 1, :].max(-1)[0],
+            ],
+            dim=-1,
+        )
+        result = self.neuron.aggregate_bounds(grounding_rows, input_bounds)
+        if result:
+            logging.info(
+                "↑ BOUNDS UPDATED "
+                f"TIGHTENED:{result} "
+                f"FOR:'{self.name}' "
+                f"FORMULA:{self.formula_number} "
             )
-            if result:
-                logging.info(
-                    "↑ WORLD FREE-VARIABLE UPDATED "
-                    f"TIGHTENED:{result} "
-                    f"FOR:'{self.name}' "
-                    f"FORMULA:{self.formula_number} "
-                )
-        else:
-            upward_bounds = _gm.upward_bounds(self, self.operands, groundings)
-            if upward_bounds is None:  # contradiction arresting
-                return
-            input_bounds, groundings = upward_bounds
-            grounding_rows = (
-                None
-                if self.propositional
-                else (
-                    self.grounding_table.values()
-                    if groundings is None
-                    else [self.grounding_table.get(g) for g in groundings]
-                )
-            )
-            input_bounds = torch.stack(
-                [
-                    input_bounds[..., 0, :].max(-1)[0],
-                    input_bounds[..., 1, :].max(-1)[0],
-                ],
-                dim=-1,
-            )
-            result = self.neuron.aggregate_bounds(grounding_rows, input_bounds)
-            if result:
-                logging.info(
-                    "↑ BOUNDS UPDATED "
-                    f"TIGHTENED:{result} "
-                    f"FOR:'{self.name}' "
-                    f"FORMULA:{self.formula_number} "
-                )
         return result
 
     def downward(
@@ -138,8 +112,6 @@ class Congruent(_NAryOperator):
             restricts downward inference to an operand at the specified index. If unspecified, all operands are updated.
         groundings : str or tuple of str, optional
             restrict upward inference to a specific grounding or row in the truth table
-        lifted : bool, optional
-            flag that determines if lifting should be done on this node.
 
         Returns
         -------
@@ -147,57 +119,42 @@ class Congruent(_NAryOperator):
             The amount of bounds tightening or new information that is leaned by the inference step.
 
         """
-        if kwds.get("lifted"):
-            result = 0
-            for op_idx, op in enumerate(self.operands):
-                op_aggregate = op.neuron.aggregate_world(self.world)
-                result += op_aggregate
-                if op_aggregate:
-                    logging.info(
-                        "↓ WORLD FREE-VARIABLE UPDATED "
-                        f"TIGHTENED:{op_aggregate} "
-                        f"FOR:'{op.name}' "
-                        f"FROM:'{self.name}' "
-                        f"FORMULA:{op.formula_number} "
-                        f"PARENT:{self.formula_number} "
-                    )
-        else:
-            downward_bounds = _gm.downward_bounds(self, self.operands, groundings)
-            if downward_bounds is None:  # contradiction arresting
-                return
-            parent, _, groundings = downward_bounds
-            op_indices = (
-                enumerate(self.operands)
-                if index is None
-                else ([(index, self.operands[index])])
-            )
-            result = 0
-            for op_index, op in op_indices:
-                if op.propositional:
-                    op_grounding_rows = None
+        downward_bounds = _gm.downward_bounds(self, self.operands, groundings)
+        if downward_bounds is None:  # contradiction arresting
+            return
+        parent, _, groundings = downward_bounds
+        op_indices = (
+            enumerate(self.operands)
+            if index is None
+            else ([(index, self.operands[index])])
+        )
+        result = 0
+        for op_index, op in op_indices:
+            if op.propositional:
+                op_grounding_rows = None
+            else:
+                if groundings is None:
+                    op_grounding_rows = op.grounding_table.values()
                 else:
-                    if groundings is None:
-                        op_grounding_rows = op.grounding_table.values()
-                    else:
-                        op_grounding_rows = [None] * len(groundings)
-                        for g_i, g in enumerate(groundings):
-                            op_g = [
-                                str(g.partial_grounding[slot])
-                                for slot in self.operand_map[op_index]
-                            ]
-                            op_g = _Grounding(tuple(op_g) if len(op_g) > 1 else op_g[0])
-                            op_grounding_rows[g_i] = op.grounding_table.get(op_g)
-                op_aggregate = op.neuron.aggregate_bounds(op_grounding_rows, parent)
-                if op_aggregate:
-                    logging.info(
-                        "↓ BOUNDS UPDATED "
-                        f"TIGHTENED:{op_aggregate} "
-                        f"FOR:'{op.name}' "
-                        f"FROM:'{self.name}' "
-                        f"FORMULA:{op.formula_number} "
-                        f"PARENT:{self.formula_number} "
-                    )
-                result = result + op_aggregate
+                    op_grounding_rows = [None] * len(groundings)
+                    for g_i, g in enumerate(groundings):
+                        op_g = [
+                            str(g.partial_grounding[slot])
+                            for slot in self.operand_map[op_index]
+                        ]
+                        op_g = tuple(op_g)
+                        op_grounding_rows[g_i] = op.grounding_table.get(op_g)
+            op_aggregate = op.neuron.aggregate_bounds(op_grounding_rows, parent)
+            if op_aggregate:
+                logging.info(
+                    "↓ BOUNDS UPDATED "
+                    f"TIGHTENED:{op_aggregate} "
+                    f"FOR:'{op.name}' "
+                    f"FROM:'{self.name}' "
+                    f"FORMULA:{op.formula_number} "
+                    f"PARENT:{self.formula_number} "
+                )
+            result = result + op_aggregate
         return result
 
     def extract_congruency(self, *formulae):
@@ -213,55 +170,32 @@ class Congruent(_NAryOperator):
     def upward(
         self, groundings: Set[Union[str, Tuple[str, ...]]] = None, **kwds
     ) -> float:
-        if kwds.get("lifted"):
-            operands_world = torch.stack(
-                [torch.tensor(op.world) for op in self.operands], dim=-1
+        upward_bounds = _gm.upward_bounds(self, self.operands, groundings)
+        if upward_bounds is None:  # contradiction arresting
+            return
+        input_bounds, groundings = upward_bounds
+        grounding_rows = (
+            None
+            if self.propositional
+            else (
+                self.grounding_table.values()
+                if groundings is None
+                else [self.grounding_table.get(g) for g in groundings]
             )
-            result = self.neuron.aggregate_world(
-                tuple(
-                    torch.stack(
-                        [
-                            operands_world[..., 0, :].max(),
-                            operands_world[..., 1, :].min(),
-                        ],
-                        dim=-1,
-                    ).tolist()
-                )
+        )
+        input_bounds = torch.stack(
+            [
+                input_bounds[..., 0, :].max(-1)[0],
+                input_bounds[..., 1, :].min(-1)[0],
+            ],
+            dim=-1,
+        )
+        result = self.neuron.aggregate_bounds(grounding_rows, input_bounds)
+        if result:
+            logging.info(
+                "↑ BOUNDS UPDATED "
+                f"TIGHTENED:{result} "
+                f"FOR:'{self.name}' "
+                f"FORMULA:{self.formula_number} "
             )
-            if result:
-                logging.info(
-                    "↑ WORLD FREE-VARIABLE UPDATED "
-                    f"TIGHTENED:{result} "
-                    f"FOR:'{self.name}' "
-                    f"FORMULA:{self.formula_number} "
-                )
-        else:
-            upward_bounds = _gm.upward_bounds(self, self.operands, groundings)
-            if upward_bounds is None:  # contradiction arresting
-                return
-            input_bounds, groundings = upward_bounds
-            grounding_rows = (
-                None
-                if self.propositional
-                else (
-                    self.grounding_table.values()
-                    if groundings is None
-                    else [self.grounding_table.get(g) for g in groundings]
-                )
-            )
-            input_bounds = torch.stack(
-                [
-                    input_bounds[..., 0, :].max(-1)[0],
-                    input_bounds[..., 1, :].min(-1)[0],
-                ],
-                dim=-1,
-            )
-            result = self.neuron.aggregate_bounds(grounding_rows, input_bounds)
-            if result:
-                logging.info(
-                    "↑ BOUNDS UPDATED "
-                    f"TIGHTENED:{result} "
-                    f"FOR:'{self.name}' "
-                    f"FORMULA:{self.formula_number} "
-                )
         return result

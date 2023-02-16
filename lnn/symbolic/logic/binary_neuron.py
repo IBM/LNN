@@ -1,5 +1,5 @@
 ##
-# Copyright 2022 IBM Corp. All Rights Reserved.
+# Copyright 2023 IBM Corp. All Rights Reserved.
 #
 # SPDX-License-Identifier: Apache-2.0
 ##
@@ -72,19 +72,9 @@ class Implies(_BinaryNeuron):
         kwds.setdefault("activation", {})
         kwds["activation"].setdefault("bias_learning", True)
         super().__init__(lhs, rhs, **kwds)
-        self.connective_str = self.get_connective_str(
-            kwds["activation"].get("type", None)
-        )
-        super().__init__(lhs, rhs, **kwds)
-
-    @staticmethod
-    def get_connective_str(type: NeuralActivation) -> str:
-        # if type is NeuralActivation.Product:
-        #     return "|"
-        return f"{type.name[0]}→" if type else "→"
 
 
-class Equivalent(_BinaryNeuron):
+class Iff(_BinaryNeuron):
     r"""Symbolic Equivalence - a bidirectional binary implication or IFF
     (if and only if) node.
 
@@ -111,14 +101,14 @@ class Equivalent(_BinaryNeuron):
     ```python
     # Propositional
     A, B = Propositions('A', 'B')
-    Equivalent(A, B)
+    Iff(A, B)
     ```
     ```python
     # First-order logic
     x, y = Variables('x', 'y')
     A = Predicate('A')
     B = Predicate('B', arity=2)
-    Equivalent(A(x), B(x, y)))
+    Iff(A(x), B(x, y)))
     ```
 
     """
@@ -139,8 +129,6 @@ class Equivalent(_BinaryNeuron):
         ----------
         groundings : str or tuple of str
             restrict upward inference to a specific grounding or row in the truth table
-        lifted : bool, optional
-            flag that determines if lifting should be done on this node.
 
         Returns
         -------
@@ -166,8 +154,6 @@ class Equivalent(_BinaryNeuron):
             restricts downward inference to an operand at the specified index. If unspecified, all operands are updated.
         groundings : str or tuple of str, optional
             restrict upward inference to a specific grounding or row in the truth table
-        lifted : bool, optional
-            flag that determines if lifting should be done on this node.
 
         Returns
         -------

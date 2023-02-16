@@ -1,4 +1,4 @@
-from lnn import Predicate, Variable, And, Join, Implies, ForAll, Model, Fact
+from lnn import Predicate, Variable, And, Implies, Forall, Model, Fact
 
 
 def test_1():
@@ -10,8 +10,12 @@ def test_1():
     square = Predicate(name="square")
     rectangle = Predicate(name="rectangle")
 
-    square_rect = ForAll(
-        x, Implies(square(x), rectangle(x), join=Join.OUTER), join=Join.OUTER
+    square_rect = Forall(
+        x,
+        Implies(
+            square(x),
+            rectangle(x),
+        ),
     )
 
     model = Model()
@@ -36,10 +40,9 @@ def test_2():
     hostile = Predicate("hostile")
 
     model.add_knowledge(
-        ForAll(
+        Forall(
             x,
-            Implies(enemy(x, y, bind={y: "America"}), hostile(x), join=Join.OUTER),
-            join=Join.OUTER,
+            Implies(enemy(x, "America"), hostile(x)),
         )
     )
 
@@ -62,7 +65,10 @@ def test_3():
     f1 = Predicate("F1", 3)
     f2 = Predicate("F2", 2)
 
-    rule = And(f1(x, y, z), f2(x, y), join=Join.OUTER)
+    rule = And(
+        f1(x, y, z),
+        f2(x, y),
+    )
 
     model.add_knowledge(f1, f2, rule)
     model.add_data({f1: {("x1", "y1", "z1"): Fact.TRUE}})
@@ -86,7 +92,12 @@ def test_4():
     sells = Predicate("sells", 3)
 
     model = Model()  # Instantiate a model.
-    rule = And(american(x), weapon(y), hostile(z), sells(x, y, z), join=Join.OUTER)
+    rule = And(
+        american(x),
+        weapon(y),
+        hostile(z),
+        sells(x, y, z),
+    )
     model.add_knowledge(american, hostile, weapon, rule)
     model.add_data(
         {
@@ -106,4 +117,3 @@ if __name__ == "__main__":
     test_2()
     test_3()
     test_4()
-    print("success")

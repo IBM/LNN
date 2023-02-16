@@ -120,21 +120,30 @@ def test_multiple_predicates_no_overlap():
     operatorS = And(P, Q(x), S(x))
 
     q_data = {"0": Fact.TRUE, "1": Fact.FALSE, "2": Fact.UNKNOWN}
-
     s_data = {"3": Fact.TRUE, "4": Fact.FALSE, "5": Fact.UNKNOWN}
 
     P.add_data(Fact.TRUE)
     Q.add_data(q_data)
     S.add_data(s_data)
 
-    operator_expected = {}
+    operator_expected = {
+        "0": Fact.UNKNOWN,
+        "1": Fact.FALSE,
+        "2": Fact.UNKNOWN,
+        "3": Fact.UNKNOWN,
+        "4": Fact.FALSE,
+        "5": Fact.UNKNOWN,
+    }
+    q_expected = {**q_data, "3": Fact.UNKNOWN, "4": Fact.UNKNOWN, "5": Fact.UNKNOWN}
+    s_expected = {**s_data, "0": Fact.UNKNOWN, "1": Fact.UNKNOWN, "2": Fact.UNKNOWN}
 
     operatorS.upward()
+
     assert P.state() == Fact.TRUE
-    assert all([Q.state(g) is q_data[g] for g in q_data])
-    assert len(Q.state()) == len(q_data)
-    assert all([S.state(g) is s_data[g] for g in s_data])
-    assert len(S.state()) == len(q_data)
+    assert all([Q.state(g) is q_expected[g] for g in q_expected])
+    assert len(Q.state()) == len(q_expected)
+    assert all([S.state(g) is s_expected[g] for g in s_expected])
+    assert len(S.state()) == len(s_expected)
     assert all([operatorS.state(g) is operator_expected[g] for g in operator_expected])
     assert len(operatorS.state()) == len(operator_expected)
 

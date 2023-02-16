@@ -1,10 +1,10 @@
 ##
-# Copyright 2022 IBM Corp. All Rights Reserved.
+# Copyright 2023 IBM Corp. All Rights Reserved.
 #
 # SPDX-License-Identifier: Apache-2.0
 ##
 
-from lnn import Model, Variable, Fact, ForAll, Exists, World
+from lnn import Model, Variable, Fact, Forall, Exists, World
 
 TRUE = Fact.TRUE
 FALSE = Fact.FALSE
@@ -18,7 +18,7 @@ def test_1():
     x = Variable("x")
     model = Model()
     A, S = model.add_predicates(1, "A", "S")
-    All = ForAll(x, A(x), world=World.OPEN)
+    All = Forall(x, A(x), world=World.OPEN)
     Some = Exists(x, S(x))
 
     model.add_knowledge(All, Some)
@@ -33,7 +33,7 @@ def test_1():
     model.print()
     predictions = [All.state(), Some.state()]
     assert predictions[0] is UNKNOWN, (
-        f"ForAll expected as UNKNOWN, received {predictions[0]}"
+        f"Forall expected as UNKNOWN, received {predictions[0]}"
         "cannot learn to be TRUE unless fully grounded"
     )
     assert predictions[1] is UNKNOWN, (
@@ -49,7 +49,7 @@ def test_2():
     x = Variable("x")
     model = Model()
     A, S = model.add_predicates(1, "A", "S")
-    All = ForAll(x, A(x), world=World.OPEN)
+    All = Forall(x, A(x), world=World.OPEN)
     Some = Exists(x, S(x))
     model.add_knowledge(All, Some)
     model.add_data(
@@ -60,11 +60,10 @@ def test_2():
     )
 
     model.upward()
-    assert Some.state() is TRUE, f"ForAll expected as TRUE, received {Some.state()}"
+    assert Some.state() is TRUE, f"Forall expected as TRUE, received {Some.state()}"
     assert All.state() is FALSE, f"Exists expected as FALSE, received {All.state()}"
 
 
 if __name__ == "__main__":
     test_1()
     test_2()
-    print("success")

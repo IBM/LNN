@@ -1,4 +1,0 @@
-sphinx
-myst-parser
-sphinx_material
-sphinx_copybutton

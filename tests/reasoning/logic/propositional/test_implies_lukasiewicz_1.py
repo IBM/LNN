@@ -1,5 +1,5 @@
 ##
-# Copyright 2022 IBM Corp. All Rights Reserved.
+# Copyright 2023 IBM Corp. All Rights Reserved.
 #
 # SPDX-License-Identifier: Apache-2.0
 ##
@@ -48,7 +48,6 @@ def test():
                 prediction - GT <= 1e-7
             ), f"And({a}, {b}) expected {GT}, received {prediction}"
             model.flush()
-    print("success")
 
 
 if __name__ == "__main__":

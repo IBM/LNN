@@ -1,14 +1,13 @@
 ##
-# Copyright 2022 IBM Corp. All Rights Reserved.
+# Copyright 2023 IBM Corp. All Rights Reserved.
 #
 # SPDX-License-Identifier: Apache-2.0
 ##
 
-from lnn import Model, And, Variable, Predicate, Fact, Join
+from lnn import Model, And, Variable, Predicate, Fact
 
 
 def test():
-    join = Join.OUTER
     model = Model()
     x, y, z, a, b = map(Variable, ("x", "y", "z", "a", "b"))
 
@@ -28,11 +27,11 @@ def test():
 
     GT_o = dict(
         [
-            (("x1", "y1", "z2"), Fact.UNKNOWN),
-            (("x1", "y3", "z2"), Fact.UNKNOWN),
+            ("y1", Fact.UNKNOWN),
+            ("y3", Fact.UNKNOWN),
         ]
     )
-    p2_and_p2a = And(p2(x, y, bind={x: "x1"}), p2a(y, z, bind={z: "z2"}), join=join)
+    p2_and_p2a = And(p2("x1", y), p2a(y, "z2"))
     model.add_knowledge(p2_and_p2a)
     p2_and_p2a.upward()
     model.print()
@@ -44,4 +43,3 @@ def test():
 
 if __name__ == "__main__":
     test()
-    print("success")

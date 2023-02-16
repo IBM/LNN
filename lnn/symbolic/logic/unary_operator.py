@@ -1,5 +1,5 @@
 ##
-# Copyright 2022 IBM Corp. All Rights Reserved.
+# Copyright 2023 IBM Corp. All Rights Reserved.
 #
 # SPDX-License-Identifier: Apache-2.0
 ##
@@ -9,17 +9,18 @@
 import logging
 from typing import Union, Tuple, Set
 
+import pandas as pd
 import torch
 
 from .connective_formula import _ConnectiveFormula
 from .formula import Formula
-from .grounding import _Grounding
 from .neural_activation import _NeuralActivation
 from .node_activation import _NodeActivation
 from .variable import Variable
 from .. import _gm
 from ... import _utils
-from ...constants import Fact, World, Direction, Bound
+from ...constants import Fact, Direction, Bound
+from torch.nn.parameter import Parameter
 
 _utils.logger_setup()
 
@@ -44,7 +45,7 @@ class _Quantifier(_UnaryOperator):
         fully_grounded : bool
             specifies if a full upward inference can be done on a
             quantifier due to all the groundings being present inside it.
-            This applies to the lower bound of a `ForAll` and upper bound
+            This applies to the lower bound of a `Forall` and upper bound
             of an `Exists`
 
     Attributes
@@ -66,7 +67,26 @@ class _Quantifier(_UnaryOperator):
         super().__init__(args[-1], variables=variables, **kwds)
         self.fully_grounded = kwds.get("fully_grounded", False)
         self._grounding_set = set()
+        self.operator = None
+
+        if isinstance(self, Forall):
+            self.operator = "And"
+
+        if isinstance(self, Exists):
+            self.operator = "Or"
+
         self._set_activation(**kwds)
+        self.neurons = []
+        self.free_vars = [
+            self.operands[0].unique_vars.index(v) for v in self.unique_vars
+        ]
+
+        if len(self.free_vars) == 0:
+            self.neuron.weights = Parameter(
+                torch.tensor([1.0]), self.neuron.weights.requires_grad
+            )
+
+        self._new_groundings = []
 
     @property
     def expanded_unique_vars(self):
@@ -90,71 +110,187 @@ class _Quantifier(_UnaryOperator):
         return tuple(result)
 
     def upward(self, **kwds) -> float:
-        r"""Upward inference from the operands to the operator.
+        operand = self.operands[0]
 
-        Parameters
-        ----------
-        lifted : bool, optional
-            flag that determines if lifting should be done on this node.
+        if len(operand.grounding_table) == 0:
+            return 0.0
 
-        Returns
-        -------
-        tightened_bounds : float
-            The amount of bounds tightening or new information that is leaned by the inference step.
+        if len(self.free_vars) == 0:
+            return self._fully_quantified_upward()
 
-        """
+        input_bounds = operand.get_data()
+        if input_bounds is None:
+            return 0.0
 
-        # Create (potentially) new groundings from functions
-        if not self.propositional:
-            self._ground_functions()
+        df, grouped = self._get_groupings()
 
-        if kwds.get("lifted"):
-            result = self.neuron.aggregate_world(self.operands[0].world)
-            if result:
-                if self.propositional:
-                    self.neuron.reset_world(self.world)
-                logging.info(
-                    "↑ WORLD FREE-VARIABLE UPDATED "
-                    f"TIGHTENED:{result} "
-                    f"FOR:'{self.name}' "
-                    f"FORMULA:{self.formula_number} "
-                )
-        else:
-            n_groundings = len(self._grounding_set)
-            input_bounds = self._upward_bounds(self.operands[0])
-            if input_bounds is None:
-                return 0.0
-            if len(self._grounding_set) > n_groundings:
-                self._set_activation(world=self.world)
-            result = self.neuron.aggregate_bounds(
-                None,
-                self.func(input_bounds.permute([1, 0])),
-                bound=(
-                    (Bound.UPPER if isinstance(self, ForAll) else Bound.LOWER)
-                    if not self.fully_grounded
-                    else None
-                ),
-            )
-            if result:
-                logging.info(
-                    "↑ BOUNDS UPDATED "
-                    f"TIGHTENED:{result} "
-                    f"FOR:'{self.name}' "
-                    f"FORMULA:{self.formula_number} "
-                )
-            if self.is_contradiction():
-                logging.info(
-                    "↑ CONTRADICTION "
-                    f"FOR:'{self.name}' "
-                    f"FORMULA:{self.formula_number} "
-                )
+        bound = None
+        if not self.fully_grounded:
+            bound = Bound.UPPER if isinstance(self, Forall) else Bound.LOWER
+
+        result = 0
+        bounds_table = []
+        for indices in grouped:
+            grounding = tuple(df.iloc[indices[0], :].tolist()[:-1])
+            arity = len(indices)
+
+            if self.grounding_table is None:
+                self.grounding_table = {}
+
+            if grounding in self.grounding_table:
+                neuron_id = self.grounding_table[grounding]
+                neuron = self.neurons[neuron_id]
+
+                if neuron.arity != len(indices):
+                    neuron = self._add_neuron(arity, neuron_id)
+            else:
+                self._add_grounding(grounding)
+                neuron = self._add_neuron(len(indices))
+
+            ib = input_bounds[indices].permute([1, 0])[None, :, :]
+            result += neuron.aggregate_bounds([0], neuron.func(ib), bound)
+            bounds_table.append(neuron.get_data())
+
+        self.neuron.bounds_table = torch.vstack(bounds_table)
+
         return result
+
+    def downward(self, **kwds) -> Union[torch.Tensor, None]:
+        operand = self.operands[0]
+
+        if len(operand.grounding_table) == 0:
+            return 0.0
+
+        if len(self.free_vars) == 0:
+            return self._fully_quantified_downward()
+
+        self._propagate_groundings()
+
+        input_bounds = operand.get_data()
+        if input_bounds is None:
+            return 0.0
+
+        df, grouped = self._get_groupings()
+        bounds = input_bounds.detach().clone()
+        for indices in grouped:
+            grounding = tuple(df.iloc[indices[0], :].tolist()[:-1])
+            ib = bounds[indices].permute([1, 0])[None, :, :]
+            neuron_id = self.grounding_table[grounding]
+            neuron = self.neurons[neuron_id]
+
+            if neuron.arity != len(indices):
+                neuron = self._add_neuron(len(indices), neuron_id)
+
+            bounds[indices] = neuron.func_inv(neuron.get_data(), ib)[0].permute([1, 0])
+
+        if isinstance(operand, _Quantifier):
+            result = 0
+            for i, neuron in enumerate(operand.neurons):
+                result += neuron.aggregate_bounds([0], bounds[None, i])
+
+            return result
+
+        return operand.neuron.aggregate_bounds(df.index.to_list(), bounds)
+
+    def _add_grounding(self, grounding: tuple[str]):
+        self.grounding_table[grounding] = len(self.grounding_table)
+
+    def _add_groundings(self, *groundings: tuple[str]):
+        for g in groundings:
+            if g not in self.grounding_table:
+                self._add_grounding(g)
+                self._add_neuron(len(g))
+                self.neuron.extend_groundings(1)
+                self._new_groundings.append(g)
+
+    def _get_groupings(self):
+        operand = self.operands[0]
+        groundings = operand.grounding_table.keys()
+        df = pd.DataFrame(groundings)
+        df = df[self.free_vars]
+        df["index"] = df.index
+        grouped = df.groupby(by=self.free_vars)["index"].apply(list)
+        return df, grouped
+
+    def _create_neuron(self, arity):
+        kwds = {"propositional": False, "arity": arity, "world": self.world}
+        neuron = _NeuralActivation()(activation={"weights_learning": False}, **kwds)
+        neuron.extend_groundings(1)
+        neuron.func = neuron.activation(self.operator, direction=Direction.UPWARD)
+        neuron.func_inv = neuron.activation(self.operator, direction=Direction.DOWNWARD)
+        return neuron
+
+    def _add_neuron(self, arity, index=None):
+        neuron = self._create_neuron(arity)
+
+        if index is None:
+            self.neurons.append(neuron)
+        else:
+            self.neurons[index] = neuron
+
+        return neuron
+
+    def _fully_quantified_upward(self):
+        operand = self.operands[0]
+
+        input_bounds = operand.get_data()
+        if input_bounds is None:
+            return 0.0
+
+        bound = None
+        if not self.fully_grounded:
+            bound = Bound.UPPER if isinstance(self, Forall) else Bound.LOWER
+
+        input_bounds = input_bounds.permute([1, 0])[None, :, :]
+
+        self.neuron = self._create_neuron(arity=len(operand.grounding_table))
+        self.func = self.neuron.func
+        result = self.neuron.aggregate_bounds([0], self.func(input_bounds), bound)
+        self.neuron.bounds_table = self.neuron.bounds_table[0]
+        return result
+
+    def _fully_quantified_downward(self):
+        operand = self.operands[0]
+
+        if isinstance(operand, _Quantifier):
+            result = 0
+            for i, operand_neuron in enumerate(operand.neurons):
+                ib = operand_neuron.get_data().permute([1, 0])[None, :, :]
+                bounds = self.func_inv(self.get_data()[None, :], ib)
+                bounds = bounds[0].permute([1, 0])
+                result += operand_neuron.aggregate_bounds([0], bounds[None, 0])
+
+            return result
+
+        groundings = list(operand.grounding_table.values())
+        bounds = self.func_inv(
+            self.get_data().repeat(len(operand.get_data()), 1),
+            operand.get_data()[:, :, None],
+        )
+        return operand.neuron.aggregate_bounds(groundings, bounds[..., 0])
+
+    def _propagate_groundings(self):
+        if len(self._new_groundings):
+            operand = self.operands[0]
+            groundings = operand.grounding_table.keys()
+            new_groundings_df = pd.DataFrame(self._new_groundings)
+            df = pd.DataFrame(groundings)
+            new_groundings_df.columns = df[self.free_vars].columns
+            df = df.drop(self.free_vars, axis=1)
+            merged = _gm._full_outer_join(new_groundings_df, df)
+            merged.sort_index(axis=1, inplace=True)
+
+            for grounding in merged.itertuples(index=False, name=None):
+                grounding_object = operand._ground(grounding)
+                operand._add_groundings(grounding_object)
+
+            self._new_groundings = []
 
     def _set_activation(self, **kwds):
         """Updates the neural activation according to grounding dimension size
 
         The computation of a quantifier is implemented via one of the weighed
-            neurons, And/Or for ForAll/Exists.
+            neurons, And/Or for Forall/Exists.
         At present, weighted quantifiers have not been well studied and is
             therefore turned off
         However the dimension of computation is different, computing over the
@@ -165,17 +301,15 @@ class _Quantifier(_UnaryOperator):
             propagate via inference.
 
         """
-        operator = (
-            "And"
-            if isinstance(self, ForAll)
-            else ("Or" if isinstance(self, Exists) else None)
-        )
         kwds.setdefault("arity", len(self._grounding_set))
         kwds.setdefault("propositional", self.propositional)
         self.neuron = _NeuralActivation()(
             activation={"weights_learning": False}, **kwds
         )
-        self.func = self.neuron.activation(operator, direction=Direction.UPWARD)
+        self.func = self.neuron.activation(self.operator, direction=Direction.UPWARD)
+        self.func_inv = self.neuron.activation(
+            self.operator, direction=Direction.DOWNWARD
+        )
 
     @staticmethod
     def _has_free_variables(variables: Tuple[Variable, ...], operand: Formula) -> bool:
@@ -187,35 +321,14 @@ class _Quantifier(_UnaryOperator):
         self,
     ) -> Set[Union[str, Tuple[str, ...]]]:
         r"""Returns a set of groundings that are True."""
+        if isinstance(self.operands[0], _Quantifier):
+            return self.operands[0].true_groundings
+
         return {
             g
             for g in self.operands[0].groundings
             if self.operands[0].state(g) is Fact.TRUE
         }
-
-    def _upward_bounds(self, operand: Formula) -> Union[torch.Tensor, None]:
-        r"""Set Quantifier grounding table and return operand tensor."""
-        operand_grounding_set = set(operand.grounding_table)
-        if len(operand_grounding_set) == 0:
-            return
-
-        self._grounding_set = set(
-            [
-                grounding
-                for grounding in operand_grounding_set
-                if _gm.is_grounding_in_bindings(self, 0, grounding)
-            ]
-        )
-        return operand.get_data(*self._grounding_set) if self._grounding_set else None
-
-    def _groundings(self, groundings=None) -> Set[Union[str, Tuple[str, ...]]]:
-        """Internal usage to extract groundings as _Grounding object"""
-        return set(map(_Grounding.eval, groundings)) if groundings else self.groundings
-
-    @property
-    def groundings(self) -> Set[Union[str, Tuple[str, ...]]]:
-        r"""returns a set of groundings as str or tuple of str"""
-        return set(map(_Grounding.eval, self._grounding_set))
 
     def add_data(self, facts: Union[Tuple[float, float], Fact, Set]):
         super().add_data(facts)
@@ -257,12 +370,6 @@ class Not(_UnaryOperator):
 
     def upward(self, **kwds) -> float:
         r"""Upward inference from the operands to the operator.
-
-        Parameters
-        ----------
-        lifted : bool, optional
-            flag that determines if lifting should be done on this node.
-
         Returns
         -------
         tightened_bounds : float
@@ -270,42 +377,29 @@ class Not(_UnaryOperator):
 
         """
 
-        # Create (potentially) new groundings from functions
-        if not self.propositional:
-            self._ground_functions()
-
-        if kwds.get("lifted"):
-            self.neuron.aggregate_world(
-                tuple(
-                    _utils.negate_bounds(torch.tensor(self.operands[0].world)).tolist()
-                )
-            )
+        if self.propositional:
+            groundings = {None}
         else:
-            if self.propositional:
-                groundings = {None}
-            else:
-                groundings = tuple(self.operands[0]._groundings)
-                for g in groundings:
-                    if g not in self.grounding_table:
-                        self._add_groundings(g)
-            bounds = self.neuron.aggregate_bounds(
-                None, _utils.negate_bounds(self.operands[0].get_data(*groundings))
+            groundings = tuple(self.operands[0]._groundings)
+            for g in groundings:
+                if g not in self.grounding_table:
+                    self._add_groundings(g)
+        bounds = self.neuron.aggregate_bounds(
+            None, _utils.negate_bounds(self.operands[0].get_data(*groundings))
+        )
+        if self.is_contradiction():
+            logging.info(
+                "↑ CONTRADICTION "
+                f"FOR:'{self.name}' "
+                f"FORMULA:{self.formula_number} "
             )
-            if self.is_contradiction():
-                logging.info(
-                    "↑ CONTRADICTION "
-                    f"FOR:'{self.name}' "
-                    f"FORMULA:{self.formula_number} "
-                )
-            return bounds
+        return bounds
 
     def downward(self, **kwds) -> torch.Tensor:
         r"""Downward inference from the operator to the operands.
 
         Parameters
         ----------
-        lifted : bool, optional
-            flag that determines if lifting should be done on this node.
 
         Returns
         -------
@@ -313,34 +407,26 @@ class Not(_UnaryOperator):
             The amount of bounds tightening or new information that is leaned by the inference step.
 
         """
-        # Create (potentially) new groundings from functions
-        if not self.propositional:
-            self._ground_functions()
 
-        if kwds.get("lifted"):
-            self.operands[0].neuron.aggregate_world(
-                tuple(_utils.negate_bounds(torch.tensor(self.world)).tolist())
-            )
+        if self.propositional:
+            groundings = {None}
         else:
-            if self.propositional:
-                groundings = {None}
-            else:
-                groundings = tuple(self._groundings)
-                for g in groundings:
-                    if g not in self.operands[0]._groundings:
-                        self.operands[0]._add_groundings(g)
-            bounds = self.operands[0].neuron.aggregate_bounds(
-                None, _utils.negate_bounds(self.get_data(*groundings))
+            groundings = tuple(self._groundings)
+            for g in groundings:
+                if g not in self.operands[0]._groundings:
+                    self.operands[0]._add_groundings(g)
+        bounds = self.operands[0].neuron.aggregate_bounds(
+            None, _utils.negate_bounds(self.get_data(*groundings))
+        )
+        if self.operands[0].is_contradiction():
+            logging.info(
+                "↓ CONTRADICTION "
+                f"FOR:'{self.operands[0].name}' "
+                f"FROM:'{self.name}' "
+                f"FORMULA:{self.operands[0].formula_number} "
+                f"PARENT:{self.formula_number} "
             )
-            if self.operands[0].is_contradiction():
-                logging.info(
-                    "↓ CONTRADICTION "
-                    f"FOR:'{self.operands[0].name}' "
-                    f"FROM:'{self.name}' "
-                    f"FORMULA:{self.operands[0].formula_number} "
-                    f"PARENT:{self.formula_number} "
-                )
-            return bounds
+        return bounds
 
 
 class Exists(_Quantifier):
@@ -375,11 +461,25 @@ class Exists(_Quantifier):
     """
 
     def __init__(self, *args, **kwds):
+        variables = (
+            args[:-1]
+            if len(args) > 1
+            else args[-1][0].unique_vars
+            if isinstance(args[-1], tuple)
+            else args[-1].unique_vars
+        )
+
+        a = variables[0]
+        formula = args[-1]
+
+        if len(variables) > 1:
+            args = [a, Exists(*variables[1:], formula, **kwds)]
+
         self.connective_str = "∃"
         super().__init__(*args, **kwds)
 
 
-class ForAll(_Quantifier):
+class Forall(_Quantifier):
     r"""Symbolic universal quantifier.
 
     When working with belief bounds - universal operators restrict upward inference to only work with the given formula's upper bound. Downward inference behaves as usual.
@@ -394,13 +494,13 @@ class ForAll(_Quantifier):
     --------
     No free variables, quantifies over all of the variables in the formula.
     ```python
-    All_1 = ForAll(birthdate(p, d)))
-    All_2 = ForAll(p, d, birthdate(p, d)))
+    All_1 = Forall(birthdate(p, d)))
+    All_2 = Forall(p, d, birthdate(p, d)))
     ```
 
     Free variables, quantifies over a subset of variables in the formula.
     ```python
-    All = ForAll(p, birthdate(p, d)))
+    All = Forall(p, birthdate(p, d)))
     ```
 
     Warning
@@ -410,63 +510,18 @@ class ForAll(_Quantifier):
     """
 
     def __init__(self, *args, **kwds):
+        variables = (
+            args[:-1]
+            if len(args) > 1
+            else args[-1][0].unique_vars
+            if isinstance(args[-1], tuple)
+            else args[-1].unique_vars
+        )
+
+        if len(variables) > 1:
+            a = variables[0]
+            formula = args[-1]
+            args = [a, Forall(*variables[1:], formula, **kwds)]
+
         self.connective_str = "∀"
-        kwds.setdefault("world", World.AXIOM)
         super().__init__(*args, **kwds)
-
-    def downward(self, **kwds) -> Union[torch.Tensor, None]:
-        r"""Downward inference from the operator to the operands.
-
-        Parameters
-        ----------
-        lifted : bool, optional
-            flag that determines if lifting should be done on this node.
-
-        Returns
-        -------
-        tightened_bounds : float
-            The amount of bounds tightening or new information that is leaned by the inference step.
-
-        """
-        # Create (potentially) new groundings from functions
-        if not self.propositional:
-            self._ground_functions()
-
-        if kwds.get("lifted"):
-            result = self.operands[0].neuron.aggregate_world(self.world)
-            if result:
-                logging.info(
-                    "↓ WORLD FREE-VARIABLE UPDATED "
-                    f"TIGHTENED:{result} "
-                    f"FOR:'{self.operands[0].name}' "
-                    f"FROM:'{self.name}' "
-                    f"FORMULA:{self.operands[0].formula_number} "
-                    f"PARENT:{self.formula_number} "
-                )
-        else:
-            if not self._grounding_set:
-                return
-            operand = self.operands[0]
-            current_bounds = self.get_data()
-            groundings = operand.grounding_table.keys()
-            result = operand.neuron.aggregate_bounds(
-                [operand.grounding_table.get(g) for g in groundings], current_bounds
-            )
-            if result:
-                logging.info(
-                    "↓ BOUNDS UPDATED "
-                    f"TIGHTENED:{result} "
-                    f"FOR:'{self.operands[0].name}' "
-                    f"FROM:'{self.name}' "
-                    f"FORMULA:{self.operands[0].formula_number} "
-                    f"PARENT:{self.formula_number} "
-                )
-            if operand.is_contradiction():
-                logging.info(
-                    "↓ CONTRADICTION "
-                    f"FOR:'{operand.name}' "
-                    f"FROM:'{self.name}' "
-                    f"FORMULA:{operand.formula_number} "
-                    f"PARENT:{self.formula_number} "
-                )
-        return result
