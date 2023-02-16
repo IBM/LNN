@@ -1,6 +1,6 @@
 # Logical Neural Networks
 
-<img src="https://raw.githubusercontent.com/IBM/LNN/master/docsrc/images/lnn_structure.png" alt="LNN structure" width="400" class="aligncenter"/>
+<img src="https://raw.githubusercontent.com/IBM/LNN/master/docs/images/lnn_structure.png" alt="LNN structure" width="400" class="aligncenter"/>
 
 The LNN is a form of recurrent neural network with a 1-to-1 correspondence to a set of logical formulae in any of 
 various systems of ___weighted, real-valued logic___, in which evaluation performs logical inference. The graph 

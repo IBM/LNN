@@ -41,7 +41,7 @@ We expect that any decision-making system should be able to apply logical rules
     really not be there, since our network only needs 3 neurons to compute on
     such knowledge:
 
-<img src="https://raw.githubusercontent.com/IBM/LNN/master/docsrc/source/education/blogs/raining_implies_wet.png" alt="It is raining Implies the grass is wet" width="320" class="aligncenter">
+<img src="https://raw.githubusercontent.com/IBM/LNN/master/docs/source/education/blogs/raining_implies_wet.png" alt="It is raining Implies the grass is wet" width="320" class="aligncenter">
 
 Logic also allows us to build high-level decision makers that can reason about
     outcomes given only partial information about the world. Lets add some more
