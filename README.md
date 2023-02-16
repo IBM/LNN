@@ -24,8 +24,8 @@ To install the LNN:
 
 1. Make sure that the python version you use in line with our [setup](https://github.com/IBM/LNN/blob/master/setup.py) file, using a fresh environment is always a good idea:
     ```commandline
-    conda create -n lnn-contrib python=3.9 -y
-    conda activate lnn-contrib
+    conda create -n lnn python=3.9 -y
+    conda activate lnn
     ```
 2. Install the `master` branch to keep up to date with the latest supported features:
     ```commandline
