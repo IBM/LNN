@@ -1,10 +1,10 @@
 ##
-# Copyright 2022 IBM Corp. All Rights Reserved.
+# Copyright 2023 IBM Corp. All Rights Reserved.
 #
 # SPDX-License-Identifier: Apache-2.0
 ##
 
-from .constants import Fact, World, Direction, Join, NeuralActivation, Loss
+from .constants import Fact, World, Direction, NeuralActivation, Loss
 
 import torch
 from typing import Set, Tuple, Dict, Union
@@ -22,21 +22,6 @@ class AssertWorld:
                 "truth world assumption expects lnn.World object from "
                 f"{[w.name for w in World]}, received "
                 f"{world.__class__.__name__} {world}"
-            )
-
-
-class AssertJoin:
-    r"""AssertJoin(bounds)
-
-    Raised when world not given as World object
-    """
-
-    def __init__(self, join: Join):
-        if join not in Join:
-            raise KeyError(
-                "expects join object from "
-                f"{[j.name for j in Join]}, received "
-                f"{join.__class__.__name__} {join}"
             )
 
 
@@ -58,11 +43,11 @@ class AssertBoundsType:
     Raised when bounds given in the incorrect type.
     """
 
-    def __init__(self, bounds: Union[Fact, tuple]):
-        options = [Fact, World, tuple]
+    def __init__(self, bounds: Union[Fact, tuple, torch.Tensor]):
+        options = [bool, Fact, World, tuple, torch.Tensor, float]
         if type(bounds) not in options:
             raise TypeError(
-                f"fact expected from [lnn.Fact, lnn.World, tuple] "
+                f"fact expected from [lnn.Fact, lnn.World, tuple, torch.Tensor] "
                 f"received {bounds.__class__.__name__} {bounds}"
             )
 

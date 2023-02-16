@@ -1,14 +1,13 @@
 ##
-# Copyright 2022 IBM Corp. All Rights Reserved.
+# Copyright 2023 IBM Corp. All Rights Reserved.
 #
 # SPDX-License-Identifier: Apache-2.0
 ##
 
-from lnn import Model, And, Variable, Predicate, Fact, Join
+from lnn import Model, And, Variable, Predicate, Fact
 
 
 def test():
-    join = Join.OUTER
     model = Model()
     x, y, z, a, b = map(Variable, ("x", "y", "z", "a", "b"))
 
@@ -37,7 +36,7 @@ def test():
             (("x2", "y3", "z2"), Fact.UNKNOWN),
         ]
     )
-    p2_and_p2a = And(p2(x, y), p2a(y, z), join=join)
+    p2_and_p2a = And(p2(x, y), p2a(y, z))
     model.add_knowledge(p2_and_p2a)
     p2_and_p2a.upward()
 
@@ -65,7 +64,7 @@ def test():
             (("x3", "y2", "z2"), Fact.UNKNOWN),
         ]
     )
-    t2_p3_and_t2_p2 = And(t2_p3(x, y, z), t2_p2(y, z), join=join)
+    t2_p3_and_t2_p2 = And(t2_p3(x, y, z), t2_p2(y, z))
     model.add_knowledge(t2_p3_and_t2_p2)
     t2_p3_and_t2_p2.upward()
 
@@ -87,7 +86,7 @@ def test():
 
     t3_p1 = model.add_predicates(1, "t3_p1")
     model.add_data({t3_p1: {"z1": Fact.TRUE, "z4": Fact.TRUE}})
-    t2_p3_and_t2_p2_t3_p1 = And(t2_p3(x, y, z), t2_p2(y, z), t3_p1(z), join=join)
+    t2_p3_and_t2_p2_t3_p1 = And(t2_p3(x, y, z), t2_p2(y, z), t3_p1(z))
     model.add_knowledge(t2_p3_and_t2_p2_t3_p1)
     t2_p3_and_t2_p2_t3_p1.upward()
 
@@ -127,7 +126,7 @@ def test():
 
     t4_p1 = model.add_predicates(1, "t4_p1")
     model.add_data({t4_p1: {"x1": Fact.TRUE, "x4": Fact.TRUE}})
-    t2_p3_and_t2_p2_t4_p1 = And(t2_p3(x, y, z), t2_p2(y, z), t4_p1(x), join=join)
+    t2_p3_and_t2_p2_t4_p1 = And(t2_p3(x, y, z), t2_p2(y, z), t4_p1(x))
     model.add_knowledge(t2_p3_and_t2_p2_t4_p1)
     t2_p3_and_t2_p2_t4_p1.upward()
 
@@ -166,7 +165,7 @@ def test():
             t5_p2: {("a1", "b1"): Fact.TRUE, ("a2", "b2"): Fact.TRUE},
         }
     )
-    t2_p3_and_t2_p2_t5_p2 = And(t2_p3(x, y, z), t2_p2(y, z), t5_p2(a, b), join=join)
+    t2_p3_and_t2_p2_t5_p2 = And(t2_p3(x, y, z), t2_p2(y, z), t5_p2(a, b))
     model.add_knowledge(t2_p3_and_t2_p2_t5_p2)
 
     t2_p3_and_t2_p2_t5_p2.upward()
@@ -194,4 +193,3 @@ def test():
 
 if __name__ == "__main__":
     test()
-    print("success")

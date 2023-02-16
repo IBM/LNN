@@ -1,10 +1,9 @@
 networkx==2.5.1
-torch==1.13.0
+torch==1.13.1
 matplotlib==3.3.3
-pygraphviz>=1.6
 tqdm==4.50.2
 numpy==1.23.4
-setuptools~=52.0.0
+setuptools>=65.5.1
 torchviz==0.0.2
 pycddlib>=2.1.4
 jupyter

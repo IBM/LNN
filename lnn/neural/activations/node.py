@@ -1,5 +1,5 @@
 ##
-# Copyright 2022 IBM Corp. All Rights Reserved.
+# Copyright 2023 IBM Corp. All Rights Reserved.
 #
 # SPDX-License-Identifier: Apache-2.0
 ##
@@ -31,6 +31,7 @@ class _NodeActivation(_NodeParameters):
         grounding_rows: List[int] = None,
         new_bounds: torch.Tensor = None,
         bound: str = None,
+        duplicates: bool = False,
         **kwds,
     ) -> float:
         """Proof aggregation to tighten existing bounds towards new bounds.
@@ -55,19 +56,42 @@ class _NodeActivation(_NodeParameters):
             raise NotImplementedError(
                 "should not end here, logical" "aggregation not yet implemented"
             )
-        else:
-            L = (
-                torch.max(prev_bounds[..., 0], new_bounds[..., 0])
-                if (bound in [None, Bound.LOWER])
-                else prev_bounds[..., 0]
-            )
-            U = (
-                torch.min(prev_bounds[..., 1], new_bounds[..., 1])
-                if (bound in [None, Bound.UPPER])
-                else prev_bounds[..., 1]
-            )
-            aggregate = torch.stack([L, U], dim=-1)
-        self.update_bounds(grounding_rows, val_clamp(aggregate))
+
+        L = (
+            torch.max(prev_bounds[..., 0], new_bounds[..., 0])
+            if (bound in [None, Bound.LOWER])
+            else prev_bounds[..., 0]
+        )
+        U = (
+            torch.min(prev_bounds[..., 1], new_bounds[..., 1])
+            if (bound in [None, Bound.UPPER])
+            else prev_bounds[..., 1]
+        )
+        aggregate = val_clamp(torch.stack([L, U], dim=-1))
+
+        if duplicates:
+            unique_rows = {}
+            ids = []
+
+            for idx, row in enumerate(grounding_rows):
+                value = aggregate[idx]
+                if row in unique_rows:
+                    unique_rows[row] = torch.stack(
+                        [
+                            torch.max(torch.stack([unique_rows[row], value])[..., 0]),
+                            torch.min(torch.stack([unique_rows[row], value])[..., 1]),
+                        ],
+                        dim=-1,
+                    )
+                else:
+                    unique_rows[row] = value
+                    ids.append(idx)
+
+            grounding_rows = list(unique_rows.keys())
+            prev_bounds = prev_bounds[ids]
+            aggregate = torch.vstack(list(unique_rows.values()))
+
+        self.update_bounds(grounding_rows, aggregate)
         return (aggregate - prev_bounds).abs().sum().tolist()
 
     def aggregate_world(self, new_world: World):

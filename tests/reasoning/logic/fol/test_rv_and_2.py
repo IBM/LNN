@@ -1,5 +1,5 @@
 ##
-# Copyright 2022 IBM Corp. All Rights Reserved.
+# Copyright 2023 IBM Corp. All Rights Reserved.
 #
 # SPDX-License-Identifier: Apache-2.0
 ##
@@ -24,7 +24,6 @@ def test_and():
 
     for row in range(samples):
         for col in range(samples):
-
             # inputs
             a, b = x_grid[row][col], y_grid[row][col]
 

@@ -1,5 +1,5 @@
 ##
-# Copyright 2022 IBM Corp. All Rights Reserved.
+# Copyright 2023 IBM Corp. All Rights Reserved.
 #
 # SPDX-License-Identifier: Apache-2.0
 ##
@@ -126,7 +126,7 @@ class Proposition(_LeafFormula):
     def __init__(self, name: str, **kwds):
         super().__init__(name=name, arity=1, propositional=True, **kwds)
 
-    def add_data(self, fact: Fact):
+    def add_data(self, fact: Union[Fact, bool]):
         """Populate proposition with facts
 
         Facts required in bool, tuple or None

@@ -1,5 +1,5 @@
 ##
-# Copyright 2022 IBM Corp. All Rights Reserved.
+# Copyright 2023 IBM Corp. All Rights Reserved.
 #
 # SPDX-License-Identifier: Apache-2.0
 ##
@@ -18,11 +18,10 @@ from . import symbolic
 from .symbolic.logic import (
     And,
     Congruent,
-    Equivalent,
+    Iff,
     Exists,
-    ForAll,
+    Forall,
     Formula,
-    Function,
     Implies,
     NeuralActivation,
     Not,
@@ -33,9 +32,10 @@ from .symbolic.logic import (
     Predicates,
     Variable,
     Variables,
+    XOr,
 )
 from .model import Model
-from .constants import Fact, World, Direction, Join, Loss
+from .constants import Fact, World, Direction, Loss
 
 __all__ = [
     "bool_to_fact",
@@ -49,9 +49,9 @@ __all__ = [
     "And",
     "Congruent",
     "Direction",
-    "Equivalent",
+    "Iff",
     "Exists",
-    "ForAll",
+    "Forall",
     "Formula",
     "Implies",
     "NeuralActivation",
@@ -66,7 +66,6 @@ __all__ = [
     "Variables",
     "Fact",
     "World",
-    "Join",
     "Loss",
-    "Function",
+    "XOr",
 ]

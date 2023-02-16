@@ -49,7 +49,7 @@ In order to complete these tutorials, the only requirement is that you have:
 1. Basic python programming skills.
 2. Elementary knowledge in mathematics and logic.
 
-If the terms _"[boolean logic](https://en.wikipedia.org/wiki/Boolean_algebra)"_ and _"[truth tables](https://en.wikipedia.org/wiki/Truth_table)"_ do not have any significance to you, then we suggest that you start by following our [elementary material](https://ibm.box.com/s/k8lwr6mc5aw3kj1nnxfet9se4ykgna1y) recommendations.
+If the terms _"[boolean logic](https://en.wikipedia.org/wiki/Boolean_algebra)"_ and _"[truth tables](https://en.wikipedia.org/wiki/Truth_table)"_ do not have any significance to you, then we suggest that you start by following our [elementary material](https://ibm.box.com/s/c0sq8d7tc01tw1c7xq4k8oedajto84n8) recommendations.
 
 
 ### Getting Started 

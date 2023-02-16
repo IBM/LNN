@@ -1,11 +1,11 @@
 ##
-# Copyright 2022 IBM Corp. All Rights Reserved.
+# Copyright 2023 IBM Corp. All Rights Reserved.
 #
 # SPDX-License-Identifier: Apache-2.0
 ##
 
 import math
-from typing import Union, Optional, Tuple, Iterator, List, Dict, Set
+from typing import Union, Optional, Tuple, List, Dict, Set
 
 from ... import _utils
 from ... import _exceptions
@@ -13,8 +13,11 @@ from ...constants import Fact, World
 
 import torch
 
+from torch import nn
+from torch.nn.parameter import Parameter
 
-class _NodeParameters:
+
+class _NodeParameters(nn.Module):
     """Node level parameters
 
     Parameters
@@ -42,27 +45,30 @@ class _NodeParameters:
     """
 
     def __init__(self, **kwds):
-        self.params = {}
+        super(_NodeParameters, self).__init__()
         propositional = kwds.get("propositional")
         _exceptions.AssertPropositionalType(propositional)
         self.propositional = propositional
         world = kwds.get("world", World.OPEN)
         _exceptions.AssertBounds(world)
         self.update_world(world)
-        self.alpha = self.add_param(
-            "alpha",
+
+        self.alpha = Parameter(
             torch.tensor(
-                kwds.get("alpha", math.erf(kwds.get("alpha_sigma", 10) / math.sqrt(2))),
-                requires_grad=kwds.get("alpha_learning", False),
+                kwds.get("alpha", math.erf(kwds.get("alpha_sigma", 10) / math.sqrt(2)))
             ),
+            requires_grad=kwds.get("alpha_learning", False),
         )
+
         _exceptions.AssertAlphaNodeValue(self.alpha)
         self.bounds_learning = kwds.get("bounds_learning", False)
-        self.leaves = _utils.fact_to_bounds(
-            self.world,
-            self.propositional,
+        self.leaves = Parameter(
+            _utils.fact_to_bounds(
+                self.world,
+                self.propositional,
+                init_empty=True,
+            ),
             requires_grad=self.bounds_learning,
-            init_empty=True,
         )
         self.bounds_table = self.leaves.clone()
 
@@ -74,15 +80,11 @@ class _NodeParameters:
     def update_world(self, world: Union[Tuple, World]):
         self.world = world if isinstance(world, tuple) else world.value
 
-    def add_param(self, name, param):
-        self.params[name] = param
-        return param
-
     def flush(self, fact=Fact.UNKNOWN):
         if self.bounds_table.shape[0] > 0:
             self.add_data({fact})
 
-    def get_data(self, grounding_rows: List[int] = None):
+    def get_data(self, grounding_rows: List[int] = None, default=False):
         """returns tuple of all facts given by `grounding_rows`
         The `bounds_table` is returned if no `grounding_rows` given
         """
@@ -91,7 +93,14 @@ class _NodeParameters:
         if grounding_rows is None:
             return self.bounds_table
         if isinstance(grounding_rows, list):
-            return self.bounds_table[grounding_rows]
+            return torch.stack(
+                [
+                    torch.tensor(self.world)
+                    if row is None and default
+                    else self.bounds_table[row]
+                    for row in grounding_rows
+                ]
+            )
         return self.bounds_table[grounding_rows]
 
     def add_data(self, facts: Union[Fact, Tuple, Set, Dict], update_leaves=True):
@@ -134,10 +143,12 @@ class _NodeParameters:
                     fact, self.propositional, requires_grad=self.bounds_learning
                 )
                 if self.propositional:
-                    self.leaves = fact
+                    self.leaves = Parameter(fact, self.bounds_learning)
                     self.bounds_table = fact.clone()
                 else:
-                    self.leaves[grounding_row] = fact
+                    clone = self.leaves.clone()
+                    clone[grounding_row] = fact
+                    self.leaves = Parameter(clone, self.bounds_learning)
                     self.bounds_table[grounding_row] = fact.clone()
             else:
                 fact = _utils.fact_to_bounds(fact, self.propositional)
@@ -165,7 +176,9 @@ class _NodeParameters:
         new_leaves = _utils.fact_to_bounds(
             self.world, self.propositional, [n], requires_grad=self.bounds_learning
         )
-        self.leaves = torch.cat([self.leaves, new_leaves])
+        self.leaves = Parameter(
+            torch.cat([self.leaves, new_leaves]), self.bounds_learning
+        )
         self.bounds_table = torch.cat([self.bounds_table, new_leaves.clone()])
         return list(range(n_groundings, n_groundings + n))
 
@@ -187,11 +200,3 @@ class _NodeParameters:
     @torch.no_grad()
     def project_bounds(self):
         self.bounds_table.data = self.bounds_table.data.clamp(0, 1)
-
-    def named_parameters(self) -> Iterator[Tuple[str, torch.Tensor]]:
-        for name, param in self.params.items():
-            yield name, param
-        if self.bounds_learning:
-            for idx, param in enumerate(self.leaves):
-                if param.requires_grad and param.is_leaf:
-                    yield f"bounds_{idx}", param

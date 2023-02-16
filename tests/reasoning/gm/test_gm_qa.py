@@ -1,14 +1,13 @@
 ##
-# Copyright 2022 IBM Corp. All Rights Reserved.
+# Copyright 2023 IBM Corp. All Rights Reserved.
 #
 # SPDX-License-Identifier: Apache-2.0
 ##
 
-from lnn import Model, And, Fact, Exists, Variable, Join
+from lnn import Model, And, Fact, Exists, Variable
 
 
 def test_1():
-    join = Join.OUTER
     x = Variable("x")
     y = Variable("y")
 
@@ -29,21 +28,18 @@ def test_1():
         Exists(
             x,
             And(
-                director(x, y, bind={x: "William_Shatner"}),
+                director("William_Shatner", y),
                 starring(x, y),
-                join=join,
             ),
         )
     )
     model.infer()
     predictions = model.query.true_groundings
     for p in predictions:
-        assert p[0] == "William_Shatner"
+        assert p[0] == "The_captains"
 
 
 def test_2():
-    join = Join.OUTER
-    x = Variable("x")
     y = Variable("y")
     z = Variable("z")
 
@@ -65,9 +61,8 @@ def test_2():
         Exists(
             z,
             And(
-                director(x, y, bind={x: "William_Shatner"}),
+                director("William_Shatner", y),
                 starring(z, y),
-                join=join,
             ),
         )
     )
@@ -81,5 +76,3 @@ def test_2():
 if __name__ == "__main__":
     test_1()
     test_2()
-
-    print("success")

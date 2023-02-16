@@ -1,5 +1,5 @@
 ##
-# Copyright 2022 IBM Corp. All Rights Reserved.
+# Copyright 2023 IBM Corp. All Rights Reserved.
 #
 # SPDX-License-Identifier: Apache-2.0
 ##
@@ -84,12 +84,22 @@ class _NeuronActivation(_NodeActivation, _NeuronParameters):
     ):
         pass
 
-    def _equivalent_upward(self, operand_bounds: torch.Tensor):
-        r"""Placeholder for the Equivalent Neuron."""
+    def _iff_upward(self, operand_bounds: torch.Tensor):
+        r"""Placeholder for the Iff Neuron."""
         pass
 
-    def _equivalent_downward(
+    def _iff_downward(
         self, operator_bounds: torch.Tensor, operand_bounds: torch.Tensor
     ):
-        r"""Placeholder for the Equivalent Neuron."""
+        r"""Placeholder for the Iff Neuron."""
+        pass
+
+    def _xor_upward(self, operand_bounds: torch.Tensor):
+        r"""Placeholder for the XOr Neuron."""
+        pass
+
+    def _xor_downward(
+        self, operator_bounds: torch.Tensor, operand_bounds: torch.Tensor
+    ):
+        r"""Placeholder for the XOr Neuron."""
         pass

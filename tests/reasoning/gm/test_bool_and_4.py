@@ -1,5 +1,5 @@
 ##
-# Copyright 2022 IBM Corp. All Rights Reserved.
+# Copyright 2023 IBM Corp. All Rights Reserved.
 #
 # SPDX-License-Identifier: Apache-2.0
 ##
@@ -30,7 +30,6 @@ def test():
 
     # set model facts
     for idx, pred in enumerate(preds):
-
         test_case = {(f"{row}",) * n_vars: truth[idx] for row, truth in enumerate(TT)}
         model.add_data({pred: test_case})
 
@@ -44,7 +43,6 @@ def test():
         assert prediction is bool_to_fact(
             GT[row]
         ), f"And({TT[row]}) expected {GT}, received {prediction}"
-    print("success")
 
 
 if __name__ == "__main__":

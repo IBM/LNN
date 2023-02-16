@@ -1,5 +1,5 @@
 ##
-# Copyright 2022 IBM Corp. All Rights Reserved.
+# Copyright 2023 IBM Corp. All Rights Reserved.
 #
 # SPDX-License-Identifier: Apache-2.0
 ##
@@ -117,4 +117,3 @@ if __name__ == "__main__":
     test_false_operator_1()
     test_false_operator_2()
     test_false_operator_3()
-    print("success")

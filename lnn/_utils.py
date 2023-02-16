@@ -1,5 +1,5 @@
 ##
-# Copyright 2022 IBM Corp. All Rights Reserved.
+# Copyright 2023 IBM Corp. All Rights Reserved.
 #
 # SPDX-License-Identifier: Apache-2.0
 ##
@@ -14,91 +14,6 @@ from .constants import World, Fact, _Fact
 import torch
 import torchviz
 import numpy as np
-
-
-class MultiInstance:
-    def __init__(self, term: Union[str, Tuple[str, ...]]):
-        if isinstance(term, tuple):
-            # Decompose Tuple to create an instance for each in the Tuple
-            # This allows _Grounding(("x", "y")) to create individual
-            # groundings, i.e. _Grounding("x"), _Grounding("y")
-            [self.__class__(t) for t in term]
-        elif isinstance(term, str):
-            pass
-        else:
-            raise Exception(
-                f"expected {self.__class__.__name__} inputs from "
-                f"[str, list], received {type(term)}"
-            )
-
-
-class UniqueNameAssumption:
-    """Class to store and retrieve instances using the unique name assumption
-
-    if an instance is created with the same args, kwds as an existing instance
-        the original object is returned
-
-    Examples
-    --------
-    ```
-    class MyClass(UniqueNameAssumption):
-    ```
-    """
-
-    instances = dict()
-
-    @classmethod
-    def __getitem__(cls, key: str):
-        if key in cls.instances:
-            return cls.instances[key]
-        raise LookupError(
-            f"should not end up here, {type(key)} key {key} not found in "
-            f"Groundings {list(cls.instances.keys())}"
-        )
-
-    @classmethod
-    def __setitem__(cls, key: str, val: any):
-        cls.instances[key] = val
-
-    def __new__(cls, *args, **kwds):
-        unique_name = str(*args, **kwds)
-        instance = cls.instances.get(unique_name)
-        if instance is None:
-            instance = super(cls.__class__, cls).__new__(cls)
-            cls.__setitem__(unique_name, instance)
-        return instance
-
-    @classmethod
-    def keys(cls):
-        return cls.instances.keys()
-
-    @classmethod
-    def values(cls):
-        return cls.instances.values()
-
-    @classmethod
-    def __len__(cls):
-        return len(cls.instances)
-
-    @classmethod
-    def items(cls):
-        return cls.instances.items()
-
-    @classmethod
-    def rekey(cls, new_key: str, old_key: str):
-        cls.instances[new_key] = cls.instances.pop(old_key)
-
-    @classmethod
-    def pop(cls, key: str):
-        return cls.instances.pop(key)
-
-    @classmethod
-    def clear(cls):
-        cls.instances = dict()
-
-    @classmethod
-    def __contains__(cls, key: str):
-        return key in cls.instances
 
 
 def fact_to_bounds(
@@ -138,7 +53,9 @@ def fact_to_bounds(
     elif type(fact) in [World, Fact]:
         fact = fact.value
     return (
-        torch.tensor(tuple(map(float, fact)))
+        torch.tensor(
+            tuple(map(float, fact)) if isinstance(fact, tuple) else (fact, fact)
+        )
         .repeat(sizes)
         .requires_grad_(requires_grad)
     )

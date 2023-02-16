@@ -1,18 +1,18 @@
 ##
-# Copyright 2022 IBM Corp. All Rights Reserved.
+# Copyright 2023 IBM Corp. All Rights Reserved.
 #
 # SPDX-License-Identifier: Apache-2.0
 ##
 
 # flake8: noqa: E501
 
-import itertools
+import itertools as itls
 from collections.abc import Iterable
 from typing import Union, Dict, Tuple, List
 
+from . import viz
 from . import _exceptions, _utils
-from .symbolic._lifted import lifted_axioms
-from .constants import Fact, World, Direction, Join, Loss
+from .constants import Fact, World, Direction, Loss
 from .symbolic.logic import Proposition, Predicate, Formula
 
 import torch
@@ -21,12 +21,13 @@ import logging
 import datetime
 import networkx as nx
 from tqdm import tqdm
+from torch import nn
 import matplotlib.pyplot as plt
 
 _utils.logger_setup(flush=True)
 
 
-class Model:
+class Model(nn.Module):
     r"""Creates a container for logical reasoning and neural learning.
 
     Models define a theory or a collection of formulae, with additional reasoning and
@@ -67,7 +68,7 @@ class Model:
     Asthmatic_smokers_cough = (
         Exists(x, Implies(And(Smokes(x), Asthma(x)), Cough(x))))
     Smokers_befriend_smokers = (
-        ForAll(x, y, Implies(Smokers_have_friends(x, y), Smokes(y))))
+        Forall(x, y, Implies(Smokers_have_friends(x, y), Smokes(y))))
 
     # add root formulae to model
     model = Model()
@@ -100,6 +101,7 @@ class Model:
         data: Dict = None,
         name: str = "Model",
     ):
+        super(Model, self).__init__()
         self.graph = nx.DiGraph()
         self.nodes = dict()
         self.node_names = dict()
@@ -175,7 +177,7 @@ class Model:
     def add_formulae(self, *args, **kwds):
         raise NameError(f"`add_formulae` is deprecated, use `add_knowledge` instead")
 
-    def add_knowledge(self, *formulae: Formula, world: World = None, join: Join = None):
+    def add_knowledge(self, *formulae: Formula, world: World = None):
         r"""Extend the model to include additional formulae.
 
         Only root level formulae explicitly need to be added to the model.
@@ -234,7 +236,7 @@ class Model:
         ```
 
         """
-        self._add_knowledge(*formulae, world=world, join=join)
+        self._add_knowledge(*formulae, world=world)
 
     def add_propositions(self, *names: str, **kwds):
         ret = []
@@ -258,9 +260,7 @@ class Model:
         self.graph.remove_edge(*old_edge)
         self.graph.add_edge(*new_edge)
 
-    def _add_knowledge(
-        self, *formulae: Formula, world: World = None, join: Join = None
-    ):
+    def _add_knowledge(self, *formulae: Formula, world: World = None):
         for idx, f in enumerate(formulae):
             _exceptions.AssertFormula(f)
             self.graph.add_node(f)
@@ -283,10 +283,6 @@ class Model:
             for f in formulae:
                 f.reset_world(world)
 
-        if join:
-            for f in formulae:
-                f.set_join(join)
-
     def add_facts(self, *args, **kwds):
         raise NameError(f"`add_facts` is deprecated, use `add_data` instead")
 
@@ -295,8 +291,11 @@ class Model:
         data: Dict[
             Formula,
             Union[
-                Union[Fact, Tuple[float, float]],
-                Dict[Union[str, Tuple[str, ...]], Union[Fact, Tuple[float, float]]],
+                Union[bool, Fact, float, Tuple[float, float]],
+                Dict[
+                    Union[str, Tuple[str, ...]],
+                    Union[bool, Fact, float, Tuple[float, float]],
+                ],
             ],
         ],
     ):
@@ -309,7 +308,7 @@ class Model:
         Parameters
         ----------
         data : a dict of Fact, belief bounds or dict
-            The dict is keyed by the formula for which data is to be added, with the truths as the value. For propositional formulae, truths are given as either Facts or belief bounds (a tuple of 2 floats). For first-order logic formula, inputs truths are given as a dict. This is further keyed by the grounding (a str for unary formlae or tuple of strings of larger arities), with values also as Facts or bounds on beliefs.
+            The dict is keyed by the formula for which data is to be added, with the truths as the value. For propositional formulae, truths are given as either Facts or belief bounds. These beliefs can be given as a bool, float or a float-range, i.e. a tuple of 2 floats. For first-order logic formula, inputs truths are given as a dict. This is further keyed by the grounding (a str for unary formlae or tuple of strings of larger arities), with values also as Facts or bounds on beliefs.
 
         Examples
         --------
@@ -420,7 +419,8 @@ class Model:
         source: Formula = None,
         **kwds,
     ):
-        r"""Traverse over the model and execute a node operation.
+        r"""Traverse over the subgraph and execute an operation per node starting from
+        source.
 
         Traverses through graph from `source` in the given `direction`
             and execute `func` at each node
@@ -441,35 +441,11 @@ class Model:
             logging.info(f"{direction.value} INFERENCE RESULT:{coalesce}")
         return coalesce
 
-    def lifted_processing(self, n: Union[float, int]) -> int:
-        axioms = lifted_axioms(self)
-        if len(self.nodes) == 0:
-            logging.debug("no formulae in the model to lift")
-            return 0
-        for _ in range(int(n)):
-            axiom, k = random.choice(list(axioms.items()))
-            if k > len(self.nodes):
-                continue
-            nodes = random.sample(list(self.nodes.values()), k=k)
-            result = int(axiom(*nodes))
-            if result:
-                return result
-        return 0
-
-    def lift(self, lifted: Union[bool, int, float] = True, *args, **kwds):
-        r"""Lift the model without doing bounds-based inference.
-
-        This can be used when a model has TRUE axioms/rules and a query is expected to be answerable directly from the truth of those axioms, i.e. without needing to touch the groundiings/bounds.
-        This uses the LNN as a symbolic manipulation system to introduce new rules based on a set of [axiom schemata](https://en.wikipedia.org/wiki/Propositional_calculus).
-        """
-        self._infer(*args, lifted=lifted, **kwds)
-
     def infer(
         self,
         direction: Direction = None,
         source: Formula = None,
         max_steps: int = None,
-        lifted: Union[bool, int, float] = False,
         **kwds,
     ) -> Tuple[Tuple[int, int], torch.Tensor]:
         r"""Reasons over all possible inferences until convergence
@@ -482,23 +458,17 @@ class Model:
             Specifies starting node for [depth-first search traversal](https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.traversal.depth_first_search.dfs_postorder_nodes.html#networkx.algorithms.traversal.depth_first_search.dfs_postorder_nodes). Specifying a node here will compute reasoning (until convergence) on the subgraph, with the specified source is the root of the subgraph.
         max_steps: int, optional
             Limits the inference to a specified number of passes of the naive traversal strategy. If unspecified, the steps will not be limited, i.e. inference will take place until convergence.
-        lifted : bool or float, optional
-            Computes lifted inference processing to modify default truths via the UP/DOWN inference algorithm.
 
         Returns
         -------
         (steps, facts_inferred) : Tuple[tuple of 2 ints, torch.Tensor]
-            The returned `steps` are the number of steps to converge loops, reflecting `lifting steps`, `reasoning steps` accordingly. The `facts_inferred` provide a sum of bounds tightening from inference updates.
 
         """
-        if lifted:
-            self.lift(lifted)
 
         return self._infer(
             direction=direction,
             source=source,
             max_steps=max_steps,
-            lifted=False,
             **kwds,
         )
 
@@ -509,19 +479,13 @@ class Model:
         max_steps: int = None,
         **kwds,
     ) -> Tuple[Tuple[int, int], torch.Tensor]:
-        r"""Implementation of model inference.
-
-        A model can do inference with lifting, or to explicitly lift without explicitly doing inference (i.e. no bounds updates).
-        `infer` calls `_infer` to do bounds-based inference with/without lifting
-        but `lift` calls `_infer` explicitly without bounds-based inference
-        """
+        r"""Implementation of model inference."""
         direction = (
             [Direction.UPWARD, Direction.DOWNWARD] if not direction else [direction]
         )
-        converged, converged_lifting, converged_bounds = False, False, True
+        converged = False
         additional_axioms, steps, facts_inferred = 0, 0, 0
-        lifted = kwds.get("lifted")
-        logging.info(f"{'LIFTED' if lifted else 'BOUNDED'} REASONING LOOP")
+
         while not converged:
             if self.query and self.query.is_classically_resolved and not self._converge:
                 logging.info("=" * 22)
@@ -532,10 +496,6 @@ class Model:
                 break
             logging.info("-" * 22)
             logging.info(f"REASONING STEP:{steps}")
-            if lifted and converged_bounds is True:
-                is_new_axiom = self.lifted_processing(1e5 if lifted is True else lifted)
-                converged_lifting = True if is_new_axiom == 0 else False
-                additional_axioms += is_new_axiom
             bounds_diff = 0.0
             for d in direction:
                 bounds_diff += self._traverse_execute(
@@ -547,11 +507,8 @@ class Model:
                 else bounds_diff <= 1e-7
             )
             if converged_bounds:
-                if converged_lifting or not lifted:
-                    converged = True
-                else:
-                    converged_bounds = True
-                    logging.info("NO UPDATES AVAILABLE, TRYING A NEW AXIOM")
+                converged = True
+                logging.info("NO UPDATES AVAILABLE, TRYING A NEW AXIOM")
             facts_inferred += bounds_diff
             steps += 1
             if max_steps and steps >= max_steps:
@@ -560,13 +517,9 @@ class Model:
         logging.info(
             f"INFERENCE CONVERGED WITH {facts_inferred} BOUNDS "
             f"UPDATES IN {steps} REASONING STEPS "
-            + (f"BY ADDING {additional_axioms} AXIOMS" if lifted else "")
         )
         logging.info("*" * 78)
         return steps, facts_inferred
-
-    def forward(self, *args, **kwds):
-        return self.infer(*args, **kwds)
 
     def upward(self, **kwds):
         r"""Performs upward inference for each node in the model from leaf to root."""
@@ -679,13 +632,13 @@ class Model:
             if loss <= 1e-7 and kwds.get("stop_at_convergence", True):
                 break
         self.reset_bounds()
-        self.infer()
+        self.infer(**kwds)
         self.increment_param_history(kwds.get("parameter_history"))
         return (running_loss, loss_history), inference_history
 
     def parameters(self):
         result = list(
-            itertools.chain.from_iterable([n.parameters() for n in self.nodes.values()])
+            itls.chain.from_iterable([n.parameters() for n in self.nodes.values()])
         )
         return result
 
@@ -783,7 +736,7 @@ class Model:
             "font_size": 9,
         }
         options.update(kwds)
-        pos = nx.drawing.nx_agraph.graphviz_layout(self.graph, prog="dot")
+        pos = viz.get_pos(self)
         nx.draw(self.graph, pos, **options)
         nx.draw_networkx_labels(
             self.graph,
@@ -835,3 +788,13 @@ class Model:
             if any([node.is_contradiction() for node in self.nodes.values()])
             else False
         )
+
+    @property
+    def shape(self):
+        groundings = sum(
+            [
+                1 if node.propositional else len(node.groundings)
+                for node in self.nodes.values()
+            ]
+        )
+        return [len(self.nodes), groundings]

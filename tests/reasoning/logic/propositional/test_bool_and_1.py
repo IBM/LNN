@@ -1,5 +1,5 @@
 ##
-# Copyright 2022 IBM Corp. All Rights Reserved.
+# Copyright 2023 IBM Corp. All Rights Reserved.
 #
 # SPDX-License-Identifier: Apache-2.0
 ##
@@ -152,4 +152,3 @@ def test_downward():
 if __name__ == "__main__":
     test_upward()
     test_downward()
-    print("success")

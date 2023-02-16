@@ -1,5 +1,5 @@
 ##
-# Copyright 2022 IBM Corp. All Rights Reserved.
+# Copyright 2023 IBM Corp. All Rights Reserved.
 #
 # SPDX-License-Identifier: Apache-2.0
 ##
@@ -13,13 +13,10 @@ from typing import Optional, Union, Tuple, Iterator, Set, List, Dict
 
 from abc import ABC
 
-from .grounding import _Grounding
 from .variable import Variable
-from .function import Function
 from .. import _trace
-from .._bindings import get_bindings
 from ... import _utils, _exceptions, utils
-from ...constants import Fact, World, Join
+from ...constants import Fact, World
 
 import copy
 import torch
@@ -45,9 +42,6 @@ class Formula(ABC):
     def __init__(
         self, *formulae: "Formula", name: Optional[str] = "", arity: int = None, **kwds
     ):
-
-        self.join: Join = kwds.get("join", Join.INNER)
-
         # construct edge and operand list for each formula
         self.edge_list = list()
         self.operands: List[Formula] = list()
@@ -91,8 +85,11 @@ class Formula(ABC):
     def add_data(
         self,
         data: Union[
-            Union[Fact, Tuple[float, float]],
-            Dict[Union[str, Tuple[str, ...]], Union[Fact, Tuple[float, float]]],
+            Union[bool, Fact, float, Tuple[float, float]],
+            Dict[
+                Union[str, Tuple[str, ...]],
+                Union[bool, Fact, float, Tuple[float, float]],
+            ],
         ],
     ):
         r"""Add data to the formula in the form of classical facts or belief bounds.
@@ -104,7 +101,7 @@ class Formula(ABC):
         Parameters
         ----------
         data : Fact, belief bounds or dict
-            For propositional formulae, truths is given as either Facts or belief bounds (a tuple of 2 floats). For first-order logic formula, inputs truths are given as a dict. It is keyed by the grounding (a str for unary formlae or tuple of strings of larger arities), with values also as Facts or bounds on beliefs.
+            For propositional formulae, truths is given as either Facts or belief bounds. These beliefs can be given as a bool, float or a float-range, i.e. a tuple of 2 floats. For first-order logic formula, inputs truths are given as a dict. It is keyed by the grounding (a str for unary formlae or tuple of strings of larger arities), with values also as Facts or bounds on beliefs.
 
         Examples
         --------
@@ -132,28 +129,37 @@ class Formula(ABC):
 
         """
         if self.propositional:  # Propositional facts
+            if isinstance(data, bool):
+                data = Fact.TRUE if data else Fact.FALSE
+
             _exceptions.AssertBounds(data)
             self.neuron.add_data(data)
+            return
 
-        else:  # FOL facts
-            if isinstance(data, dict):  # facts given per grounding
-                # replace fact keys (str -> _Groundings)
-                groundings = tuple(data.keys())
-                for g in groundings:
-                    data[self._ground(g)] = data.pop(g)
+        # FOL facts
+        if not isinstance(data, dict):  # facts given per grounding
+            raise Exception(
+                "FOL facts should be from [dict, set], "
+                f'"{self}" received {type(data)}'
+            )
 
-                # add missing groundings to `grounding_table`
-                groundings = tuple(data.keys())
-                self._add_groundings(*groundings)
+        # replace fact keys (str -> tuple[str])
+        groundings = tuple(data.keys())
+        for g in groundings:
+            bounds = data.pop(g)
 
-                # set facts for all groundings
-                table_facts = {self.grounding_table[g]: data[g] for g in groundings}
-            else:
-                raise Exception(
-                    "FOL facts should be from [dict, set], "
-                    f'"{self}" received {type(data)}'
-                )
-            self.neuron.add_data(table_facts)
+            if isinstance(bounds, bool):
+                bounds = Fact.TRUE if bounds else Fact.FALSE
+
+            data[self._ground(g)] = bounds
+
+        # add missing groundings to `grounding_table`
+        groundings = tuple(data.keys())
+        self._add_groundings(*groundings)
+
+        # set facts for all groundings
+        table_facts = {self.grounding_table[g]: data[g] for g in groundings}
+        self.neuron.add_data(table_facts)
 
     def add_labels(
         self,
@@ -226,7 +232,7 @@ class Formula(ABC):
         raise NameError(f"`get_facts` is deprecated, use `get_data` instead")
 
     def get_data(
-        self, *groundings: Union[str, Tuple[str, ...], _Grounding]
+        self, *groundings: Union[str, Tuple[str, ...], tuple[str]]
     ) -> torch.Tensor:
         r"""Returns the current beliefs of the formula.
 
@@ -241,11 +247,8 @@ class Formula(ABC):
         """
         if self.propositional or len(groundings) == 0:
             return self.neuron.get_data()
-        table_rows = list(self.grounding_table.get(self._ground(g)) for g in groundings)
-        if all(row is None for row in table_rows):
-            return torch.Tensor(self.world)
-        result = self.neuron.get_data(table_rows)
-        return result
+        table_rows = [self.grounding_table.get(self._ground(g)) for g in groundings]
+        return self.neuron.get_data(table_rows, default=True)
 
     def get_labels(self, *groundings: str) -> torch.Tensor:
         r"""Returns the stored labels from the symbolic container."""
@@ -258,7 +261,7 @@ class Formula(ABC):
     def groundings(self) -> Set[Union[str, Tuple[str, ...]]]:
         r"""Returns the groundings to the user as str or tuple of str."""
         if self.grounding_table:
-            return set(map(_Grounding.eval, self.grounding_table.keys()))
+            return set(self.grounding_table.keys())
 
         return set()
 
@@ -356,11 +359,10 @@ class Formula(ABC):
             return operands, edge_replace, n_negations
 
     def named_parameters(self) -> Iterator[Tuple[str, torch.Tensor]]:
-        yield from self.neuron.named_parameters()
+        return self.neuron.named_parameters()
 
     def parameters(self) -> Iterator[torch.Tensor]:
-        for name, param in self.neuron.named_parameters():
-            yield param
+        return self.neuron.parameters()
 
     def params(
         self, *params: str, detach: bool = False
@@ -408,27 +410,19 @@ class Formula(ABC):
         ('const_2', 'const_3')          CONTRADICTION (L, U)
         ('const_1', 'const_7')                  FALSE (L, U)
 
-        TRUE   ForAll: ForAll_0 (y)           UNKNOWN (L, U)
+        TRUE   Forall: Forall_0 (y)           UNKNOWN (L, U)
         ```
 
         """
 
-        def state_wrapper(grounding: _Grounding):
-            return (
-                f"'{grounding}'" if grounding.grounding_arity == 1 else f"{grounding}"
-            )
+        def state_wrapper(grounding: Tuple[str]):
+            return f"{grounding}"
 
         def round_bounds(grounding=None):
-            return tuple(
-                [
-                    round(r, roundoff)
-                    for r in (
-                        self.get_data(grounding)
-                        if self.propositional
-                        else self.get_data(grounding)[0]
-                    ).tolist()
-                ]
-            )
+            data = self.get_data(grounding)
+            if len(data.shape) > 1:
+                data = data[0]
+            return tuple([round(r, roundoff) for r in data.tolist()])
 
         header = (
             f"{str(self.world_state(True))} "
@@ -521,10 +515,6 @@ class Formula(ABC):
             self.operands_by_number.append(operand.formula_number)
         return idx
 
-    def set_join(self, join: Join):
-        _exceptions.AssertJoin(join)
-        self.join = join
-
     def set_negative_weights(
         self, is_negative: bool = True, store: bool = True
     ) -> (List[int], Tuple[Tuple["Formula"]]):
@@ -566,7 +556,7 @@ class Formula(ABC):
             if bounds is None:
                 if groundings is None or isinstance(groundings, list):
                     result = {
-                        str(g): self.state(g)
+                        g: self.state(g)
                         for g in (
                             self.grounding_table if groundings is None else groundings
                         )
@@ -618,14 +608,14 @@ class Formula(ABC):
     def Not(self, **kwds) -> "Not":
         return subclasses["Not"](*self._formula_vars(self), **kwds)
 
-    def Equivalent(self, formula: "Formula", **kwds) -> "Equivalent":
-        return subclasses["Equivalent"](*self._formula_vars(self, formula), **kwds)
+    def Iff(self, formula: "Formula", **kwds) -> "Iff":
+        return subclasses["Iff"](*self._formula_vars(self, formula), **kwds)
 
     def Exists(self, **kwds) -> "Exists":
         return subclasses["Exists"](self.unique_vars, self, **kwds)
 
-    def ForAll(self, **kwds) -> "ForAll":
-        return subclasses["ForAll"](*self.unique_vars, self, **kwds)
+    def Forall(self, **kwds) -> "Forall":
+        return subclasses["Forall"](*self.unique_vars, self, **kwds)
 
     ##
     # Internal function definitions
@@ -634,12 +624,11 @@ class Formula(ABC):
     def __call__(
         self,
         *variables: Variable,
-        bind: Dict[Variable, Union[str, List[str]]] = None,
     ) -> Tuple[
         "Formula",
         List[Variable],
         Tuple[Variable, ...],
-        Tuple[Union[List[_Grounding], List[None]]],
+        Tuple[Union[List[tuple[str]], List[None]]],
     ]:
         r"""Variable remapping between operator and operand variables.
 
@@ -663,7 +652,7 @@ class Formula(ABC):
         var_remap:
             tuple of parent-to-child remapping Variables
         bindings:
-            tuple of parent-to-child groundings to bind inference to single groundings are _Grounding multiple groundings are list(_Grounding)
+            tuple of parent-to-child groundings to bind inference to single groundings
 
         """
         if len(variables) != self.num_unique_vars:
@@ -673,9 +662,9 @@ class Formula(ABC):
                 f"variables length ({len(variables)}) must be the same "
                 f"length as `num_unique_vars` ({self.num_unique_vars})"
             )
+
         bindings = list()
-        if bind is None:
-            bind = dict()
+        bind = dict()
 
         variable_objects = list()
 
@@ -712,19 +701,28 @@ class Formula(ABC):
     def __str__(self) -> str:
         return self.name
 
-    def _add_groundings(self, *groundings: _Grounding):
+    def __eq__(self, other):
+        eq_condition = (self.structure == other.structure) and (
+            self.neuron == other.neuron
+        )
+        return eq_condition
+
+    def __hash__(self):
+        return hash(self.structure)
+
+    def _add_groundings(self, *groundings: tuple[str]):
         r"""Adds missing groundings to `grounding_table` for those not yet stored.
 
         Examples
         --------
         ```python
         # for formulae with arity == 1:
-        formula._add_groundings(_Grounding_1, _Grounding_2)
+        formula._add_groundings(tuple_1, tuple_2)
         ```
         ```python
         # for formulae with arity > 1:
-        groundings = ((_Grounding_1, _Grounding_7),
-                      (_Grounding_2, _Grounding_8))
+        groundings = ((tuple_1, tuple_7),
+                      (tuple_2, tuple_8))
         formula._add_groundings(*groundings)
         ```
 
@@ -867,9 +865,9 @@ class Formula(ABC):
 
     def _ground(
         self,
-        grounding: Union[str, Tuple[str, ...], _Grounding],
+        grounding: Union[str, Tuple[str, ...], tuple[str]],
         arity_match: bool = True,
-    ) -> _Grounding:
+    ) -> tuple[str]:
         r"""Returns a single grounded object given a grounding in str form.
 
         If the grounding is already an internal "Grounding" object, it will simply be
@@ -893,6 +891,12 @@ class Formula(ABC):
         for multiple objects
 
         """
+
+        if isinstance(grounding, tuple):
+            return grounding
+        if isinstance(grounding, str):
+            return (grounding,)
+
         if Formula._is_grounded(grounding):
             return grounding
         if isinstance(grounding, tuple):
@@ -912,44 +916,16 @@ class Formula(ABC):
                     f"{self} received str as grounding, expected grounding "
                     f"({grounding}) as a tuple of len {self.num_unique_vars}"
                 )
-        return _Grounding(grounding)
-
-    def _ground_functions(self):
-        r"""Grounds a "Function" if given bindings that are fully bound."""
-        tmp_bindings = [
-            tuple([get_bindings(g) for g in op]) if op else ([None],)
-            for op in self.bindings
-        ]
-
-        for op_id, op in enumerate(self.operands):
-
-            # If there are groundings and partial bindings we can still
-            # create new groundings by combining the partials from
-            # groundings and bindings. But we need the ability
-            # to extract partial groundings without the grounding string.
-            # bindings = [g for g in product(*tmp_bindings[op_id])]
-            # for g in op.groundings:  # Tuple
-            #     for binding in bindings:
-            #         new_g = [g[b] if binding[b] is None else binding[b]
-            #                  for b in range(len(binding))]
-            #         op._add_groundings(tuple(new_g))
-
-            if all([False if g[0] is None else True for g in tmp_bindings[op_id]]):
-                for g in itertools.product(*tmp_bindings[op_id]):
-                    if len(g) == 1:
-                        op._add_groundings(op._ground(g[0]))
-                    else:
-                        op._add_groundings(op._ground(g))
+        return grounding
 
     @property
-    def _groundings(self) -> Set[_Grounding]:
-        """Internal usage to extract groundings as _Grounding object"""
+    def _groundings(self) -> Set[tuple[str]]:
+        """Internal usage to extract groundings"""
         return set(self.grounding_table.keys())
 
     def _has_bindings(self, slot: int = None) -> bool:
         r"""Returns True if Formula has any bindings."""
         if isinstance(slot, int):
-
             return (
                 True
                 if self.bindings[slot]
@@ -977,10 +953,9 @@ class Formula(ABC):
         subformulae = list()
         _operand_vars: List[Union[Tuple[Variable, ...], None]] = [None] * self.arity
         _var_remap: List[Union[Tuple[Variable, ...], None]] = [None] * self.arity
-        _bindings: List[Union[Tuple[_Grounding, ...], None]] = [None] * self.arity
+        _bindings: List[Union[Tuple[tuple[str], ...], None]] = [None] * self.arity
 
         for slot, f in enumerate(subformula):
-
             # variable remapping from `called` operands:
             #
             #     ```python
@@ -1017,7 +992,7 @@ class Formula(ABC):
         # set class variables as read-only tuples
         self.operand_vars: Tuple[Tuple[Variable, ...], ...] = tuple(_operand_vars)
         self.var_remap: Tuple[Tuple[Variable, ...], ...] = tuple(_var_remap)
-        self.bindings: Tuple[Tuple[_Grounding, ...], ...] = tuple(_bindings)
+        self.bindings: Tuple[Tuple[tuple[str], ...], ...] = tuple(_bindings)
 
         # inherit propositional flag from children
         if self.propositional is None:
@@ -1051,9 +1026,9 @@ class Formula(ABC):
             self.edge_list.extend([edge for f in subformulae for edge in f.edge_list])
 
     @staticmethod
-    def _is_grounded(groundings: Union[_Grounding, str, Tuple[str, ...]]) -> bool:
+    def _is_grounded(groundings: Union[tuple[str], str, Tuple[str, ...]]) -> bool:
         r"""Returns True if the grounding is given in internal "Grounded" form."""
-        return isinstance(groundings, _Grounding)
+        return isinstance(groundings, tuple)
 
     @staticmethod
     def _unique_variables(*variables: Tuple[Variable, ...]) -> Tuple:
@@ -1101,7 +1076,7 @@ class Formula(ABC):
             coeff = 1
         bounds = self.get_data()
         x = bounds[..., 0] - bounds[..., 1]
-        return (self.is_contradiction() * coeff * x).sum()
+        return (self.contradicting_bounds() * coeff * x).sum()
 
     def _uncertainty_loss(self, coeff: float = None) -> torch.Tensor:
         r"""Uncertainty loss."""
