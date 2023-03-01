@@ -670,7 +670,7 @@ class Model(nn.Module):
                 f"expected losses from the following {[l.name for l in Loss]}"
             )
         elif isinstance(losses, Loss):
-            losses = [losses]
+            losses = {losses: None}
         elif isinstance(losses, list):
             losses = {c: None for c in losses}
         result = list()
