@@ -27,6 +27,10 @@ Implies(Contributions(x), Growth)
     cd LNN
     pip install -e .
     ```
+ℹ️ Alternatively to install steps 2+3 above in one step:
+   ```commandline
+   pip install -e git+https://github.com/IBM/LNN#egg=lnn
+   ```
 * Install [Black](https://black.readthedocs.io/en/stable/integrations/editors.html) as an external tool/keyboard shortcut to keep to our code style - this automates our pep8 compliance so that you can code without the styling overhead
 * Install and run pytest to ensure that the build is working correctly:
     ```commandline
