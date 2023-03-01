@@ -12,7 +12,6 @@ from . import _exceptions
 from .constants import World, Fact, _Fact
 
 import torch
-import torchviz
 import numpy as np
 
 
@@ -110,16 +109,6 @@ param_symbols = {
 }
 
 Model = TypeVar("Model")
-
-
-def plot_autograd(model: Model, loss: torch.Tensor, **kwds):
-    params = model.named_parameters()
-    torchviz.make_dot(
-        loss,
-        params=params,
-        show_attrs=kwds.get("show_attrs", True),
-        show_saved=kwds.get("show_saved", True),
-    ).render(f'graph_{kwds.get("epoch", "")}', view=True)
 
 
 def val_clamp(x, _min: float = 0, _max: float = 1) -> torch.Tensor:
