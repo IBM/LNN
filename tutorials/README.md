@@ -23,14 +23,6 @@ The following tutorials will be demonstrated:
 | 0 | Propositional Logic         | Reasoning in its simplest form |
 | 1 | Propositional Bounds        | Extended representation of facts to bounds |
 | 2 | Propositional Learning      | Introduce concept of learning via adjustment of weights |
-| 3 | FOL Upward Inference        | First-Order Logic (FOL) reasoning to evaluate the truth of operators |
-| 4 | FOL Downward Inference          | Inverse FOL reasoning to evaluate the truth of operands |
-| 5 | Quantifiers                 | Expressing quantities that satisfy a select property |
-| 6 | Contradictions | Extending the class of classical truth values |
-| 7 | Real-valued Logics          | Operating under a continuous domain of truths |
-| 8 | Bounds on Beliefs           | Introducing bounds to restrict truth values between a range of possibilities | 
-| 9 | Grounding Management        | Propagating propositionalised data to connected nodes | 
-| 10 | FOL Bindings  | Restricting variables to specific instances for which a property should apply | 
 
 
 ## Learning Outcomes
