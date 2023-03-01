@@ -196,7 +196,6 @@ class _NodeActivation(_NodeParameters):
         result = np.where(bool_and(L == "1.0", U == "1.0"), "F", result)
         result = np.where(bool_and(L == "5.0", U == "5.0"), "T", result)
         result = np.where(bool_and(L == "3.0", U == "3.0"), "=U", result)
-        result = np.where(self.is_contradiction(args=args), "C", result)
         result = np.where(bool_and(L in ["1.0", "2.0"], U == "2.0"), "~F", result)
         result = np.where(bool_and(L == "4.0", U in ["4.0", "5.0"]), "~T", result)
         result = np.where(
@@ -208,8 +207,9 @@ class _NodeActivation(_NodeParameters):
             "~U",
             result,
         )
+        result = np.where(self.is_contradiction(args=args), "C", result)
         if result == "0.0":
-            raise Exception(f"bounds {L,U} fell in an unquantified state")
+            raise Exception(f"bounds {L, U} fell in an unquantified state")
         return result
 
 
