@@ -1,5 +1,5 @@
 ##
-# Copyright 2023 IBM Corp. All Rights Reserved.
+# Copyright 2021 IBM Corp. All Rights Reserved.
 #
 # SPDX-License-Identifier: Apache-2.0
 ##
@@ -36,6 +36,7 @@ from .symbolic.logic import (
 )
 from .model import Model
 from .constants import Fact, World, Direction, Loss
+from .interpretability.dash_app import LNNDash
 
 __all__ = [
     "bool_to_fact",
@@ -68,4 +69,5 @@ __all__ = [
     "World",
     "Loss",
     "XOr",
+    "LNNDash",
 ]

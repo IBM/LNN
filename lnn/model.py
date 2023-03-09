@@ -1,5 +1,5 @@
 ##
-# Copyright 2023 IBM Corp. All Rights Reserved.
+# Copyright 2021 IBM Corp. All Rights Reserved.
 #
 # SPDX-License-Identifier: Apache-2.0
 ##
@@ -10,8 +10,9 @@ import itertools as itls
 from collections.abc import Iterable
 from typing import Union, Dict, Tuple, List
 
-from . import viz
+from .interpretability import viz
 from . import _exceptions, _utils
+from .symbolic._lifted import lifted_axioms
 from .constants import Fact, World, Direction, Loss
 from .symbolic.logic import Proposition, Predicate, Formula
 
@@ -441,11 +442,35 @@ class Model(nn.Module):
             logging.info(f"{direction.value} INFERENCE RESULT:{coalesce}")
         return coalesce
 
+    def lifted_processing(self, n: Union[float, int]) -> int:
+        axioms = lifted_axioms(self)
+        if len(self.nodes) == 0:
+            logging.debug("no formulae in the model to lift")
+            return 0
+        for _ in range(int(n)):
+            axiom, k = random.choice(list(axioms.items()))
+            if k > len(self.nodes):
+                continue
+            nodes = random.sample(list(self.nodes.values()), k=k)
+            result = int(axiom(*nodes))
+            if result:
+                return result
+        return 0
+
+    def lift(self, lifted: Union[bool, int, float] = True, *args, **kwds):
+        r"""Lift the model without doing bounds-based inference.
+
+        This can be used when a model has TRUE axioms/rules and a query is expected to be answerable directly from the truth of those axioms, i.e. without needing to touch the groundiings/bounds.
+        This uses the LNN as a symbolic manipulation system to introduce new rules based on a set of [axiom schemata](https://en.wikipedia.org/wiki/Propositional_calculus).
+        """
+        self._infer(*args, lifted=lifted, **kwds)
+
     def infer(
         self,
         direction: Direction = None,
         source: Formula = None,
         max_steps: int = None,
+        lifted: Union[bool, int, float] = False,
         **kwds,
     ) -> Tuple[Tuple[int, int], torch.Tensor]:
         r"""Reasons over all possible inferences until convergence
@@ -458,17 +483,23 @@ class Model(nn.Module):
             Specifies starting node for [depth-first search traversal](https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.traversal.depth_first_search.dfs_postorder_nodes.html#networkx.algorithms.traversal.depth_first_search.dfs_postorder_nodes). Specifying a node here will compute reasoning (until convergence) on the subgraph, with the specified source is the root of the subgraph.
         max_steps: int, optional
             Limits the inference to a specified number of passes of the naive traversal strategy. If unspecified, the steps will not be limited, i.e. inference will take place until convergence.
+        lifted : bool or float, optional
+            Computes lifted inference processing to modify default truths via the UP/DOWN inference algorithm.
 
         Returns
         -------
         (steps, facts_inferred) : Tuple[tuple of 2 ints, torch.Tensor]
+            The returned `steps` are the number of steps to converge loops, reflecting `lifting steps`, `reasoning steps` accordingly. The `facts_inferred` provide a sum of bounds tightening from inference updates.
 
         """
+        if lifted:
+            self.lift(lifted)
 
         return self._infer(
             direction=direction,
             source=source,
             max_steps=max_steps,
+            lifted=False,
             **kwds,
         )
 
@@ -479,13 +510,19 @@ class Model(nn.Module):
         max_steps: int = None,
         **kwds,
     ) -> Tuple[Tuple[int, int], torch.Tensor]:
-        r"""Implementation of model inference."""
+        r"""Implementation of model inference.
+
+        A model can do inference with lifting, or to explicitly lift without explicitly doing inference (i.e. no bounds updates).
+        `infer` calls `_infer` to do bounds-based inference with/without lifting
+        but `lift` calls `_infer` explicitly without bounds-based inference
+        """
         direction = (
             [Direction.UPWARD, Direction.DOWNWARD] if not direction else [direction]
         )
-        converged = False
+        converged, converged_lifting, converged_bounds = False, False, True
         additional_axioms, steps, facts_inferred = 0, 0, 0
-
+        lifted = kwds.get("lifted")
+        logging.info(f"{'LIFTED' if lifted else 'BOUNDED'} REASONING LOOP")
         while not converged:
             if self.query and self.query.is_classically_resolved and not self._converge:
                 logging.info("=" * 22)
@@ -496,6 +533,10 @@ class Model(nn.Module):
                 break
             logging.info("-" * 22)
             logging.info(f"REASONING STEP:{steps}")
+            if lifted and converged_bounds is True:
+                is_new_axiom = self.lifted_processing(1e5 if lifted is True else lifted)
+                converged_lifting = True if is_new_axiom == 0 else False
+                additional_axioms += is_new_axiom
             bounds_diff = 0.0
             for d in direction:
                 bounds_diff += self._traverse_execute(
@@ -507,8 +548,11 @@ class Model(nn.Module):
                 else bounds_diff <= 1e-7
             )
             if converged_bounds:
-                converged = True
-                logging.info("NO UPDATES AVAILABLE, TRYING A NEW AXIOM")
+                if converged_lifting or not lifted:
+                    converged = True
+                else:
+                    converged_bounds = True
+                    logging.info("NO UPDATES AVAILABLE, TRYING A NEW AXIOM")
             facts_inferred += bounds_diff
             steps += 1
             if max_steps and steps >= max_steps:
@@ -517,6 +561,7 @@ class Model(nn.Module):
         logging.info(
             f"INFERENCE CONVERGED WITH {facts_inferred} BOUNDS "
             f"UPDATES IN {steps} REASONING STEPS "
+            + (f"BY ADDING {additional_axioms} AXIOMS" if lifted else "")
         )
         logging.info("*" * 78)
         return steps, facts_inferred
@@ -670,7 +715,7 @@ class Model(nn.Module):
                 f"expected losses from the following {[l.name for l in Loss]}"
             )
         elif isinstance(losses, Loss):
-            losses = {losses: None}
+            losses = [losses]
         elif isinstance(losses, list):
             losses = {c: None for c in losses}
         result = list()
