@@ -1,0 +1,41 @@
+cff-version: 1.2.0
+message: "If you use Logical Neural Networks for research, please consider citing the
+reference paper"
+authors:
+- family-names: "Khan"
+  given-names: "Naweed"
+- family-names: "Erwin"
+  given-names: "Kyle"
+- family-names: "Makondo"
+  given-names: "Ndivhuwo"
+title: "Logical Neural Networks"
+date-released: 2022-02-16
+version: 1.0.0
+url: "https://github.com/IBM/LNN/"
+preferred-citation:
+  type: article
+  authors:
+    - family-names: "Riegel"
+      given-names: "Ryan"
+    - family-names: "Gray"
+      given-names: "Alexander"
+    - family-names: "Luus"
+      given-names: "Francois"
+    - family-names: "Khan"
+      given-names: "Naweed"
+    - family-names: "Makondo"
+      given-names: "Ndivhuwo"
+    - family-names: "Akhalwaya"
+      given-names: "Ismail Yunus"
+    - family-names: "Qian"
+      given-names: "Haifeng"
+    - family-names: "Fagin"
+      given-names: "Ronald"
+    - family-names: "Barahona"
+      given-names: "Francisco"
+    - family-names: "Sharma"
+      given-names: "Udit"
+    title: "Logical Neural Networks"
+    date-released: 2020-06-23
+    url: "https://arxiv.org/abs/2006.13155"
+    journal: "arXiv preprint arXiv:2006.13155"

@@ -34,17 +34,6 @@ pip install git+https://github.com/IBM/LNN
 | [Read the Docs][Docs] | [Academic Papers][Papers]	| [Educational Resources][Education] | [Neuro-Symbolic AI][Neuro-Symbolic AI] | [API Overview][API] | [Python Module][Module] |
 |:-----------------------:|:---------------------------:|:-----------------:|:----------:|:-------:|:-------:|
 
-## Citation
-If you use Logical Neural Networks for research, please consider citing the
-reference paper:
-```raw
-@article{riegel2020logical,
-  title={Logical neural networks},
-  author={Riegel, Ryan and Gray, Alexander and Luus, Francois and Khan, Naweed and Makondo, Ndivhuwo and Akhalwaya, Ismail Yunus and Qian, Haifeng and Fagin, Ronald and Barahona, Francisco and Sharma, Udit and others},
-  journal={arXiv preprint arXiv:2006.13155},
-  year={2020}
-}
-```
 
 [Docs]: https://ibm.github.io/LNN/introduction.html
 [Papers]: https://ibm.github.io/LNN/papers.html
