@@ -16,10 +16,9 @@ def test_upward():
     given And(A, B) - reduce the weight on B
     """
     model = Model()
-    A = Proposition("A")
-    B = Proposition("B")
+    A = Proposition("A", model=model)
+    B = Proposition("B", model=model)
     AB = Or(A, B, world=World.FALSE)
-    model.add_knowledge(AB)
     model.add_data({A: TRUE, B: FALSE})
     model.train(direction=Direction.UPWARD, losses={Loss.CONTRADICTION: 0.1})
 

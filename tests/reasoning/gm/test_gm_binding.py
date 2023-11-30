@@ -17,12 +17,11 @@ def get_data(p, q):
 
 
 def test_p_x_binding():
-    p = Predicate("p", arity=2)
-    q = Predicate("q")
+    model = Model()
+    p = Predicate("p", arity=2, model=model)
+    q = Predicate("q", model=model)
     and_ = And(p("x", y), q(x))
 
-    model = Model()
-    model.add_knowledge(and_)
     model.add_data(get_data(p, q))
     model.infer()
 
@@ -32,12 +31,11 @@ def test_p_x_binding():
 
 
 def test_q_x_binding():
-    p = Predicate("p", arity=2)
-    q = Predicate("q")
+    model = Model()
+    p = Predicate("p", arity=2, model=model)
+    q = Predicate("q", model=model)
 
     and_ = And(p(x, y), q("x"))
-    model = Model()
-    model.add_knowledge(and_)
     model.add_data(get_data(p, q))
     model.infer()
 
@@ -47,11 +45,11 @@ def test_q_x_binding():
 
 
 def test_p_x_y_binding():
-    p = Predicate("p", arity=2)
-    q = Predicate("q")
+    model = Model()
+    p = Predicate("p", arity=2, model=model)
+    q = Predicate("q", model=model)
 
     and_ = And(p("x", "y"), q(x))
-    model = Model()
     model.add_knowledge(and_)
     model.add_data(get_data(p, q))
     model.infer()
@@ -62,12 +60,11 @@ def test_p_x_y_binding():
 
 
 def test_p_x_and_q_x():
-    p = Predicate("p", arity=2)
-    q = Predicate("q")
-    and_ = And(p("x", y), q("x"))
     model = Model()
+    p = Predicate("p", arity=2, model=model)
+    q = Predicate("q", model=model)
+    and_ = And(p("x", y), q("x"))
 
-    model.add_knowledge(and_)
     model.add_data(get_data(p, q))
     model.infer()
 
@@ -77,12 +74,11 @@ def test_p_x_and_q_x():
 
 
 def test_p_x_y_and_q_x():
-    p = Predicate("p", arity=2)
-    q = Predicate("q")
-    and_ = And(p("x", "y"), q("x"))
     model = Model()
+    p = Predicate("p", arity=2, model=model)
+    q = Predicate("q", model=model)
+    and_ = And(p("x", "y"), q("x"))
 
-    model.add_knowledge(and_)
     model.add_data(get_data(p, q))
     model.infer()
 

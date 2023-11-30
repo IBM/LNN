@@ -12,10 +12,10 @@ FALSE = Fact.FALSE
 
 def test_1():
     model = Model()
-    A = Proposition("A")
-    B = Proposition("B")
+    A = Proposition("A", model=model)
+    B = Proposition("B", model=model)
+    Or(A, B)
     AB = And(A, B)
-    model.add_knowledge(AB, Or(A, B))
     model.add_data({A: TRUE, B: FALSE})
     model.add_labels({AB: TRUE})
 

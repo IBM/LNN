@@ -1,4 +1,4 @@
-from lnn import Predicate, Variable, Exists, Implies, Forall, Model, Fact, World
+from lnn import Predicates, Variable, Exists, Implies, Forall, Model, Fact, World
 
 
 def test_1():
@@ -8,15 +8,14 @@ def test_1():
 
     """
 
-    x = Variable("x")
-    square = Predicate("square")
-    rectangle = Predicate("rectangle")
-    foursides = Predicate("foursides")
-    square_rect = Forall(x, Implies(square(x), rectangle(x)))
-    rect_foursides = Forall(x, Implies(rectangle(x), foursides(x)))
-
     model = Model()
-    model.add_knowledge(square_rect, rect_foursides, world=World.AXIOM)
+    x = Variable("x")
+    square, rectangle, foursides = Predicates(
+        "square", "rectangle", "foursides", model=model
+    )
+    Forall(x, Implies(square(x), rectangle(x)), world=World.AXIOM)
+    Forall(x, Implies(rectangle(x), foursides(x)), world=World.AXIOM)
+
     model.set_query(Exists(x, foursides(x)))
     model.add_data({square: {"c": Fact.TRUE, "k": Fact.TRUE}})
 

@@ -21,17 +21,17 @@ def model():
 
 @pytest.fixture
 def p(model):
-    return Proposition("p")
+    return Proposition("p", model=model)
 
 
 @pytest.fixture
 def q(model):
-    return Proposition("q")
+    return Proposition("q", model=model)
 
 
 @pytest.fixture
 def r(model):
-    return Proposition("r")
+    return Proposition("r", model=model)
 
 
 def assert_rule_for_truth_table(model, rule, variables):
@@ -48,10 +48,7 @@ def test_modus_ponens(model, p, q):
     # Downwards
     p_implies_q = Implies(p, q)
     modus_ponens = Implies(And(p, p_implies_q), q)
-    model.add_knowledge(modus_ponens)
-
     model.add_data({p: TRUE, p_implies_q: TRUE})
-
     model.infer()
     assert q.state() is TRUE
 
@@ -67,8 +64,6 @@ def test_modus_tolens(model, p, q):
     not_q = Not(q)
     p_implies_q = Implies(p, q)
     modus_tollens = And(not_q, p_implies_q)
-
-    model.add_knowledge(modus_tollens)
 
     model.add_data({q: FALSE, p_implies_q: TRUE})
 
@@ -86,7 +81,6 @@ def test_associative(model, p, q, r):
     lhs = Or(Or(p, q), r)
     rhs = Or(p, Or(q, r))
     associative = Implies(lhs, rhs)
-    model.add_knowledge(associative)
     # Upwards
     assert_rule_for_truth_table(model, associative, [p, q, r])
 
@@ -96,7 +90,6 @@ def test_commutative(model, p, q):
     (p ∧ q)  ➞ (q ∧ p)
     """
     commutative = Implies(And(p, q), And(q, p))
-    model.add_knowledge(commutative)
 
     # Upwards
     assert_rule_for_truth_table(model, commutative, [p, q])
@@ -107,7 +100,6 @@ def test_exportation(model, p, q, r):
     ((p ∧ q)  ➞ r) ➞ (p ➞ (q ➞ r))
     """
     exportation = Implies(Implies(And(p, q), r), Implies(p, Implies(q, r)))
-    model.add_knowledge(exportation)
     # Upwards
     assert_rule_for_truth_table(model, exportation, [p, q, r])
 
@@ -117,7 +109,6 @@ def test_transposition(model, p, q):
     (p ➞ q)  ➞ (¬q ➞ ¬p)
     """
     transposition = Implies(Implies(p, q), Implies(Not(q), Not(p)))
-    model.add_knowledge(transposition)
     # Upwards
     assert_rule_for_truth_table(model, transposition, [p, q])
 
@@ -127,7 +118,6 @@ def test_hypothetical_syllogism(model, p, q, r):
     ((p ➞ q) ∧ (q ➞ r)) ➞ (p ➞ r)
     """
     hypothetical_syllogism = Implies(And(Implies(p, q), Implies(q, r)), Implies(p, r))
-    model.add_knowledge(hypothetical_syllogism)
     # Upwards
     assert_rule_for_truth_table(model, hypothetical_syllogism, [p, q, r])
 
@@ -137,7 +127,6 @@ def test_material_implication(model, p, q):
     (p ➞ q)  ➞ (¬p ∨ q)
     """
     material_implication = Implies(Implies(p, q), Or(Not(p), q))
-    model.add_knowledge(material_implication)
     # Upwards
     assert_rule_for_truth_table(model, material_implication, [p, q])
 
@@ -147,7 +136,6 @@ def test_distributive(model, p, q, r):
     ((p ∨ q) ∧ r) ➞ ((p ∧ r) ∨ (q ∧ r))
     """
     distributive = Implies(And(Or(p, q), r), Or(And(p, r), And(q, r)))
-    model.add_knowledge(distributive)
 
     # Upwards
     assert_rule_for_truth_table(model, distributive, [p, q, r])
@@ -169,7 +157,6 @@ def test_disjunctive_syllogism(model, p, q):
     """
     lhs = And(Or(p, q), Not(p))
     disjunctive_syllogism = Implies(lhs, q)
-    model.add_knowledge(disjunctive_syllogism)
     # Downwards
     model.add_data({lhs: TRUE})
     model.infer()
@@ -186,8 +173,6 @@ def test_addition(model, p, q):
     """
     p_or_q = Or(p, q)
     addition = Implies(p, p_or_q)
-
-    model.add_knowledge(addition)
 
     # Downwards
     model.add_data(
@@ -210,8 +195,6 @@ def test_simplification(model, p, q):
     p_and_q = And(p, q)
     simplification = Implies(p_and_q, p)
 
-    model.add_knowledge(simplification)
-
     # Downwards
     model.add_data({p_and_q: TRUE})
     model.infer()
@@ -228,8 +211,6 @@ def test_conjunction(model, p, q):
     """
     p_and_q = And(p, q)
     conjunction = Implies(p_and_q, And(p, q))
-
-    model.add_knowledge(conjunction)
 
     # Downwards
     model.add_data({p: TRUE, q: TRUE})
@@ -248,8 +229,6 @@ def test_double_negation(model, p):
 
     not_not_p = Not(Not(p))
     double_negation = Implies(p, not_not_p)
-
-    model.add_knowledge(double_negation)
 
     # Downwards
     model.add_data(
@@ -270,7 +249,6 @@ def test_disjunctive_simplification(model, p):
     (p ∨ p) ➞ p
     """
     disjunctive_simplification = Implies(Or(p, p), p)
-    model.add_knowledge(disjunctive_simplification)
 
     # Upwards
     assert_rule_for_truth_table(model, disjunctive_simplification, [p])
@@ -281,7 +259,6 @@ def test_resolution(model, p, q, r):
     ((p ∨ q) ∧ (¬p ∨ r)) ➞ (q ∨ r)
     """
     resolution = Implies(And(Or(p, q), Or(Not(p), r)), Or(q, r))
-    model.add_knowledge(resolution)
 
     # Upwards
     assert_rule_for_truth_table(model, resolution, [p, q, r])
@@ -292,7 +269,6 @@ def test_disjunction_elimination(model, p, q, r):
     ((p ➞ q) ∧ (r ➞ q) ∧ (p ∨ r)) ➞ q
     """
     disjunction_elimination = Implies(And(Implies(p, q), Implies(r, q), Or(p, r)), q)
-    model.add_knowledge(disjunction_elimination)
 
     # Upwards
     assert_rule_for_truth_table(model, disjunction_elimination, [p, q, r])

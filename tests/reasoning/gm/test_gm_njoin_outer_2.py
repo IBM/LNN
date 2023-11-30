@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: Apache-2.0
 ##
 
-from lnn import Model, And, Variable, Predicate, Fact
+from lnn import Model, And, Variable, Predicate, Predicates, Fact
 
 
 def test():
@@ -14,7 +14,7 @@ def test():
     # TEST 1
 
     # This is the normal 2 var vs 2 var ; should go thru the memory join
-    p2, p2a = model.add_predicates(2, "p2", "p2a")
+    p2, p2a = Predicates("p2", "p2a", arity=2, model=model)
     model.add_data(
         {
             p2: {("x1", "y1"): Fact.TRUE, ("x2", "y2"): Fact.TRUE},
@@ -41,7 +41,6 @@ def test():
         ]
     )
     p2_and_p2a = And(p2(x, y), p2a(y, z))
-    model.add_knowledge(p2_and_p2a)
     p2_and_p2a.upward()
 
     # print("Predicates After Join")
@@ -58,8 +57,8 @@ def test():
     # TEST 2
     model = Model()
 
-    t2_p3 = model.add_predicates(3, "t2_p3")
-    t2_p2 = model.add_predicates(2, "t2_p2")
+    t2_p3 = Predicate("t2_p3", arity=3, model=model)
+    t2_p2 = Predicate("t2_p2", arity=2, model=model)
     model.add_data(
         {t2_p3: {("x1", "y1", "z1"): Fact.TRUE, ("x3", "y3", "z3"): Fact.TRUE}}
     )
@@ -78,7 +77,6 @@ def test():
         ]
     )
     t2_p3_and_t2_p2 = And(t2_p3(x, y, z), t2_p2(y, z))
-    model.add_knowledge(t2_p3_and_t2_p2)
     t2_p3_and_t2_p2.upward()
     t2_p3_and_t2_p2.print()
 
@@ -88,21 +86,20 @@ def test():
 
     # TEST 3
     model = Model()
-    t2_p3 = model.add_predicates(3, "t2_p3")
+    t2_p3 = Predicate("t2_p3", arity=3, model=model)
     model.add_data(
         {t2_p3: {("x1", "y1", "z1"): Fact.TRUE, ("x3", "y3", "z3"): Fact.TRUE}}
     )
 
-    t2_p2 = model.add_predicates(2, "t2_p2")
+    t2_p2 = Predicate("t2_p2", arity=2, model=model)
     # model.add_data({'t2_p2': {
     #    ('y1', 'z1'): Fact.TRUE,
     #    ('y2', 'z2'): Fact.TRUE}})
-    t3_p1 = model.add_predicates(1, "t3_p1")
+    t3_p1 = Predicate("t3_p1", model=model)
     # model.add_data({'t3_p1': {
     #    ('z1'): Fact.TRUE,
     #    ('z4'): Fact.TRUE}})
     t2_p3_and_t2_p2_t3_p1 = And(t2_p3(x, y, z), t2_p2(y, z), t3_p1(z))
-    model.add_knowledge(t2_p3_and_t2_p2_t3_p1)
     t2_p3_and_t2_p2_t3_p1.upward()
     t2_p3_and_t2_p2_t3_p1.print()
 
@@ -137,13 +134,13 @@ def test():
 
     # TEST 4
     model = Model()
-    model.add_knowledge(Predicate("t2_p3", arity=3))
+    Predicate("t2_p3", arity=3, model=model)
     # model.add_data({'t2_p3': {
     #    ('x1', 'y1', 'z1'): Fact.TRUE,
     #    ('x3', 'y3', 'z3'): Fact.TRUE}})
 
-    t2_p2 = model.add_predicates(2, "t2_p2")
-    t4_p1 = model.add_predicates(1, "t4_p1")
+    t2_p2 = Predicate("t2_p2", arity=2, model=model)
+    t4_p1 = Predicate("t4_p1", model=model)
     model.add_data(
         {
             t2_p2: {("y1", "z1"): Fact.TRUE, ("y2", "z2"): Fact.TRUE},
@@ -151,7 +148,6 @@ def test():
         }
     )
     t2_p3_and_t2_p2_t4_p1 = And(t2_p3(x, y, z), t2_p2(y, z), t4_p1(x))
-    model.add_knowledge(t2_p3_and_t2_p2_t4_p1)
     t2_p3_and_t2_p2_t4_p1.upward()
     t2_p3_and_t2_p2_t4_p1.print()
 
@@ -182,12 +178,12 @@ def test():
 
     # TEST 5
     model = Model()
-    t2_p3 = model.add_predicates(3, "t2_p3")
+    t2_p3 = Predicate("t2_p3", arity=3, model=model)
     model.add_data(
         {t2_p3: {("x1", "y1", "z1"): Fact.TRUE, ("x3", "y3", "z3"): Fact.TRUE}}
     )
 
-    t2_p2, t5_p2 = model.add_predicates(2, "t2_p2", "t5_p2")
+    t2_p2, t5_p2 = Predicates("t2_p2", "t5_p2", arity=2, model=model)
     model.add_data(
         {
             t2_p2: {("y1", "z1"): Fact.TRUE, ("y2", "z2"): Fact.TRUE},
@@ -195,10 +191,9 @@ def test():
         }
     )
     t2_p3_and_t2_p2_t5_p2 = And(t2_p3(x, y, z), t2_p2(y, z), t5_p2(a, b))
-    model.add_knowledge(t2_p3_and_t2_p2_t5_p2)
 
     t2_p3_and_t2_p2_t5_p2.upward()
-    # t2_p3_and_t2_p2_t5_p2'.print()
+    # t2_p3_and_t2_p2_t5_p2.print()
 
     # GT_inner = dict([
     #    (('x1', 'y1', 'z1','a1','b1'), Fact.TRUE),

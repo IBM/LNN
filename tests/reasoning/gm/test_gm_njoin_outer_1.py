@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: Apache-2.0
 ##
 
-from lnn import Model, And, Variable, Predicate, Fact
+from lnn import Model, And, Variable, Predicate, Predicates, Fact
 
 
 def test():
@@ -14,10 +14,10 @@ def test():
     # TEST 1
 
     # This is the normal 2 var vs 2 var ; should go thru the memory join
-    p2 = Predicate("p2", 2)
+    p2 = Predicate("p2", arity=2, model=model)
     p2.add_data({("x1", "y1"): Fact.TRUE, ("x2", "y2"): Fact.TRUE})
 
-    p2a = Predicate("p2a", 2)
+    p2a = Predicate("p2a", arity=2, model=model)
     p2a.add_data({("y1", "z1"): Fact.TRUE, ("y3", "z2"): Fact.TRUE})
 
     # print("Predicates before outer Join")
@@ -37,7 +37,6 @@ def test():
         ]
     )
     p2_and_p2a = And(p2(x, y), p2a(y, z))
-    model.add_knowledge(p2_and_p2a)
     p2_and_p2a.upward()
 
     assert all([p2_and_p2a.state(groundings=g) is GT_o[g] for g in GT_o]), "FAILED 😔"
@@ -47,12 +46,12 @@ def test():
     # TEST 2
     model = Model()
 
-    t2_p3 = model.add_predicates(3, "t2_p3")
+    t2_p3 = Predicate("t2_p3", arity=3, model=model)
     model.add_data(
         {t2_p3: {("x1", "y1", "z1"): Fact.TRUE, ("x3", "y3", "z3"): Fact.TRUE}}
     )
 
-    t2_p2 = model.add_predicates(2, "t2_p2")
+    t2_p2 = Predicate("t2_p2", arity=2, model=model)
     model.add_data({t2_p2: {("y1", "z1"): Fact.TRUE, ("y2", "z2"): Fact.TRUE}})
 
     GT_o = dict(
@@ -65,7 +64,6 @@ def test():
         ]
     )
     t2_p3_and_t2_p2 = And(t2_p3(x, y, z), t2_p2(y, z))
-    model.add_knowledge(t2_p3_and_t2_p2)
     t2_p3_and_t2_p2.upward()
 
     assert all(
@@ -76,18 +74,17 @@ def test():
 
     # TEST 3
     model = Model()
-    t2_p3 = model.add_predicates(3, "t2_p3")
+    t2_p3 = Predicate("t2_p3", arity=3, model=model)
     model.add_data(
         {t2_p3: {("x1", "y1", "z1"): Fact.TRUE, ("x3", "y3", "z3"): Fact.TRUE}}
     )
 
-    t2_p2 = model.add_predicates(2, "t2_p2")
+    t2_p2 = Predicate("t2_p2", arity=2, model=model)
     model.add_data({t2_p2: {("y1", "z1"): Fact.TRUE, ("y2", "z2"): Fact.TRUE}})
 
-    t3_p1 = model.add_predicates(1, "t3_p1")
+    t3_p1 = Predicate("t3_p1", model=model)
     model.add_data({t3_p1: {"z1": Fact.TRUE, "z4": Fact.TRUE}})
     t2_p3_and_t2_p2_t3_p1 = And(t2_p3(x, y, z), t2_p2(y, z), t3_p1(z))
-    model.add_knowledge(t2_p3_and_t2_p2_t3_p1)
     t2_p3_and_t2_p2_t3_p1.upward()
 
     GT_o = dict(
@@ -116,18 +113,17 @@ def test():
 
     # TEST 4
     model = Model()
-    t2_p3 = model.add_predicates(3, "t2_p3")
+    t2_p3 = Predicate("t2_p3", arity=3, model=model)
     model.add_data(
         {t2_p3: {("x1", "y1", "z1"): Fact.TRUE, ("x3", "y3", "z3"): Fact.TRUE}}
     )
 
-    t2_p2 = model.add_predicates(2, "t2_p2")
+    t2_p2 = Predicate("t2_p2", arity=2, model=model)
     model.add_data({t2_p2: {("y1", "z1"): Fact.TRUE, ("y2", "z2"): Fact.TRUE}})
 
-    t4_p1 = model.add_predicates(1, "t4_p1")
+    t4_p1 = Predicate("t4_p1", model=model)
     model.add_data({t4_p1: {"x1": Fact.TRUE, "x4": Fact.TRUE}})
     t2_p3_and_t2_p2_t4_p1 = And(t2_p3(x, y, z), t2_p2(y, z), t4_p1(x))
-    model.add_knowledge(t2_p3_and_t2_p2_t4_p1)
     t2_p3_and_t2_p2_t4_p1.upward()
 
     GT_o = dict(
@@ -152,12 +148,12 @@ def test():
 
     # TEST 5
     model = Model()
-    t2_p3 = model.add_predicates(3, "t2_p3")
+    t2_p3 = Predicate("t2_p3", arity=3, model=model)
     model.add_data(
         {t2_p3: {("x1", "y1", "z1"): Fact.TRUE, ("x3", "y3", "z3"): Fact.TRUE}}
     )
 
-    t2_p2, t5_p2 = model.add_predicates(2, "t2_p2", "t5_p2")
+    t2_p2, t5_p2 = Predicates("t2_p2", "t5_p2", arity=2, model=model)
 
     model.add_data(
         {
@@ -166,7 +162,6 @@ def test():
         }
     )
     t2_p3_and_t2_p2_t5_p2 = And(t2_p3(x, y, z), t2_p2(y, z), t5_p2(a, b))
-    model.add_knowledge(t2_p3_and_t2_p2_t5_p2)
 
     t2_p3_and_t2_p2_t5_p2.upward()
 

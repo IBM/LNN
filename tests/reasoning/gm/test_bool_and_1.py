@@ -4,7 +4,15 @@
 # SPDX-License-Identifier: Apache-2.0
 ##
 
-from lnn import Predicate, And, Model, Variable, truth_table, fact_to_bool, bool_to_fact
+from lnn import (
+    Predicates,
+    And,
+    Model,
+    Variable,
+    truth_table,
+    fact_to_bool,
+    bool_to_fact,
+)
 from functools import reduce
 import numpy as np
 
@@ -19,12 +27,10 @@ def test():
         GT = reduce(np.logical_and, map(fact_to_bool, row))
 
         # load model and reason over facts
-        x = Variable("x")
         model = Model()
-        A = Predicate("A")
-        B = Predicate("B")
+        x = Variable("x")
+        A, B = Predicates("A", "B", model=model)
         AB = And(A(x), B(x))
-        model.add_knowledge(AB)
 
         # set model facts
         model.add_data({A: {"0": row[0]}, B: {"0": row[1]}})

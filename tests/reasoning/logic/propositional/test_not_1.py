@@ -17,9 +17,8 @@ def test_upward():
     inputs = [FALSE, TRUE, UNKNOWN]
     for i in range(3):
         model = Model()
-        A = Proposition("A")
+        A = Proposition("A", model=model)
         NotA = Not(A)
-        model.add_knowledge(NotA)
         model.add_data({A: inputs[i]})
         NotA.upward()
         prediction = NotA.state()
@@ -33,9 +32,8 @@ def test_downward():
     inputs = [FALSE, TRUE, UNKNOWN]
     for i in range(3):
         model = Model()
-        A = Proposition("A")
+        A = Proposition("A", model=model)
         NotA = Not(A)
-        model.add_knowledge(NotA)
         model.add_data({NotA: inputs[i]})
         NotA.downward()
         prediction = A.state()

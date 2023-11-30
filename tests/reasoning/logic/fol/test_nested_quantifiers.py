@@ -4,15 +4,13 @@ from lnn import And, Exists, Fact, Forall, Model, Predicate, Variables, World
 def test_nested_quantifiers_extend_neuron_arity():
     x, y, z = Variables("x", "y", "z")
 
-    P = Predicate("P", arity=2)
-    Q = Predicate("S")
-
-    f = And(P(x, y), Q(z))
-    q1 = Forall(y, f)
-    q2 = Forall(z, q1)
-
     model = Model()
-    model.add_knowledge(q2)
+    P = Predicate("P", arity=2, model=model)
+    Q = Predicate("S", model=model)
+
+    q1 = Forall(y, And(P(x, y), Q(z)))
+    Forall(z, q1)
+
     model.add_data(
         {
             P: {("x1", "y1"): Fact.TRUE, ("x2", "y2"): Fact.TRUE},
@@ -31,15 +29,13 @@ def test_nested_quantifiers_extend_neuron_arity():
 def test_nested_axiom_forall_true_groundings():
     x, y, z = Variables("x", "y", "z")
 
-    P = Predicate("P", arity=2)
-    Q = Predicate("Q")
+    model = Model()
+    P = Predicate("P", arity=2, model=model)
+    Q = Predicate("Q", model=model)
 
     f = And(P(x, y), Q(z))
     q1 = Forall(y, f)
-    q2 = Forall(z, q1)
-
-    model = Model()
-    model.add_knowledge(q2, world=World.AXIOM)
+    q2 = Forall(z, q1, world=World.AXIOM)
     model.add_data(
         {
             P: {("x1", "y1"): Fact.TRUE, ("x2", "y2"): Fact.TRUE},
@@ -58,15 +54,14 @@ def test_nested_axiom_forall_true_groundings():
 def test_nested_forall_true_groundings():
     x, y, z = Variables("x", "y", "z")
 
-    P = Predicate("P", arity=2)
-    Q = Predicate("Q")
+    model = Model()
+    P = Predicate("P", arity=2, model=model)
+    Q = Predicate("Q", model=model)
 
     f = And(P(x, y), Q(z))
     q1 = Forall(y, f)
     q2 = Forall(z, q1)
 
-    model = Model()
-    model.add_knowledge(q2)
     model.add_data(
         {
             P: {("x1", "y1"): Fact.TRUE, ("x2", "y2"): Fact.TRUE},
@@ -85,15 +80,13 @@ def test_nested_forall_true_groundings():
 def test_nested_axiom_forall_false_groundings():
     x, y, z = Variables("x", "y", "z")
 
-    P = Predicate("P", arity=2)
-    Q = Predicate("Q")
+    model = Model()
+    P = Predicate("P", arity=2, model=model)
+    Q = Predicate("Q", model=model)
 
     f = And(P(x, y), Q(z))
     q1 = Forall(y, f)
-    q2 = Forall(z, q1)
-
-    model = Model()
-    model.add_knowledge(q2, world=World.AXIOM)
+    q2 = Forall(z, q1, world=World.AXIOM)
     model.add_data(
         {
             P: {("x1", "y1"): Fact.FALSE, ("x2", "y2"): Fact.FALSE},
@@ -112,15 +105,14 @@ def test_nested_axiom_forall_false_groundings():
 def test_nested_forall_false_groundings():
     x, y, z = Variables("x", "y", "z")
 
-    P = Predicate("P", arity=2)
-    Q = Predicate("Q")
+    model = Model()
+    P = Predicate("P", arity=2, model=model)
+    Q = Predicate("Q", model=model)
 
     f = And(P(x, y), Q(z))
     q1 = Forall(y, f)
     q2 = Forall(z, q1)
 
-    model = Model()
-    model.add_knowledge(q2)
     model.add_data(
         {
             P: {("x1", "y1"): Fact.FALSE, ("x2", "y2"): Fact.FALSE},
@@ -139,15 +131,14 @@ def test_nested_forall_false_groundings():
 def test_nested_axiom_forall_unknown_groundings():
     x, y, z = Variables("x", "y", "z")
 
-    P = Predicate("P", arity=2)
-    Q = Predicate("Q")
+    model = Model()
+    P = Predicate("P", arity=2, model=model)
+    Q = Predicate("Q", model=model)
 
     f = And(P(x, y), Q(z))
     q1 = Forall(y, f)
-    q2 = Forall(z, q1)
+    q2 = Forall(z, q1, world=World.AXIOM)
 
-    model = Model()
-    model.add_knowledge(q2, world=World.AXIOM)
     model.add_data(
         {
             P: {("x1", "y1"): Fact.UNKNOWN, ("x2", "y2"): Fact.UNKNOWN},
@@ -166,15 +157,14 @@ def test_nested_axiom_forall_unknown_groundings():
 def test_nested_forall_unknown_groundings():
     x, y, z = Variables("x", "y", "z")
 
-    P = Predicate("P", arity=2)
-    Q = Predicate("Q")
+    model = Model()
+    P = Predicate("P", arity=2, model=model)
+    Q = Predicate("Q", model=model)
 
     f = And(P(x, y), Q(z))
     q1 = Forall(y, f)
     q2 = Forall(z, q1)
 
-    model = Model()
-    model.add_knowledge(q2)
     model.add_data(
         {
             P: {("x1", "y1"): Fact.UNKNOWN, ("x2", "y2"): Fact.UNKNOWN},
@@ -193,15 +183,14 @@ def test_nested_forall_unknown_groundings():
 def test_nested_exists_true_groundings():
     x, y, z = Variables("x", "y", "z")
 
-    P = Predicate("P", arity=2)
-    Q = Predicate("Q")
+    model = Model()
+    P = Predicate("P", arity=2, model=model)
+    Q = Predicate("Q", model=model)
 
     f = And(P(x, y), Q(z))
     q1 = Exists(y, f)
     q2 = Exists(z, q1)
 
-    model = Model()
-    model.add_knowledge(q2)
     model.add_data(
         {
             P: {("x1", "y1"): Fact.TRUE, ("x2", "y2"): Fact.TRUE},
@@ -218,17 +207,15 @@ def test_nested_exists_true_groundings():
 
 
 def test_nested_exists_false_groundings():
+    model = Model()
+    P = Predicate("P", arity=2, model=model)
+    Q = Predicate("Q", model=model)
+
     x, y, z = Variables("x", "y", "z")
-
-    P = Predicate("P", arity=2)
-    Q = Predicate("Q")
-
     f = And(P(x, y), Q(z))
     q1 = Exists(y, f)
     q2 = Exists(z, q1)
 
-    model = Model()
-    model.add_knowledge(q2)
     model.add_data(
         {
             P: {("x1", "y1"): Fact.FALSE, ("x2", "y2"): Fact.FALSE},
@@ -247,15 +234,14 @@ def test_nested_exists_false_groundings():
 def test_nested_exists_unknown_groundings():
     x, y, z = Variables("x", "y", "z")
 
-    P = Predicate("P", arity=2)
-    Q = Predicate("Q")
+    model = Model()
+    P = Predicate("P", arity=2, model=model)
+    Q = Predicate("Q", model=model)
 
     f = And(P(x, y), Q(z))
     q1 = Exists(y, f)
     q2 = Exists(z, q1)
 
-    model = Model()
-    model.add_knowledge(q2)
     model.add_data(
         {
             P: {("x1", "y1"): Fact.UNKNOWN, ("x2", "y2"): Fact.UNKNOWN},
@@ -272,14 +258,12 @@ def test_nested_exists_unknown_groundings():
 
 
 def test_fully_quantified_formula():
+    model = Model()
+    Q = Predicate("Q", model=model)
+
     x = Variables("x")
-
-    Q = Predicate("Q")
-
     f = Forall(x, Q(x))
 
-    model = Model()
-    model.add_knowledge(f)
     model.add_data(
         {
             Q: {"z1": Fact.UNKNOWN, "z2": Fact.TRUE},
@@ -293,13 +277,12 @@ def test_fully_quantified_formula():
 def test_axiom_fully_quantified_formula_as_proposition():
     x, y = Variables("x", "y")
 
-    Q = Predicate("Q")
-    P = Predicate("P", arity=2)
+    model = Model()
+    P = Predicate("P", arity=2, model=model)
+    Q = Predicate("Q", model=model)
 
     f = And(P(x, y), Forall(x, Q(x), world=World.AXIOM))
 
-    model = Model()
-    model.add_knowledge(f)
     model.add_data(
         {
             P: {("x1", "y1"): Fact.TRUE},
@@ -314,13 +297,12 @@ def test_axiom_fully_quantified_formula_as_proposition():
 def test_fully_quantified_formula_as_proposition():
     x, y = Variables("x", "y")
 
-    Q = Predicate("Q")
-    P = Predicate("P", arity=2)
+    model = Model()
+    P = Predicate("P", arity=2, model=model)
+    Q = Predicate("Q", model=model)
 
     f = And(P(x, y), Forall(x, Q(x)))
 
-    model = Model()
-    model.add_knowledge(f)
     model.add_data(
         {
             P: {("x1", "y1"): Fact.TRUE},
@@ -335,13 +317,13 @@ def test_fully_quantified_formula_as_proposition():
 def test_variable_sharing():
     x, y, z = Variables("x", "y", "z")
 
-    Q = Predicate("Q")
-    P = Predicate("P", arity=2)
-    R = Predicate("R")
+    model = Model()
+    P = Predicate("P", arity=2, model=model)
+    Q = Predicate("Q", model=model)
+    R = Predicate("R", model=model)
 
     f = And(Q(x), R(y))
-    model = Model()
-    model.add_knowledge(And(P(x, y), Forall(x, f)))
+    And(P(x, y), Forall(x, f))
     model.add_data(
         {
             P: {("x1", "y1"): Fact.TRUE, ("x2", "y2"): Fact.FALSE},
@@ -358,15 +340,14 @@ def test_variable_sharing():
 def test_axiom_forall_exists_positive_example():
     x, y, z = Variables("x", "y", "z")
 
-    P = Predicate("P", arity=2)
-    Q = Predicate("Q")
+    model = Model()
+    P = Predicate("P", arity=2, model=model)
+    Q = Predicate("Q", model=model)
 
     f = And(P(x, y), Q(z))
     q1 = Exists(y, f)
-    q2 = Forall(z, q1)
+    q2 = Forall(z, q1, world=World.AXIOM)
 
-    model = Model()
-    model.add_knowledge(q2, world=World.AXIOM)
     model.add_data(
         {
             P: {("x1", "y1"): Fact.TRUE, ("x2", "y2"): Fact.FALSE},
@@ -390,15 +371,13 @@ def test_axiom_forall_exists_positive_example():
 def test_forall_exists_positive_example():
     x, y, z = Variables("x", "y", "z")
 
-    P = Predicate("P", arity=2)
-    Q = Predicate("Q")
-
+    model = Model()
+    P = Predicate("P", arity=2, model=model)
+    Q = Predicate("Q", model=model)
     f = And(P(x, y), Q(z))
     q1 = Exists(y, f)
     q2 = Forall(z, q1)
 
-    model = Model()
-    model.add_knowledge(q2)
     model.add_data(
         {
             P: {("x1", "y1"): Fact.TRUE, ("x2", "y2"): Fact.FALSE},
@@ -422,15 +401,13 @@ def test_forall_exists_positive_example():
 def test_exists_axiom_forall_positive_example():
     x, y, z = Variables("x", "y", "z")
 
-    P = Predicate("P", arity=2)
-    Q = Predicate("Q")
-
+    model = Model()
+    P = Predicate("P", arity=2, model=model)
+    Q = Predicate("Q", model=model)
     f = And(P(x, y), Q(z))
     q1 = Forall(y, f, world=World.AXIOM)
     q2 = Exists(z, q1)
 
-    model = Model()
-    model.add_knowledge(q2)
     model.add_data(
         {
             P: {("x1", "y1"): Fact.TRUE, ("x2", "y2"): Fact.TRUE},
@@ -454,15 +431,14 @@ def test_exists_axiom_forall_positive_example():
 def test_exists_forall_positive_example():
     x, y, z = Variables("x", "y", "z")
 
-    P = Predicate("P", arity=2)
-    Q = Predicate("Q")
+    model = Model()
+    P = Predicate("P", arity=2, model=model)
+    Q = Predicate("Q", model=model)
 
     f = And(P(x, y), Q(z))
     q1 = Forall(y, f)
     q2 = Exists(z, q1)
 
-    model = Model()
-    model.add_knowledge(q2)
     model.add_data(
         {
             P: {("x1", "y1"): Fact.TRUE, ("x2", "y2"): Fact.TRUE},

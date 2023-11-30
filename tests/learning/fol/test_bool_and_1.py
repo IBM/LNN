@@ -4,15 +4,7 @@
 # SPDX-License-Identifier: Apache-2.0
 ##
 
-from lnn import (
-    Model,
-    And,
-    Variable,
-    Fact,
-    World,
-    Loss,
-    Direction,
-)
+from lnn import Model, And, Variable, Fact, World, Loss, Direction, Predicates
 
 
 TRUE = Fact.TRUE
@@ -23,7 +15,7 @@ UNKNOWN = Fact.UNKNOWN
 def test():
     model = Model()
 
-    p1, p2 = model.add_predicates(1, "P1", "P2")
+    p1, p2 = Predicates("P1", "P2", model=model)
 
     model.add_data(
         {
@@ -39,7 +31,6 @@ def test():
 
     x = Variable("x")
     AB = And(p1(x), p2(x), world=World.AXIOM)
-    model.add_knowledge(AB)
     parameter_history = {"weights": True}
     losses = [Loss.CONTRADICTION]
     total_loss, _ = model.train(

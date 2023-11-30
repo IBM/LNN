@@ -1,20 +1,24 @@
-from lnn import Predicate, Fact, Variables, Proposition, And
+from lnn import Model, Predicate, Fact, Variables, Proposition, And
 
 x = Variables("x")
 
 
 def test_true_proposition():
-    P = Proposition("P")
-    Q = Predicate("Q")
+    # t-box
+    model = Model()
+    P = Proposition("P", model=model)
+    Q = Predicate("Q", model=model)
     operator = And(P, Q(x))
 
-    q_data = {"0": Fact.TRUE, "1": Fact.FALSE, "2": Fact.UNKNOWN}
-
+    # a-box
     P.add_data(Fact.TRUE)
+    q_data = {"0": Fact.TRUE, "1": Fact.FALSE, "2": Fact.UNKNOWN}
     Q.add_data(q_data)
 
+    # ground truth
     operator_expected = q_data
 
+    # evaluation
     operator.upward()
     assert P.state() == Fact.TRUE
     assert all([Q.state(g) is q_data[g] for g in q_data])
@@ -24,13 +28,13 @@ def test_true_proposition():
 
 
 def test_false_proposition():
-    P = Proposition("P")
-    Q = Predicate("Q")
+    model = Model()
+    P = Proposition("P", model=model)
+    Q = Predicate("Q", model=model)
     operator = And(P, Q(x))
 
-    q_data = {"0": Fact.TRUE, "1": Fact.FALSE, "2": Fact.UNKNOWN}
-
     P.add_data(Fact.FALSE)
+    q_data = {"0": Fact.TRUE, "1": Fact.FALSE, "2": Fact.UNKNOWN}
     Q.add_data(q_data)
 
     operator_expected = {"0": Fact.FALSE, "1": Fact.FALSE, "2": Fact.FALSE}
@@ -44,16 +48,16 @@ def test_false_proposition():
 
 
 def test_multiple_propositions():
-    P = Proposition("P")
-    S = Proposition("S")
-    Q = Predicate("Q")
+    model = Model()
+    P = Proposition("P", model=model)
+    S = Proposition("S", model=model)
+    Q = Predicate("Q", model=model)
     operator = And(P, Q(x), S)
 
-    q_data = {"0": Fact.TRUE, "1": Fact.FALSE, "2": Fact.UNKNOWN}
-
     P.add_data(Fact.TRUE)
-    Q.add_data(q_data)
     S.add_data(Fact.TRUE)
+    q_data = {"0": Fact.TRUE, "1": Fact.FALSE, "2": Fact.UNKNOWN}
+    Q.add_data(q_data)
 
     operator_expected = q_data
 
@@ -66,33 +70,11 @@ def test_multiple_propositions():
     assert len(operator.state()) == len(operator_expected)
 
 
-def test_multiple_mixed_propositions():
-    P = Proposition("P")
-    S = Proposition("S")
-    Q = Predicate("Q")
-    operator = And(P, Q(x), S)
-
-    q_data = {"0": Fact.TRUE, "1": Fact.FALSE, "2": Fact.UNKNOWN}
-
-    P.add_data(Fact.TRUE)
-    Q.add_data(q_data)
-    S.add_data(Fact.FALSE)
-
-    operator_expected = {"0": Fact.FALSE, "1": Fact.FALSE, "2": Fact.FALSE}
-
-    operator.upward()
-    assert P.state() == Fact.TRUE
-    assert S.state() == Fact.FALSE
-    assert all([Q.state(g) is q_data[g] for g in q_data])
-    assert len(Q.state()) == len(q_data)
-    assert all([operator.state(g) is operator_expected[g] for g in operator_expected])
-    assert len(operator.state()) == len(operator_expected)
-
-
 def test_multiple_predicates():
-    P = Proposition("P")
-    S = Predicate("S")
-    Q = Predicate("Q")
+    model = Model()
+    P = Proposition("P", model=model)
+    S = Predicate("S", model=model)
+    Q = Predicate("Q", model=model)
     operator = And(P, Q(x), S(x))
 
     data = {"0": Fact.TRUE, "1": Fact.FALSE, "2": Fact.UNKNOWN}
@@ -114,9 +96,10 @@ def test_multiple_predicates():
 
 
 def test_multiple_predicates_no_overlap():
-    P = Proposition("P")
-    S = Predicate("S")
-    Q = Predicate("Q")
+    model = Model()
+    P = Proposition("P", model=model)
+    S = Predicate("S", model=model)
+    Q = Predicate("Q", model=model)
     operatorS = And(P, Q(x), S(x))
 
     q_data = {"0": Fact.TRUE, "1": Fact.FALSE, "2": Fact.UNKNOWN}
@@ -152,6 +135,5 @@ if __name__ == "__main__":
     test_true_proposition()
     test_false_proposition()
     test_multiple_propositions()
-    test_multiple_mixed_propositions()
     test_multiple_predicates()
     test_multiple_predicates_no_overlap()

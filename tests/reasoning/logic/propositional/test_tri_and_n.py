@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: Apache-2.0
 ##
 
-from lnn import Proposition, And, Model, Fact
+from lnn import Propositions, And, Model, Fact
 
 TRUE = Fact.TRUE
 FALSE = Fact.FALSE
@@ -25,23 +25,20 @@ def test_upward():
     ]
 
     # define the rules
+    model = Model()
     n = 1000
-    props = list()
-    for i in range(n):
-        props.append(Proposition("p" + str(i)))
+    props = Propositions(*["p" + str(i) for i in range(n)], model=model)
     And_n = And(*props)
 
+    facts = {}
     for row in TT:
         # get ground truth
         GT = row[2]
 
         # load model and reason over facts
-        facts = {}
         facts[props[0]] = row[0]
         for i in range(1, n):
             facts[props[i]] = row[1]
-        model = Model()
-        model.add_knowledge(And_n)
         model.add_data(facts)
         And_n.upward()
 
@@ -65,23 +62,20 @@ def test_downward():
     ]
 
     # define the rules
+    model = Model()
     n = 3
-    props = list()
-    for i in range(n):
-        props.append(Proposition("p" + str(i)))
+    props = Propositions(*["p" + str(i) for i in range(n)], model=model)
     And_n = And(*props)
 
+    facts = {}
     for row in TT:
         # get ground truth
         GT = row[2]
 
         # load model and reason over facts
-        facts = {}
         facts[And_n] = row[1]
         for i in range(1, n):
             facts[props[i]] = row[0]
-        model = Model()
-        model.add_knowledge(And_n)
         model.add_data(facts)
         And_n.downward(index=0)
 

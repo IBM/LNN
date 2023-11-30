@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: Apache-2.0
 ##
 
-from lnn import Proposition, And, Model, truth_table, fact_to_bool, bool_to_fact
+from lnn import Propositions, And, Model, truth_table, fact_to_bool, bool_to_fact
 import numpy as np
 from functools import reduce
 
@@ -14,13 +14,10 @@ def test():
 
     TT = truth_table(3)
 
-    # define the rules
-    A = Proposition("A")
-    B = Proposition("B")
-    C = Proposition("C")
+    # define the model
+    model = Model()
+    A, B, C = Propositions("A", "B", "C", model=model)
     A_B_C = And(A, B, C)
-
-    formulae = [A_B_C]
 
     for row in TT:
         # ground truth
@@ -30,8 +27,6 @@ def test():
         facts = {A: row[0], B: row[1], C: row[2]}
 
         # load data into a new model
-        model = Model()
-        model.add_knowledge(*formulae)
         model.add_data(facts)
 
         # evaluate the conjunction

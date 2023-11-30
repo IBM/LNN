@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: Apache-2.0
 ##
 
-from lnn import Proposition, And, Model, Fact
+from lnn import Propositions, And, Model, Fact
 import numpy as np
 
 TRUE = Fact.TRUE
@@ -16,10 +16,9 @@ CONTRADICTION = Fact.CONTRADICTION
 def test_upward():
     """standard upward n-input conjunction boolean truth table"""
 
+    model = Model()
     n = 1000
-    props = list()
-    for i in range(n):
-        props.append(Proposition("p" + str(i)))
+    props = Propositions(*["p" + str(i) for i in range(n)], model=model)
     And_n = And(*props)
 
     dat = np.random.random(n)
@@ -36,8 +35,6 @@ def test_upward():
     for i in range(1, n):
         facts[props[i]] = row[i]
 
-    model = Model()
-    model.add_knowledge(And_n)
     model.add_data(facts)
     And_n.upward()
 
@@ -50,8 +47,6 @@ def test_upward():
     for i in range(n):
         facts[props[i]] = TRUE
 
-    model = Model()
-    model.add_knowledge(And_n)
     model.add_data(facts)
     And_n.upward()
 
@@ -64,8 +59,6 @@ def test_upward():
     for i in range(n):
         facts[props[i]] = FALSE
 
-    model = Model()
-    model.add_knowledge(And_n)
     model.add_data(facts)
     And_n.upward()
 
@@ -77,20 +70,13 @@ def test_upward():
 
 def test_downward():
     # define model rules
-    n = 1000
-    props = list()
     model = Model()
-    for i in range(n):
-        props.append(Proposition("P" + str(i)))
+    n = 1000
+    props = Propositions(*["p" + str(i) for i in range(n)], model=model)
     And_n = And(*props)
-    model.add_knowledge(And_n)
 
     # define model facts
-    model.add_data(
-        {
-            And_n: TRUE,
-        }
-    )
+    model.add_data({And_n: TRUE})
     And_n.downward()
 
     # evaluate

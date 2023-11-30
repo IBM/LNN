@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: Apache-2.0
 ##
 
-from lnn import Model, Variable, Fact, Forall, Exists, World
+from lnn import Model, Variable, Fact, Forall, Exists, World, Predicates
 
 TRUE = Fact.TRUE
 FALSE = Fact.FALSE
@@ -17,7 +17,7 @@ def test_1():
     """
     x = Variable("x")
     model = Model()
-    A, S = model.add_predicates(1, "A", "S")
+    A, S = Predicates("A", "S", model=model)
     All = Forall(x, A(x), world=World.OPEN)
     Some = Exists(x, S(x))
 
@@ -48,7 +48,7 @@ def test_2():
     """
     x = Variable("x")
     model = Model()
-    A, S = model.add_predicates(1, "A", "S")
+    A, S = Predicates("A", "S", model=model)
     All = Forall(x, A(x), world=World.OPEN)
     Some = Exists(x, S(x))
     model.add_knowledge(All, Some)

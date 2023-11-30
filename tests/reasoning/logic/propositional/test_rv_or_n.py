@@ -4,17 +4,16 @@
 # SPDX-License-Identifier: Apache-2.0
 ##
 
-from lnn import Proposition, Or, Model, Fact
+from lnn import Propositions, Or, Model, Fact
 import numpy as np
 
 
 def test_upward():
     """standard upward n-input disjunction boolean truth table"""
 
+    model = Model()
     n = 1000
-    props = list()
-    for i in range(0, n):
-        props.append(Proposition("p" + str(i)))
+    props = Propositions(*["p" + str(i) for i in range(n)], model=model)
     Or_n = Or(*props)
 
     dat = np.linspace(0.0001, 0.001, n)
@@ -28,8 +27,6 @@ def test_upward():
     for i in range(0, n):
         facts[props[i]] = (dat[i], dat[i])
 
-    model = Model()
-    model.add_knowledge(Or_n)
     model.add_data(facts)
     Or_n.upward()
 
@@ -46,10 +43,9 @@ def test_upward():
 
 
 def test_downward():
+    model = Model()
     n = 1000
-    props = list()
-    for i in range(0, n):
-        props.append(Proposition("p" + str(i)))
+    props = Propositions(*["p" + str(i) for i in range(n)], model=model)
     Or_n = Or(*props)
 
     dat = np.linspace(0.0, 0.0, n)
@@ -63,8 +59,6 @@ def test_downward():
     for i in range(0, n):
         facts[props[i]] = (dat[i], dat[i])
 
-    model = Model()
-    model.add_knowledge(Or_n)
     model.add_data(facts)
     Or_n.upward()
 
@@ -91,8 +85,6 @@ def test_downward():
     for i in range(0, n):
         facts[props[i]] = (dat[i], dat[i])
 
-    model = Model()
-    model.add_knowledge(Or_n)
     model.add_data(facts)
     Or_n.upward()
 

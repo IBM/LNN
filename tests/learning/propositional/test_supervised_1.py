@@ -23,12 +23,11 @@ FALSE = Fact.FALSE
 def test_1():
     """test supervised, contradiction and logical loss for all neurons"""
     model = Model()
-    A = Proposition("A")
-    B = Proposition("B")
+    A = Proposition("A", model=model)
+    B = Proposition("B", model=model)
     _and = And(A, B, world=World.AXIOM, activation={"bias_learning": False})
     _or = Or(A, B, world=World.FALSE, activation={"bias_learning": False})
     _implies = Implies(A, B, world=World.FALSE)
-    model.add_knowledge(_and, _or, _implies)
     model.add_data({A: FALSE, B: TRUE})
     model.add_labels(
         {

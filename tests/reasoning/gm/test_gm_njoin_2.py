@@ -16,10 +16,9 @@ def test():
     model = Model()
     x, y, z = map(Variable, ("x", "y", "z"))
 
-    p1_null = Predicate("p1_null")
-    p2 = Predicate("p2", arity=2)
+    p1_null = Predicate("p1_null", model=model)
+    p2 = Predicate("p2", arity=2, model=model)
     p1_and_p2 = And(p1_null(x), p2(x, y))
-    model.add_knowledge(p1_and_p2)
     model.add_data(
         {
             p2: {
@@ -48,10 +47,9 @@ def test():
     assert len(p1_and_p2.state()) == len(GT), "FAILED 😔"
 
     # 2 variable vs 3 variables
-    p2_null = Predicate("p2_null", arity=2)
-    p3 = Predicate("p3", arity=3)
+    p2_null = Predicate("p2_null", arity=2, model=model)
+    p3 = Predicate("p3", arity=3, model=model)
     p2_and_p3 = And(p2_null(x, y), p3(x, z, y))
-    model.add_knowledge(p2_and_p3)
     model.add_data(
         {
             p3: {
@@ -80,11 +78,10 @@ def test():
 
     # 1 vs 2 vs 3
     model = Model()  # Reset the model for each new test.
-    p1_null = model.add_predicates(1, "p1_null")
-    p2_null = model.add_predicates(2, "p2_null")
-    p3 = model.add_predicates(3, "p3")
+    p1_null = Predicate("p1_null", model=model)
+    p2_null = Predicate("p2_null", arity=2, model=model)
+    p3 = Predicate("p3", arity=3, model=model)
     p1_and_p2_and_p3 = And(p1_null(x), p2_null(x, y), p3(x, z, y))
-    model.add_knowledge(p1_and_p2_and_p3)
     model.add_data(
         {
             p3: {

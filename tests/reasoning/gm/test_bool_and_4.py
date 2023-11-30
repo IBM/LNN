@@ -24,9 +24,8 @@ def test():
 
     preds = []
     for pred in range(n_preds):
-        preds.append(Predicate(f"P{pred}", arity=n_vars))
+        preds.append(Predicate(f"P{pred}", arity=n_vars, model=model))
     AB = And(*[pred(*variables) for pred in preds])
-    model.add_knowledge(AB)
 
     # set model facts
     for idx, pred in enumerate(preds):

@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: Apache-2.0
 ##
 
-from lnn import Proposition, Or, Model, Fact
+from lnn import Propositions, Or, Model, Fact
 
 
 TRUE = Fact.TRUE
@@ -26,10 +26,9 @@ def test_upward():
     ]
 
     # define the rules
-    A = Proposition("A")
-    B = Proposition("B")
+    model = Model()
+    A, B = Propositions("A", "B", model=model)
     AB = Or(A, B)
-    formulae = [AB]
 
     for i, row in enumerate(TT):
         # get ground truth
@@ -37,8 +36,6 @@ def test_upward():
 
         # load model and reason over facts
         facts = {A: row[0], B: row[1]}
-        model = Model()
-        model.add_knowledge(*formulae)
         model.add_data(facts)
         AB.upward()
 
@@ -62,16 +59,13 @@ def test_downward():
     ]
 
     # define the rules
-    A = Proposition("A")
-    B = Proposition("B")
+    model = Model()
+    A, B = Propositions("A", "B", model=model)
     AB = Or(A, B)
-    formulae = [AB]
 
     for i, row in enumerate(TT):
         # load model and reason over facts
         facts = {B: row[0], AB: row[1]}
-        model = Model()
-        model.add_knowledge(*formulae)
         model.add_data(facts)
         AB.downward(index=0)
 
