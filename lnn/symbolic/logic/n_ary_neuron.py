@@ -102,7 +102,7 @@ class Or(_NAryNeuron):
         super().__init__(*formula, **kwds)
 
 
-class XOr(_NAryNeuron):
+class Xor(_NAryNeuron):
     r"""
     Symbolic nAry [Exclusive or](https://en.wikipedia.org/wiki/Exclusive_or).
 

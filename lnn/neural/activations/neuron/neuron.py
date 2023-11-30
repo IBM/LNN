@@ -95,11 +95,11 @@ class _NeuronActivation(_NodeActivation, _NeuronParameters):
         pass
 
     def _xor_upward(self, operand_bounds: torch.Tensor):
-        r"""Placeholder for the XOr Neuron."""
+        r"""Placeholder for the Xor Neuron."""
         pass
 
     def _xor_downward(
         self, operator_bounds: torch.Tensor, operand_bounds: torch.Tensor
     ):
-        r"""Placeholder for the XOr Neuron."""
+        r"""Placeholder for the Xor Neuron."""
         pass
