@@ -5,7 +5,7 @@
 ##
 
 from lnn import (
-    Proposition,
+    Propositions,
     Or,
     Model,
     Fact,
@@ -28,19 +28,16 @@ def test_upward():
     TT = truth_table(2)
 
     # define the rules
-    A = Proposition("A")
-    B = Proposition("B")
+    model = Model()
+    A, B = Propositions("A", "B", model=model)
     AB = Or(A, B)
-    formulae = [AB]
 
     for row in TT:
         # get ground truth
         GT = np.logical_or(*list(map(fact_to_bool, row)))
 
-        # load model and reason over facts
+        # reason over facts
         facts = {A: row[0], B: row[1]}
-        model = Model()
-        model.add_knowledge(*formulae)
         model.add_data(facts)
         AB.upward()
 
@@ -55,10 +52,8 @@ def test_upward():
 def test_downward():
     # define model rules
     model = Model()
-    A = Proposition("A")
-    B = Proposition("B")
+    A, B = Propositions("A", "B", model=model)
     AB = Or(A, B)
-    model.add_knowledge(AB)
 
     # define model facts
     model.add_data({A: FALSE, AB: TRUE})

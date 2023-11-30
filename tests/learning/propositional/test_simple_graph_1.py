@@ -12,11 +12,10 @@ FALSE = Fact.FALSE
 
 def test_1():
     model = Model()
-    A = Proposition("A")
-    B = Proposition("B")
+    A = Proposition("A", model=model)
+    B = Proposition("B", model=model)
     _and = And(A, B, world=World.AXIOM)
     _or = Or(A, B)
-    model.add_knowledge(_and, _or)
     model.add_data({A: TRUE, B: FALSE})
     losses = [Loss.CONTRADICTION]
     model.train(losses=losses)

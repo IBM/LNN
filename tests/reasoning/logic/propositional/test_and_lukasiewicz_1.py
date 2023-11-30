@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: Apache-2.0
 ##
 
-from lnn import Proposition, And, Model
+from lnn import Propositions, And, Model
 import numpy as np
 
 
@@ -16,8 +16,8 @@ def test():
     x, y = np.meshgrid(steps, steps)
 
     # define the rules
-    A = Proposition("A")
-    B = Proposition("B")
+    model = Model()
+    A, B = Propositions("A", "B", model=model)
     AB = And(A, B)
 
     # rules per model
@@ -35,8 +35,6 @@ def test():
             facts = {A: (a, a), B: (b, b)}
 
             # load data into a new model
-            model = Model()
-            model.add_knowledge(*formulae)
             model.add_data(facts)
 
             # evaluate the conjunction

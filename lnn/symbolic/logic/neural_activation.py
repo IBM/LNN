@@ -11,7 +11,7 @@ import importlib
 from ... import _utils, _exceptions
 from ...constants import NeuralActivation
 
-_utils.logger_setup()
+_utils.get_logger()
 
 
 class _NeuralActivation:

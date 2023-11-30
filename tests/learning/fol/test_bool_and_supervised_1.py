@@ -4,14 +4,7 @@
 # SPDX-License-Identifier: Apache-2.0
 ##
 
-from lnn import (
-    Model,
-    And,
-    Variable,
-    Fact,
-    Loss,
-    Direction,
-)
+from lnn import Model, And, Variable, Fact, Loss, Direction, Predicates
 
 
 TRUE = Fact.TRUE
@@ -21,7 +14,7 @@ UNKNOWN = Fact.UNKNOWN
 
 def test():
     model = Model()
-    p1, p2 = model.add_predicates(1, "P1", "P2")
+    p1, p2 = Predicates("P1", "P2", model=model)
     model.add_data(
         {
             p1: {"0": TRUE, "1": TRUE, "2": TRUE, "3": TRUE},
@@ -36,7 +29,6 @@ def test():
 
     x = Variable("x")
     AB = And(p1(x), p2(x))
-    model.add_knowledge(AB)
     model.add_labels(
         {
             AB: {

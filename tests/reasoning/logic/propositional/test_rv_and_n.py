@@ -4,32 +4,31 @@
 # SPDX-License-Identifier: Apache-2.0
 ##
 
-from lnn import Proposition, And, Model, Fact
+from lnn import Propositions, And, Model, Fact
 import numpy as np
 
 
 def test_upward():
     """standard upward n-input conjunction boolean truth table"""
 
+    # define the model
+    model = Model()
     n = 1000
-    props = list()
-    for i in range(0, n):
-        props.append(Proposition("p" + str(i)))
+    props = Propositions(*["p" + str(i) for i in range(n)], model=model)
     And_n = And(*props)
 
+    # ground truth facts
     dat = np.linspace(0.001, 1.0, n)
     GT = dat[0]
     for i in range(1, n):
         GT = max(0, GT + dat[i] - 1)
     print("Ground truth", GT)
 
-    # load model and reason over facts
+    # reason over facts
     facts = {}
     for i in range(0, n):
         facts[props[i]] = (dat[i], dat[i])
 
-    model = Model()
-    model.add_knowledge(And_n)
     model.add_data(facts)
     And_n.upward()
 
@@ -46,25 +45,24 @@ def test_upward():
 
 
 def test_downward():
+    # define the model
+    model = Model()
     n = 1000
-    props = list()
-    for i in range(0, n):
-        props.append(Proposition("p" + str(i)))
+    props = Propositions(*["p" + str(i) for i in range(n)], model=model)
     And_n = And(*props)
 
+    # ground truth
     dat = np.linspace(1.0, 1.0, n)
     GT = dat[0]
     for i in range(1, n):
         GT = max(0, GT + dat[i] - 1)
     print("Ground truth", GT)
 
-    # load model and reason over facts
+    # reason over facts
     facts = {}
     for i in range(0, n):
         facts[props[i]] = (dat[i], dat[i])
 
-    model = Model()
-    model.add_knowledge(And_n)
     model.add_data(facts)
     And_n.upward()
 
@@ -86,18 +84,15 @@ def test_downward():
     # now make the AND false
     dat = np.linspace(0.0, 1.0, n)
 
-    # load model and reason over facts
+    # reason over facts
     facts = {}
     for i in range(0, n):
         facts[props[i]] = (dat[i], dat[i])
 
-    model = Model()
-    model.add_knowledge(And_n)
     model.add_data(facts)
     And_n.upward()
 
     # now make one of the inputs unknown
-    p0 = props[0].get_data()
     model.add_data({props[0]: Fact.UNKNOWN})
     model.downward()
 

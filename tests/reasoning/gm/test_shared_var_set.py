@@ -1,4 +1,4 @@
-from lnn import Predicate, Variable, And, Implies, Forall, Model, Fact
+from lnn import Predicate, Variables, And, Implies, Forall, Model, Fact
 
 
 def test_1():
@@ -6,11 +6,11 @@ def test_1():
     Unary predicates with overlapping variable set.
     """
 
-    x = Variable("x")
-    square = Predicate(name="square")
-    rectangle = Predicate(name="rectangle")
-
-    square_rect = Forall(
+    model = Model()
+    x = Variables("x")
+    square = Predicate(name="square", model=model)
+    rectangle = Predicate(name="rectangle", model=model)
+    Forall(
         x,
         Implies(
             square(x),
@@ -18,8 +18,6 @@ def test_1():
         ),
     )
 
-    model = Model()
-    model.add_knowledge(square, rectangle, square_rect)
     model.add_data({square: {"c": Fact.TRUE, "k": Fact.TRUE}})
 
     model.upward()
@@ -33,18 +31,11 @@ def test_2():
     :return:
     """
 
-    x, y = map(Variable, ["x", "y"])
     model = Model()  # Instantiate a model.
-
-    enemy = Predicate("enemy", arity=2)
-    hostile = Predicate("hostile")
-
-    model.add_knowledge(
-        Forall(
-            x,
-            Implies(enemy(x, "America"), hostile(x)),
-        )
-    )
+    x, y = Variables("x", "y")
+    enemy = Predicate("enemy", arity=2, model=model)
+    hostile = Predicate("hostile", model=model)
+    Forall(x, Implies(enemy(x, "America"), hostile(x)))
 
     # Add facts to model.
     model.add_data({enemy: {("Nono", "America"): Fact.TRUE}})
@@ -59,18 +50,12 @@ def test_3():
     :return:
     """
 
-    x, y, z = map(Variable, ["x", "y", "z"])
     model = Model()  # Instantiate a model.
+    x, y, z = Variables("x", "y", "z")
+    f1 = Predicate("F1", arity=3, model=model)
+    f2 = Predicate("F2", arity=2, model=model)
+    And(f1(x, y, z), f2(x, y))
 
-    f1 = Predicate("F1", 3)
-    f2 = Predicate("F2", 2)
-
-    rule = And(
-        f1(x, y, z),
-        f2(x, y),
-    )
-
-    model.add_knowledge(f1, f2, rule)
     model.add_data({f1: {("x1", "y1", "z1"): Fact.TRUE}})
 
     model.upward()
@@ -85,20 +70,15 @@ def test_4():
     :return:
     """
 
-    x, y, z = map(Variable, ["x", "y", "z"])
-    american = Predicate("american")
-    hostile = Predicate("hostile")
-    weapon = Predicate("weapon")
-    sells = Predicate("sells", 3)
+    # Instantiate a model.
+    model = Model()
+    x, y, z = Variables("x", "y", "z")
+    american = Predicate("american", model=model)
+    hostile = Predicate("hostile", model=model)
+    weapon = Predicate("weapon", model=model)
+    sells = Predicate("sells", arity=3, model=model)
+    And(american(x), weapon(y), hostile(z), sells(x, y, z))
 
-    model = Model()  # Instantiate a model.
-    rule = And(
-        american(x),
-        weapon(y),
-        hostile(z),
-        sells(x, y, z),
-    )
-    model.add_knowledge(american, hostile, weapon, rule)
     model.add_data(
         {
             american: {"West": Fact.TRUE},

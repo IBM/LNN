@@ -22,7 +22,7 @@ from ... import _utils
 from ...constants import Fact, Direction, Bound
 from torch.nn.parameter import Parameter
 
-_utils.logger_setup()
+_utils.get_logger()
 
 
 class _UnaryOperator(_ConnectiveFormula):
@@ -363,7 +363,7 @@ class Not(_UnaryOperator):
     """
 
     def __init__(self, formula: Formula, **kwds):
-        self.connective_str = "¬"
+        self.symbol = "¬"
         super().__init__(formula, **kwds)
         kwds.setdefault("propositional", self.propositional)
         self.neuron = _NodeActivation()(**kwds.get("activation", {}), **kwds)
@@ -388,7 +388,7 @@ class Not(_UnaryOperator):
             None, _utils.negate_bounds(self.operands[0].get_data(*groundings))
         )
         if self.is_contradiction():
-            logging.info(
+            self.logger.info(
                 "↑ CONTRADICTION "
                 f"FOR:'{self.name}' "
                 f"FORMULA:{self.formula_number} "
@@ -416,10 +416,11 @@ class Not(_UnaryOperator):
                 if g not in self.operands[0]._groundings:
                     self.operands[0]._add_groundings(g)
         bounds = self.operands[0].neuron.aggregate_bounds(
-            None, _utils.negate_bounds(self.get_data(*groundings))
+            [self.operands[0].grounding_table[_] for _ in groundings],
+            _utils.negate_bounds(self.get_data(*groundings))
         )
         if self.operands[0].is_contradiction():
-            logging.info(
+            self.logger.info(
                 "↓ CONTRADICTION "
                 f"FOR:'{self.operands[0].name}' "
                 f"FROM:'{self.name}' "
@@ -475,7 +476,7 @@ class Exists(_Quantifier):
         if len(variables) > 1:
             args = [a, Exists(*variables[1:], formula, **kwds)]
 
-        self.connective_str = "∃"
+        self.symbol = "∃"
         super().__init__(*args, **kwds)
 
 
@@ -523,5 +524,5 @@ class Forall(_Quantifier):
             formula = args[-1]
             args = [a, Forall(*variables[1:], formula, **kwds)]
 
-        self.connective_str = "∀"
+        self.symbol = "∀"
         super().__init__(*args, **kwds)

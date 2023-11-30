@@ -4,24 +4,23 @@
 # SPDX-License-Identifier: Apache-2.0
 ##
 
-from lnn import Predicate, And, Or, Implies, Model, Variable
+from lnn import Predicates, And, Or, Implies, Model, Variable
 import numpy as np
 
 
 def test_and():
     """FOL upward 2-input conjunction real value truth table"""
 
+    # rules
+    model = Model()
+    x = Variable("x")
+    A, B = Predicates("A", "B", model=model)
+    AB = And(A(x), B(x))
+
+    # facts
     samples = 101
     steps = np.linspace(0, 1, samples)
     x_grid, y_grid = np.meshgrid(steps, steps)
-
-    x = Variable("x")
-    model = Model()
-    A = Predicate("A")
-    B = Predicate("B")
-    AB = And(A(x), B(x))
-    model.add_knowledge(AB)
-
     for row in range(samples):
         for col in range(samples):
             # inputs
@@ -64,17 +63,14 @@ def test_and():
 def test_or():
     """FOL upward 2-input disjunction real value truth table"""
 
+    x = Variable("x")
+    model = Model()
+    A, B = Predicates("A", "B", model=model)
+    AB = Or(A(x), B(x))
+
     samples = 101
     steps = np.linspace(0, 1, samples)
     x_grid, y_grid = np.meshgrid(steps, steps)
-
-    x = Variable("x")
-    model = Model()
-    A = Predicate("A")
-    B = Predicate("B")
-    AB = Or(A(x), B(x))
-    model.add_knowledge(AB)
-
     for row in range(samples):
         for col in range(samples):
             # inputs
@@ -117,17 +113,14 @@ def test_or():
 def test_implies():
     """FOL upward 2-input implies real value truth table"""
 
+    x = Variable("x")
+    model = Model()
+    A, B = Predicates("A", "B", model=model)
+    AB = Implies(A(x), B(x))
+
     samples = 101
     steps = np.linspace(0, 1, samples)
     x_grid, y_grid = np.meshgrid(steps, steps)
-
-    x = Variable("x")
-    model = Model()
-    A = Predicate("A")
-    B = Predicate("B")
-    AB = Implies(A(x), B(x))
-    model.add_knowledge(AB)
-
     for row in range(samples):
         for col in range(samples):
             # inputs

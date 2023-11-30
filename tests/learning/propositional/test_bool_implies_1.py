@@ -27,10 +27,9 @@ def test_true_operator():
         the operator is incorrect
     """
     model = Model()
-    LHS = Proposition("LHS")
-    RHS = Proposition("RHS")
+    LHS = Proposition("LHS", model=model)
+    RHS = Proposition("RHS", model=model)
     AB = Implies(LHS, RHS, world=World.AXIOM)
-    model.add_knowledge(AB)
     model.add_data({LHS: TRUE, RHS: FALSE})
     model.train(direction=Direction.UPWARD, losses=[Loss.CONTRADICTION])
     model.print(params=True)
@@ -48,10 +47,9 @@ def test_false_operator_1():
     """
     model = Model()
     activation = {"alpha": 1 - 1e-5}
-    LHS = Proposition("LHS")
-    RHS = Proposition("RHS")
+    LHS = Proposition("LHS", model=model)
+    RHS = Proposition("RHS", model=model)
     AB = Implies(LHS, RHS, world=World.CLOSED, activation=activation)
-    model.add_knowledge(AB)
     model.add_data({LHS: FALSE, RHS: UNKNOWN})
     model.train(direction=Direction.UPWARD, losses=[Loss.CONTRADICTION])
     weights = AB.params("weights")
@@ -73,8 +71,8 @@ def test_false_operator_2():
         - both LHS and RHS add information, and are therefore incorrect
     """
     model = Model()
-    LHS = Proposition("LHS")
-    RHS = Proposition("RHS")
+    LHS = Proposition("LHS", model=model)
+    RHS = Proposition("RHS", model=model)
     AB = Implies(LHS, RHS, world=World.CLOSED)
     model.add_knowledge(AB)
     model.add_data({LHS: FALSE, RHS: TRUE})
@@ -98,10 +96,9 @@ def test_false_operator_3():
     """
     model = Model()
     activation = {"alpha": 1 - 1e-5}
-    LHS = Proposition("LHS")
-    RHS = Proposition("RHS")
+    LHS = Proposition("LHS", model=model)
+    RHS = Proposition("RHS", model=model)
     AB = Implies(LHS, RHS, world=World.FALSE, activation=activation)
-    model.add_knowledge(AB)
     model.add_data({LHS: TRUE, RHS: TRUE})
     model.train(direction=Direction.UPWARD, losses=[Loss.CONTRADICTION])
     weights = AB.params("weights")

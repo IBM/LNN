@@ -13,7 +13,7 @@ from .formula import Formula
 from ... import _utils
 from ...constants import Direction, NeuralActivation
 
-_utils.logger_setup()
+_utils.get_logger()
 
 
 class _BinaryNeuron(_ConnectiveNeuron):
@@ -68,7 +68,7 @@ class Implies(_BinaryNeuron):
     """
 
     def __init__(self, lhs: Formula, rhs: Formula, **kwds):
-        self.connective_str = "→"
+        self.symbol = kwds.get("symbol", "→")
         kwds.setdefault("activation", {})
         kwds["activation"].setdefault("bias_learning", True)
         super().__init__(lhs, rhs, **kwds)
@@ -114,7 +114,7 @@ class Iff(_BinaryNeuron):
     """
 
     def __init__(self, lhs: Formula, rhs: Formula, **kwds):
-        self.connective_str = "∧"
+        self.symbol = "∧"
         self.Imp1, self.Imp2 = Implies(lhs, rhs, **kwds), Implies(rhs, lhs, **kwds)
         super().__init__(self.Imp1, self.Imp2, **kwds)
         self.func = self.neuron.activation("And", direction=Direction.UPWARD)

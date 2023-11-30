@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: Apache-2.0
 ##
 
-from lnn import Proposition, Or, Model
+from lnn import Propositions, Or, Model
 import numpy as np
 
 
@@ -15,13 +15,10 @@ def test():
     steps = np.linspace(0, 1, samples)
     x, y = np.meshgrid(steps, steps)
 
-    # define the rules
-    A = Proposition("A")
-    B = Proposition("B")
+    # define the model
+    model = Model()
+    A, B = Propositions("A", "B", model=model)
     AB = Or(A, B)
-
-    # rules per model
-    formulae = [AB]
 
     for row in range(samples):
         for col in range(samples):
@@ -35,8 +32,6 @@ def test():
             facts = {A: (a, a), B: (b, b)}
 
             # load data into a new model
-            model = Model()
-            model.add_knowledge(*formulae)
             model.add_data(facts)
 
             # evaluate the disjunction

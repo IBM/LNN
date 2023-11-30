@@ -43,11 +43,11 @@ class AssertBoundsType:
     Raised when bounds given in the incorrect type.
     """
 
-    def __init__(self, bounds: Union[Fact, tuple, torch.Tensor]):
+    def __init__(self, bounds: Union[bool, Fact, tuple, torch.Tensor]):
         options = [bool, Fact, World, tuple, torch.Tensor, float]
         if type(bounds) not in options:
             raise TypeError(
-                f"fact expected from [lnn.Fact, lnn.World, tuple, torch.Tensor] "
+                f"fact expected from [bool, lnn.Fact, lnn.World, tuple, torch.Tensor] "
                 f"received {bounds.__class__.__name__} {bounds}"
             )
 

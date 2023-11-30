@@ -22,10 +22,9 @@ def test_1():
     var_labels = tuple(f"x{i}" for i in range(0, n_vars))
     variables = list(map(Variable, var_labels))
 
-    p0 = Predicate("p0")
-    p1 = Predicate("p1", arity=n_vars)
+    p0 = Predicate("p0", model=model)
+    p1 = Predicate("p1", arity=n_vars, model=model)
     _and = And(p0(variables[0]), p1(*variables), world=World.AXIOM)
-    model.add_knowledge(_and)
     model.add_data({p0: {"0": TRUE, "1": TRUE, "2": TRUE}, p1: {("0",) * n_vars: TRUE}})
 
     model.infer()
@@ -45,12 +44,11 @@ def test_2():
     var_labels = tuple(f"x{i}" for i in range(0, n_vars))
     variables = list(map(Variable, var_labels))
 
-    p0 = Predicate("p0")
-    p1 = Predicate("p1", arity=n_vars)
+    p0 = Predicate("p0", model=model)
+    p1 = Predicate("p1", arity=n_vars, model=model)
 
     r = random.randrange(0, n_vars)
     _and = And(p0(variables[r]), p1(*variables), world=World.AXIOM)
-    model.add_knowledge(_and)
     model.add_data({p0: {"0": TRUE, "1": TRUE, "2": TRUE}, p1: {("0",) * n_vars: TRUE}})
 
     model.infer()
@@ -70,15 +68,13 @@ def test_3():
     var_labels = tuple(f"x{i}" for i in range(0, n_vars))
     variables = list(map(Variable, var_labels))
 
-    p0 = Predicate("p0", arity=3)
-    p1 = Predicate("p1", arity=n_vars)
+    p0 = Predicate("p0", arity=3, model=model)
+    p1 = Predicate("p1", arity=n_vars, model=model)
     _and = And(
         p0(variables[0], variables[1], variables[2]),
         p1(*variables),
         world=World.AXIOM,
     )
-
-    model.add_knowledge(_and)
 
     model.add_data(
         {
@@ -117,10 +113,9 @@ def test_4():
     var_labels = tuple(f"x{i}" for i in range(0, n_vars))
     variables = list(map(Variable, var_labels))
 
-    p0 = Predicate("p0", arity=n_vars)
-    p1 = Predicate("p1", arity=n_vars)
+    p0 = Predicate("p0", arity=n_vars, model=model)
+    p1 = Predicate("p1", arity=n_vars, model=model)
     _and = And(p0(*variables), p1(*variables), world=World.AXIOM)
-    model.add_knowledge(_and)
 
     key_arr = ["0"] * n_vars
     random_indices = random.sample(range(1, n_vars), 3)

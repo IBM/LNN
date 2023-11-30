@@ -23,37 +23,17 @@ properties of both neural nets (learning) and symbolic logic (knowledge and reas
 ## Quickstart
 To install the LNN:
 
-1. Make sure that the python version you use in line with our [setup](https://github.com/IBM/LNN/blob/master/setup.py) file, using a fresh environment is always a good idea:
-    ```commandline
-    conda create -n lnn python=3.9 -y
-    conda activate lnn
-    ```
-2. Install the `master` branch to keep up to date with the latest supported features:
-    ```commandline
-    pip install git+https://github.com/IBM/LNN
-    ```
-
-## Contribution
-Contributions to the LNN codebase are welcome!
-
-Please have a look at the [contribution guide](https://github.com/IBM/LNN/blob/master/CONTRIBUTING.md) for more information on how to set up the LNN for contributing and how to follow our development standards.
+ Make sure that the python version you use in line with our [setup](https://github.com/IBM/LNN/blob/master/setup.py) file. Using a fresh environment is always a good idea:
+```commandline
+conda create -n lnn python=3.9 -y
+conda activate lnn
+pip install git+https://github.com/IBM/LNN
+```
 
 ## Documentation
 | [Read the Docs][Docs] | [Academic Papers][Papers]	| [Educational Resources][Education] | [Neuro-Symbolic AI][Neuro-Symbolic AI] | [API Overview][API] | [Python Module][Module] |
 |:-----------------------:|:---------------------------:|:-----------------:|:----------:|:-------:|:-------:|
-| [<img src=https://raw.githubusercontent.com/IBM/LNN/master/docs/images/icons/doc.png alt="Docs" width="60"/>][Docs] | [<img src=https://raw.githubusercontent.com/IBM/LNN/master/docs/images/icons/academic.png alt="Academic Papers" width="60"/>][Papers] |  [<img src=https://raw.githubusercontent.com/IBM/LNN/master/docs/images/icons/help.png alt="Getting Started" width="60"/>][Education] | [<img src=https://raw.githubusercontent.com/IBM/LNN/master/docs/images/icons/nsai.png alt="Neuro-Symbolic AI" width="60"/>][Neuro-Symbolic AI] | [<img src=https://raw.githubusercontent.com/IBM/LNN/master/docs/images/icons/api.png alt="API" width="60"/>][API] | [<img src=https://raw.githubusercontent.com/IBM/LNN/master/docs/images/icons/python.png alt="Python Module" width="60"/>][Module] |
 
-## Citation
-If you use Logical Neural Networks for research, please consider citing the
-reference paper:
-```raw
-@article{riegel2020logical,
-  title={Logical neural networks},
-  author={Riegel, Ryan and Gray, Alexander and Luus, Francois and Khan, Naweed and Makondo, Ndivhuwo and Akhalwaya, Ismail Yunus and Qian, Haifeng and Fagin, Ronald and Barahona, Francisco and Sharma, Udit and others},
-  journal={arXiv preprint arXiv:2006.13155},
-  year={2020}
-}
-```
 
 [Docs]: https://ibm.github.io/LNN/introduction.html
 [Papers]: https://ibm.github.io/LNN/papers.html

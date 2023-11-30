@@ -23,16 +23,9 @@ def test_upward():
     ]
 
     # define the rules
-    A = Proposition("A")
-
-    try:
-        NotA = Not(A, A)
-        assert False, "Not should not accept multiple inputs"
-    except TypeError:
-        pass
-
+    model = Model()
+    A = Proposition("A", model=model)
     NotA = Not(A)
-    formulae = [NotA]
 
     for row in TT:
         # get ground truth
@@ -40,8 +33,6 @@ def test_upward():
 
         # load model and reason over facts
         facts = {A: row[0]}
-        model = Model()
-        model.add_knowledge(*formulae)
         model.add_data(facts)
         NotA.upward()
 
@@ -56,9 +47,8 @@ def test_upward():
 def test_downward():
     # define model rules
     model = Model()
-    A = Proposition("A")
+    A = Proposition("A", model=model)
     NotA = Not(A)
-    model.add_knowledge(NotA)
 
     # define model facts
     model.add_data({NotA: TRUE})

@@ -14,10 +14,10 @@ def test():
     # TEST 1
 
     # This is the normal 2 var vs 2 var ; should go thru the memory join
-    p2 = Predicate("p2", 2)
+    p2 = Predicate("p2", arity=2, model=model)
     p2.add_data({("x1", "y1"): Fact.TRUE, ("x2", "y2"): Fact.TRUE})
 
-    p2a = Predicate("p2a", 2)
+    p2a = Predicate("p2a", arity=2, model=model)
     p2a.add_data({("y1", "z1"): Fact.TRUE, ("y3", "z2"): Fact.TRUE})
 
     # print("Predicates before outer Join")
@@ -32,7 +32,6 @@ def test():
         ]
     )
     p2_and_p2a = And(p2("x1", y), p2a(y, "z2"))
-    model.add_knowledge(p2_and_p2a)
     p2_and_p2a.upward()
     model.print()
 

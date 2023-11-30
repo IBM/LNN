@@ -28,9 +28,8 @@ def test():
 
     preds = []
     for pred in range(n_preds):
-        preds.append(Predicate(f"P{pred}"))
+        preds.append(Predicate(f"P{pred}", model=model))
     AB = And(*[preds[p](x) for p in range(n_preds)])
-    model.add_knowledge(AB)
 
     # set model facts
     for idx, pred in enumerate(preds):

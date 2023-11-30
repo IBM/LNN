@@ -5,7 +5,7 @@
 ##
 
 from lnn import (
-    Proposition,
+    Propositions,
     And,
     Model,
     Fact,
@@ -14,7 +14,6 @@ from lnn import (
     bool_to_fact,
 )
 import numpy as np
-
 
 TRUE = Fact.TRUE
 FALSE = Fact.FALSE
@@ -26,10 +25,9 @@ def test_upward():
     r"""Standard upward, 2-input conjunction boolean truth table."""
 
     # define the rules
-    A = Proposition("A")
-    B = Proposition("B")
+    model = Model()
+    A, B = Propositions("A", "B", model=model)
     AB = And(A, B)
-    formulae = [AB]
 
     for row in truth_table(2):
         # get ground truth
@@ -37,8 +35,6 @@ def test_upward():
 
         # load model and reason over facts
         facts = {A: row[0], B: row[1]}
-        model = Model()
-        model.add_knowledge(*formulae)
         model.add_data(facts)
         AB.upward()
 
@@ -53,10 +49,8 @@ def test_upward():
 def test_downward():
     # define model rules
     model = Model()
-    A = Proposition("A")
-    B = Proposition("B")
+    A, B = Propositions("A", "B", model=model)
     AB = And(A, B)
-    model.add_knowledge(AB)
 
     # define model facts
     model.add_data(

@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: Apache-2.0
 ##
 
-from lnn import Model, World, And, Variable, Direction, Implies, Fact
+from lnn import Model, World, And, Variable, Direction, Implies, Fact, Predicates
 
 TRUE = Fact.TRUE
 
@@ -39,10 +39,9 @@ def test_1():
     vars2 = (z, y)
 
     model = Model()
-    b = model.add_predicates(2, B[0], world=World.FALSE)
+    b = Predicates(B[0], arity=2, world=World.FALSE, model=model)
     model.add_data({b: {pair: TRUE for pair in B[1]}})
     rule = And(b(*vars1), b(*vars2))
-    model.add_knowledge(rule)
 
     model.infer(direction=Direction.UPWARD)
 
@@ -84,7 +83,7 @@ def test_2():
     vars2 = (z, y)
 
     model = Model()
-    b, p = model.add_predicates(2, B[0], P1[0], world=World.FALSE)
+    b, p = Predicates(B[0], P1[0], arity=2, world=World.FALSE, model=model)
     model.add_data(
         {
             b: {pair: TRUE for pair in B[1]},
@@ -92,7 +91,6 @@ def test_2():
         }
     )
     rule = Implies(p(x, y), And(b(*vars1), b(*vars2)))
-    model.add_knowledge(rule)
 
     model.infer(direction=Direction.UPWARD)
 

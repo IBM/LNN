@@ -16,7 +16,7 @@ from .connective_neuron import _ConnectiveNeuron
 from ... import _utils
 from ...constants import Direction, NeuralActivation
 
-_utils.logger_setup()
+_utils.get_logger()
 
 
 class _NAryNeuron(_ConnectiveNeuron):
@@ -60,7 +60,7 @@ class And(_NAryNeuron):
 
     def __init__(self, *formula: Formula, **kwds):
         kwds.setdefault("activation", {})
-        self.connective_str = "∧"
+        self.symbol = "∧"
         super().__init__(*formula, **kwds)
 
 
@@ -98,11 +98,11 @@ class Or(_NAryNeuron):
 
     def __init__(self, *formula, **kwds):
         kwds.setdefault("activation", {})
-        self.connective_str = "∨"
+        self.symbol = "∨"
         super().__init__(*formula, **kwds)
 
 
-class XOr(_NAryNeuron):
+class Xor(_NAryNeuron):
     r"""
     Symbolic nAry [Exclusive or](https://en.wikipedia.org/wiki/Exclusive_or).
 
@@ -127,20 +127,20 @@ class XOr(_NAryNeuron):
     ```python
     # Propositional
     A, B, C = Propositions('A', 'B', 'C')
-    XOr(A, B, C)
+    Xor(A, B, C)
     ```
     ```python
     # First-order logic
     x, y = Variables('x', 'y')
     A, C = Predicates('A', 'C')
     B = Predicate('B', arity=2)
-    XOr(A(x), B(x, y), C(y)))
+    Xor(A(x), B(x, y), C(y)))
     ```
 
     """
 
     def __init__(self, *formula, **kwds):
-        self.connective_str = "∧"
+        self.symbol = "∧"
         kwds.setdefault("activation", {})
         conjunction_activation = copy.copy(kwds["activation"])
         conjunction_activation.setdefault("bias_learning", False)

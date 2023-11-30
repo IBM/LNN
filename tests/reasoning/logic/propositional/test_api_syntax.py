@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: Apache-2.0
 ##
 
-from lnn import Model, Fact, World
+from lnn import Model, Fact, World, Propositions
 
 TRUE = Fact.TRUE
 
@@ -12,17 +12,17 @@ TRUE = Fact.TRUE
 def test():
     model = Model()
 
-    Smokes, Friends = model.add_propositions("Smokes", "Friends")
+    Smokes, Friends = Propositions("Smokes", "Friends", model=model)
     # check that more propositions can be added
-    Colleagues, Gender = model.add_propositions("Colleagues", "GenderAlike")
+    Colleagues, Gender = Propositions("Colleagues", "GenderAlike", model=model)
     assert Colleagues.name == "Colleagues"
     assert Gender.name == "GenderAlike"
+    assert Colleagues in model
 
-    formula = Smokes.And(Colleagues, Gender).Implies(Friends, world=World.AXIOM)
+    Smokes.And(Colleagues, Gender).Implies(Friends, world=World.AXIOM)
 
     facts = {Smokes: TRUE, Colleagues: TRUE, Gender: TRUE}
 
-    model.add_knowledge(formula)
     model.add_data(facts)
     model.infer()
     model.print()

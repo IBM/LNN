@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: Apache-2.0
 ##
 
-from lnn import Model, And, Fact, Exists, Variable
+from lnn import Model, And, Fact, Exists, Variable, Predicates
 
 
 def test_1():
@@ -13,7 +13,7 @@ def test_1():
 
     model = Model()
 
-    director, starring = model.add_predicates(2, "director", "starring")
+    director, starring = Predicates("director", "starring", arity=2, model=model)
 
     facts = {
         director: {("William_Shatner", "The_captains"): Fact.TRUE},
@@ -45,7 +45,7 @@ def test_2():
 
     model = Model()
 
-    director, starring = model.add_predicates(2, "director", "starring")
+    director, starring = Predicates("director", "starring", arity=2, model=model)
 
     model.add_data(
         {

@@ -22,7 +22,7 @@ import copy
 import torch
 import numpy as np
 
-_utils.logger_setup()
+_utils.get_logger()
 subclasses: typing.Dict[str, object] = {}
 
 
@@ -39,9 +39,33 @@ def _isinstance(obj, class_str) -> bool:
 class Formula(ABC):
     r"""Symbolic container for a generic formula."""
 
+    def __new__(cls, *args, **kwds):
+        instance = super(Formula, cls).__new__(cls)
+        instance.__init__(*args, **kwds)
+        return instance._add_to_model()
+
     def __init__(
-        self, *formulae: "Formula", name: Optional[str] = "", arity: int = None, **kwds
+        self,
+        *formulae: "Formula",
+        name: Optional[str] = "",
+        syntax: str = None,
+        arity: int = None,
+        **kwds,
     ):
+        # placeholder for neural variables and functions
+        self.initialised = True
+        self.neuron = None
+        self.func = None
+        self.func_inv = None
+        if not hasattr(self, "formula_number"):
+            self.formula_number = None
+        if not hasattr(self, "operands_by_number"):
+            self.operands_by_number = list()
+        self.congruent_nodes = list()
+
+        # debugging
+        self.logger = _utils.get_logger()
+
         # construct edge and operand list for each formula
         self.edge_list = list()
         self.operands: List[Formula] = list()
@@ -52,28 +76,31 @@ class Formula(ABC):
         # inherit propositional, variables, and graphs
         self.propositional: bool = kwds.get("propositional")
         self.variables: Tuple[Variable, ...] = kwds.get("variables")
-        self._inherit_from_subformulae(*formulae)
+        if not _isinstance(self, "_LeafFormula"):
+            self._inherit_from_subformulae(*formulae)
 
         # formula naming
-        if _isinstance(self, "_LeafFormula"):
-            self.structure: str = name
-            self.name: str = name
-        else:
-            self.structure: str = self._formula_structure(True)
-            self.name: str = (
-                name if name else self._formula_structure(True, lambda x: x.name)
-            )
+        self.name = name if name else ""
+        if syntax:
+            self.syntax = syntax
+            if not name:
+                self.name = syntax
+        if not self.name or not syntax:
+            self.syntax = self._formula_syntax()
+            self.name = name if name else self._formula_syntax(lambda x: x.name)
 
         # formula grounding table maps grounded objects to table rows
         self.grounding_table = None if self.propositional else dict()
 
-        # placeholder for neural variables and functions
-        self.neuron = None
-        self.func = None
-        self.func_inv = None
-        self.formula_number = None
-        self.operands_by_number = list()
-        self.congruent_nodes = list()
+    def _add_to_model(self):
+        r"""Inherits model from operands and insert the formula into the model."""
+        if not hasattr(self, "model"):
+            self.model = self.operands[0].model
+        if self not in self.model:
+            self.model.add_knowledge(self)
+            return self
+        else:
+            return self.model[self]
 
     ##
     # External function definitions
@@ -314,10 +341,8 @@ class Formula(ABC):
             return True
         result = list()
         for f in self.congruent_nodes:
-            if _isinstance(f, "Congruent"):
-                result += [
-                    other.structure == operand.structure for operand in f.operands
-                ]
+            if _isinstance(f, "Equal"):
+                result += [other.syntax == operand.syntax for operand in f.operands]
         return any(result)
 
     def is_unweighted(self) -> bool:
@@ -353,7 +378,7 @@ class Formula(ABC):
         recurse(self)
         if store:
             if edge_replace:
-                logging.info(f"ABSORBED NEGATIONS INTO WEIGHTS FOR: '{self.name}'")
+                self.logger.info(f"ABSORBED NEGATIONS INTO WEIGHTS FOR: '{self.name}'")
             return edge_replace, n_negations
         else:
             return operands, edge_replace, n_negations
@@ -383,6 +408,7 @@ class Formula(ABC):
         self,
         header_len: int = 50,
         roundoff: int = 5,
+        state: bool = False,
         params: bool = False,
         grads: bool = False,
         numbering: bool = False,
@@ -443,17 +469,20 @@ class Formula(ABC):
         else:
             params = ""
         number = (
-            f"{self.formula_number} {self.operands_by_number}: "
-            if self.formula_number is not None and numbering
+            f"{self.formula_number}"
+            f"{' ' + str(self.operands_by_number) if self.operands_by_number else ''}: "
+            if numbering and self.formula_number is not None
             else ""
         )
 
         # print propositional node - single bounds
+        J = self.neuron.J if hasattr(self.neuron, "J") else ""
         if self.propositional:
             states = (
                 f"{header:<{header_len}} "
-                f"{self.state().name:>13} "
-                f"{round_bounds()}\n"
+                f"{self.state().name if state else '':>14} "
+                f"{round_bounds()}"
+                f"{f'  J: {J}' if J and str(self.neuron) == 'J()' else ''}\n"
                 f"{params}"
             )
             print(f"{number}{states}")
@@ -467,7 +496,7 @@ class Formula(ABC):
                     [
                         (
                             f"{state_wrapper(g):{header_len}} "
-                            f"{self.state(g).name:>13} "
+                            f"{self.state(g).name if state else '':>14} "
                             f"{round_bounds(g)}\n"
                         )
                         for g in self.grounding_table
@@ -702,13 +731,11 @@ class Formula(ABC):
         return self.name
 
     def __eq__(self, other):
-        eq_condition = (self.structure == other.structure) and (
-            self.neuron == other.neuron
-        )
+        eq_condition = (self.syntax == other.syntax) and (self.neuron == other.neuron)
         return eq_condition
 
     def __hash__(self):
-        return hash(self.structure)
+        return hash(self.syntax)
 
     def _add_groundings(self, *groundings: tuple[str]):
         r"""Adds missing groundings to `grounding_table` for those not yet stored.
@@ -741,10 +768,10 @@ class Formula(ABC):
             {g: table_rows[i] for i, g in enumerate(missing_groundings)}
         )
 
-    def _formula_structure(self, as_int, get_str=lambda x: x.structure) -> str:
+    def _formula_syntax(self, get_str=lambda x: x.syntax, as_str: bool = True) -> str:
         r"""Determine a name for input formula(e)."""
 
-        def subformula_structure(
+        def subformula_syntax(
             subformula: Formula,
             operator: str = None,
             subformula_vars: Tuple = None,
@@ -782,7 +809,7 @@ class Formula(ABC):
                     + _utils.list_to_str(
                         [
                             root_var_remap[v]
-                            if not as_int
+                            if as_str
                             else subformula.unique_var_map[root_var_remap[v]]
                             if _isinstance(subformula, "_Quantifier")
                             else self.unique_var_map[root_var_remap[v]]
@@ -801,19 +828,19 @@ class Formula(ABC):
                 if _isinstance(f, "Predicate")
                 else f"{f.name}"
                 if _isinstance(f, "Proposition")
-                else f"{f.structure}"
+                else f"{f.syntax}"
                 if _isinstance(f, "_Quantifier")
                 else (
                     "("
-                    + subformula_structure(
-                        f, f.connective_str, subformula.var_remap[i], root_var_remap
+                    + subformula_syntax(
+                        f, f.symbol, subformula.var_remap[i], root_var_remap
                     )
                     + ")"
                 )
                 if _isinstance(f, "_ConnectiveNeuron")
                 else (
-                    f"{f.connective_str}"
-                    + subformula_structure(
+                    f"{f.symbol}"
+                    + subformula_syntax(
                         f, None, subformula.var_remap[i], root_var_remap
                     )
                 )
@@ -827,25 +854,18 @@ class Formula(ABC):
             quantified_idxs = _utils.list_to_str(
                 [self.unique_var_map[v] for v in self.variables], ","
             )
-            return (
-                f"({self.connective_str}{quantified_idxs}, "
-                f"{subformula_structure(self)})"
-            )
+            return f"({self.symbol}{quantified_idxs}, " f"{subformula_syntax(self)})"
 
         elif _isinstance(self, "Not"):
             return (
-                f"{self.connective_str}{get_str(self.operands[0])}"
+                f"{self.symbol}{get_str(self.operands[0])}"
                 if self.propositional
-                else f"{self.connective_str}{subformula_structure(self)}"
+                else f"{self.symbol}{subformula_syntax(self)}"
             )
         return (
-            (
-                "("
-                + f" {self.connective_str} ".join([get_str(f) for f in self.operands])
-                + ")"
-            )
+            ("(" + f" {self.symbol} ".join([get_str(f) for f in self.operands]) + ")")
             if self.propositional
-            else f"({subformula_structure(self, self.connective_str)})"
+            else f"({subformula_syntax(self, self.symbol)})"
         )
 
     @staticmethod

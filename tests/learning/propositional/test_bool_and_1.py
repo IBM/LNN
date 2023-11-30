@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: Apache-2.0
 ##
 
-from lnn import Model, And, Proposition, World, Fact, Direction, Loss
+from lnn import Model, And, Propositions, World, Fact, Direction, Loss
 
 import random
 
@@ -23,10 +23,8 @@ def test_1():
     model = Model()
 
     # rules
-    A = Proposition("A")
-    B = Proposition("B")
+    A, B = Propositions("A", "B", model=model)
     AB = And(A, B, world=World.AXIOM)
-    model.add_knowledge(AB)
 
     # facts
     model.add_data({A: TRUE, B: FALSE})
@@ -50,10 +48,8 @@ def test_2():
     training in both directions
     """
     model = Model()
-    A = Proposition("A")
-    B = Proposition("B")
+    A, B = Propositions("A", "B", model=model)
     AB = And(A, B, world=World.AXIOM)
-    model.add_knowledge(AB)
     model.add_data({A: TRUE, B: FALSE})
     model.train(losses={Loss.CONTRADICTION: 1})
 
@@ -72,11 +68,8 @@ def test_3():
     training in both directions
     """
     model = Model()
-    A = Proposition("A")
-    B = Proposition("B")
-    C = Proposition("C")
+    A, B, C = Propositions("A", "B", "C", model=model)
     ABC = And(A, B, C, world=World.AXIOM)
-    model.add_knowledge(ABC)
     model.add_data({A: TRUE, B: FALSE, C: TRUE})
     model.train(losses={Loss.CONTRADICTION: 1})
 
@@ -94,10 +87,10 @@ def test_multiple():
     given And(n inputs) - reduce the weight on r random
     training in both directions
     """
+    model = Model()
     inputs = (10, 100, 1000)
     for n in inputs:
         r = n - 1
-        model = Model()
         activation = {"alpha": 1 - 1e-5}
         prop = [f"P{i}" for i in range(n)]
         truths = [TRUE] * n
@@ -110,10 +103,9 @@ def test_multiple():
         for idx, p in tqdm(
             enumerate(prop), desc="populating graph", total=n, disable=True
         ):
-            props.append(Proposition(f"{p}", activation=activation))
+            props.append(Propositions(f"{p}", activation=activation, model=model))
             props[-1].add_data(truths[idx])
         _and = And(*props, world=World.AXIOM, activation=activation)
-        model.add_knowledge(_and)
         model.train(losses=[Loss.CONTRADICTION], learning_rate=1e-1)
         model.print(params=True)
 
@@ -142,10 +134,9 @@ def test_bias():
     prop = [f"P{i}" for i in range(n)]
     props = []
     for p in prop:
-        props.append(Proposition(f"{p}"))
+        props.append(Propositions(f"{p}", model=model))
         props[-1].add_data(TRUE)
     _and = And(*props, world=World.FALSE, activation={"bias_learning": True})
-    model.add_knowledge(_and)
     model.train(losses=[Loss.CONTRADICTION])
     assert _and.neuron.bias <= 1e-5, f"expected bias <= 0, received {_and.neuron.bias}"
 
@@ -160,10 +151,9 @@ def test_all():
     prop = [f"P{i}" for i in range(n)]
     props = []
     for p in prop:
-        props.append(Proposition(f"{p}"))
+        props.append(Propositions(f"{p}", model=model))
         props[-1].add_data(FALSE)
     _and = And(*props, world=World.AXIOM)
-    model.add_knowledge(_and)
     model.train(losses={Loss.CONTRADICTION: 1})
     bounds = _and.state()
     assert bounds is TRUE, f"expected bounds to remain True, received {bounds}"
