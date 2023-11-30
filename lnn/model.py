@@ -24,7 +24,7 @@ from tqdm import tqdm
 from torch import nn
 import matplotlib.pyplot as plt
 
-_utils.logger_setup(flush=True)
+_utils.get_logger(flush=True)
 
 
 class Model(nn.Module):
@@ -117,7 +117,8 @@ class Model(nn.Module):
                 self.add_knowledge(knowledge)
         if data:
             self.add_data(data)
-        logging.info(f" {name} {datetime.datetime.now()} ".join(["*" * 22] * 2))
+        self.logger = _utils.get_logger(flush=True)
+        self.logger.info(f" {name} {datetime.datetime.now()} ".join(["*" * 22] * 2))
 
     def __getitem__(
         self, formula: Union[Formula, int]
@@ -438,7 +439,7 @@ class Model(nn.Module):
             val = getattr(node, func)(**kwds) if hasattr(node, func) else None
             coalesce = coalesce + val if val is not None else coalesce
         if coalesce and func in [d.value.lower() for d in Direction]:
-            logging.info(f"{direction.value} INFERENCE RESULT:{coalesce}")
+            self.logger.info(f"{direction.value} INFERENCE RESULT:{coalesce}")
         return coalesce
 
     def infer(
@@ -488,14 +489,14 @@ class Model(nn.Module):
 
         while not converged:
             if self.query and self.query.is_classically_resolved and not self._converge:
-                logging.info("=" * 22)
-                logging.info(
+                self.logger.info("=" * 22)
+                self.logger.info(
                     f"QUERY PROVED AS {self.query.world_state(True)} for "
                     f"'{self.query.name}'"
                 )
                 break
-            logging.info("-" * 22)
-            logging.info(f"REASONING STEP:{steps}")
+            self.logger.info("-" * 22)
+            self.logger.info(f"REASONING STEP:{steps}")
             bounds_diff = 0.0
             for d in direction:
                 bounds_diff += self._traverse_execute(
@@ -508,17 +509,17 @@ class Model(nn.Module):
             )
             if converged_bounds:
                 converged = True
-                logging.info("NO UPDATES AVAILABLE, TRYING A NEW AXIOM")
+                self.logger.info("NO UPDATES AVAILABLE, TRYING A NEW AXIOM")
             facts_inferred += bounds_diff
             steps += 1
             if max_steps and steps >= max_steps:
                 break
-        logging.info("=" * 22)
-        logging.info(
+        self.logger.info("=" * 22)
+        self.logger.info(
             f"INFERENCE CONVERGED WITH {facts_inferred} BOUNDS "
             f"UPDATES IN {steps} REASONING STEPS "
         )
-        logging.info("*" * 78)
+        self.logger.info("*" * 78)
         return steps, facts_inferred
 
     def upward(self, **kwds):
@@ -613,7 +614,7 @@ class Model(nn.Module):
         ):
             optimizer.zero_grad()
             if epoch > 0:
-                logging.info(" PARAMETER STEP ".join(["#" * 31] * 2))
+                self.logger.info(" PARAMETER STEP ".join(["#" * 31] * 2))
                 self.reset_bounds()
             self.increment_param_history(kwds.get("parameter_history"))
             _, facts_inferred = self.infer(**kwds)
@@ -622,7 +623,7 @@ class Model(nn.Module):
             if not loss.grad_fn:
                 break
             if loss and len(loss_fn) > 1:
-                logging.info(f"TOTAL LOSS: {loss}")
+                self.logger.info(f"TOTAL LOSS: {loss}")
             loss.backward()
             optimizer.step()
             self._project_params()
@@ -698,7 +699,7 @@ class Model(nn.Module):
                     self._traverse_execute(f"_{loss.value.lower()}_loss", **kwds)
                 )
             if result[-1]:
-                logging.info(f"{loss.value.upper()} LOSS {result[-1]}")
+                self.logger.info(f"{loss.value.upper()} LOSS {result[-1]}")
         return result
 
     def print(

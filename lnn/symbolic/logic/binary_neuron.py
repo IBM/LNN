@@ -13,7 +13,7 @@ from .formula import Formula
 from ... import _utils
 from ...constants import Direction, NeuralActivation
 
-_utils.logger_setup()
+_utils.get_logger()
 
 
 class _BinaryNeuron(_ConnectiveNeuron):

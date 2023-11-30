@@ -16,7 +16,7 @@ from .connective_neuron import _ConnectiveNeuron
 from ... import _utils
 from ...constants import Direction, NeuralActivation
 
-_utils.logger_setup()
+_utils.get_logger()
 
 
 class _NAryNeuron(_ConnectiveNeuron):

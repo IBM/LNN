@@ -153,12 +153,14 @@ def average_time(multi_checkpoint: List[List[Tuple]]):
             result[name] += point
 
 
-def logger_setup(flush=False):
-    for level in ["INFO"]:
-        filename = f"LNN_{level}.log"
-        if flush:
-            with open(filename, "w"):
-                pass
-        logging.basicConfig(
-            filename=filename, encoding="utf-8", level=eval(f"logging.{level}")
-        )
+def get_logger(flush: bool = False):
+    ref = importlib.resources.files("lnn").joinpath("../config.yaml")
+    config = yaml.safe_load(ref.read_text())
+    logging.config.dictConfig(config)
+    logger = logging.getLogger(
+        "".join(config["handlers"]["file"]["filename"].split(".")[:-1])
+    )
+    if flush:
+        with open(logger.handlers[0].baseFilename, "w"):
+            pass
+    return logger

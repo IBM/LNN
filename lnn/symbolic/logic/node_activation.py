@@ -10,7 +10,7 @@ import importlib
 
 from ... import _utils
 
-_utils.logger_setup()
+_utils.get_logger()
 
 
 class _NodeActivation:

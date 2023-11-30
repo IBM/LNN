@@ -17,7 +17,7 @@ from .. import _gm
 from ... import _utils
 from ...constants import Direction
 
-_utils.logger_setup()
+_utils.get_logger()
 subclasses = {}
 
 
@@ -79,14 +79,14 @@ class _ConnectiveNeuron(_ConnectiveFormula):
         )
         result = self.neuron.aggregate_bounds(grounding_rows, self.func(input_bounds))
         if result:
-            logging.info(
+            self.logger.info(
                 "↑ BOUNDS UPDATED "
                 f"TIGHTENED:{result} "
                 f"FOR:'{self.name}' "
                 f"FORMULA:{self.formula_number} "
             )
         if self.is_contradiction():
-            logging.info(
+            self.logger.info(
                 "↑ CONTRADICTION "
                 f"FOR:'{self.name}' "
                 f"FORMULA:{self.formula_number} "
@@ -148,7 +148,7 @@ class _ConnectiveNeuron(_ConnectiveFormula):
                 op_grounding_rows, new_bounds[..., op_index], duplicates=duplicates
             )
             if op_aggregate:
-                logging.info(
+                self.logger.info(
                     "↓ BOUNDS UPDATED "
                     f"TIGHTENED:{op_aggregate} "
                     f"FOR:'{op.name}' "
@@ -157,7 +157,7 @@ class _ConnectiveNeuron(_ConnectiveFormula):
                     f"PARENT:{self.formula_number} "
                 )
             if op.is_contradiction():
-                logging.info(
+                self.logger.info(
                     "↓ CONTRADICTION "
                     f"FOR:'{op.name}' "
                     f"FROM:'{self.name}' "

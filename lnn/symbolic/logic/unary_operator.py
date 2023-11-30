@@ -22,7 +22,7 @@ from ... import _utils
 from ...constants import Fact, Direction, Bound
 from torch.nn.parameter import Parameter
 
-_utils.logger_setup()
+_utils.get_logger()
 
 
 class _UnaryOperator(_ConnectiveFormula):
@@ -388,7 +388,7 @@ class Not(_UnaryOperator):
             None, _utils.negate_bounds(self.operands[0].get_data(*groundings))
         )
         if self.is_contradiction():
-            logging.info(
+            self.logger.info(
                 "↑ CONTRADICTION "
                 f"FOR:'{self.name}' "
                 f"FORMULA:{self.formula_number} "
@@ -419,7 +419,7 @@ class Not(_UnaryOperator):
             None, _utils.negate_bounds(self.get_data(*groundings))
         )
         if self.operands[0].is_contradiction():
-            logging.info(
+            self.logger.info(
                 "↓ CONTRADICTION "
                 f"FOR:'{self.operands[0].name}' "
                 f"FROM:'{self.name}' "

@@ -22,7 +22,7 @@ import copy
 import torch
 import numpy as np
 
-_utils.logger_setup()
+_utils.get_logger()
 subclasses: typing.Dict[str, object] = {}
 
 
@@ -353,7 +353,7 @@ class Formula(ABC):
         recurse(self)
         if store:
             if edge_replace:
-                logging.info(f"ABSORBED NEGATIONS INTO WEIGHTS FOR: '{self.name}'")
+                self.logger.info(f"ABSORBED NEGATIONS INTO WEIGHTS FOR: '{self.name}'")
             return edge_replace, n_negations
         else:
             return operands, edge_replace, n_negations

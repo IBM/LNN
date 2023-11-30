@@ -10,7 +10,7 @@ from typing import Optional, Union, Tuple
 
 from ... import _utils, utils
 
-_utils.logger_setup()
+_utils.get_logger()
 
 
 class Variable:

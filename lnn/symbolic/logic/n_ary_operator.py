@@ -18,7 +18,7 @@ from .. import _gm
 from ... import _utils
 from ...constants import Fact
 
-_utils.logger_setup()
+_utils.get_logger()
 
 
 class _NAryOperator(_ConnectiveFormula):
@@ -90,7 +90,7 @@ class Equal(_NAryOperator):
         )
         result = self.neuron.aggregate_bounds(grounding_rows, input_bounds)
         if result:
-            logging.info(
+            self.logger.info(
                 "↑ BOUNDS UPDATED "
                 f"TIGHTENED:{result} "
                 f"FOR:'{self.name}' "
@@ -146,7 +146,7 @@ class Equal(_NAryOperator):
                         op_grounding_rows[g_i] = op.grounding_table.get(op_g)
             op_aggregate = op.neuron.aggregate_bounds(op_grounding_rows, parent)
             if op_aggregate:
-                logging.info(
+                self.logger.info(
                     "↓ BOUNDS UPDATED "
                     f"TIGHTENED:{op_aggregate} "
                     f"FOR:'{op.name}' "
@@ -192,7 +192,7 @@ class Equal(_NAryOperator):
         )
         result = self.neuron.aggregate_bounds(grounding_rows, input_bounds)
         if result:
-            logging.info(
+            self.logger.info(
                 "↑ BOUNDS UPDATED "
                 f"TIGHTENED:{result} "
                 f"FOR:'{self.name}' "
