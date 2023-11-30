@@ -314,10 +314,8 @@ class Formula(ABC):
             return True
         result = list()
         for f in self.congruent_nodes:
-            if _isinstance(f, "Congruent"):
-                result += [
-                    other.structure == operand.structure for operand in f.operands
-                ]
+            if _isinstance(f, "Equal"):
+                result += [other.syntax == operand.syntax for operand in f.operands]
         return any(result)
 
     def is_unweighted(self) -> bool:

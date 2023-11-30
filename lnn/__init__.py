@@ -17,7 +17,7 @@ from .utils import (
 from . import symbolic
 from .symbolic.logic import (
     And,
-    Congruent,
+    Equal,
     Iff,
     Exists,
     Forall,
@@ -32,7 +32,7 @@ from .symbolic.logic import (
     Predicates,
     Variable,
     Variables,
-    XOr,
+    Xor,
 )
 from .model import Model
 from .constants import Fact, World, Direction, Loss
@@ -47,7 +47,7 @@ __all__ = [
     "truth_table",
     "truth_table_dict",
     "And",
-    "Congruent",
+    "Equal",
     "Direction",
     "Iff",
     "Exists",
@@ -67,5 +67,5 @@ __all__ = [
     "Fact",
     "World",
     "Loss",
-    "XOr",
+    "Xor",
 ]
