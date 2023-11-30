@@ -60,7 +60,7 @@ class And(_NAryNeuron):
 
     def __init__(self, *formula: Formula, **kwds):
         kwds.setdefault("activation", {})
-        self.connective_str = "∧"
+        self.symbol = "∧"
         super().__init__(*formula, **kwds)
 
 
@@ -98,7 +98,7 @@ class Or(_NAryNeuron):
 
     def __init__(self, *formula, **kwds):
         kwds.setdefault("activation", {})
-        self.connective_str = "∨"
+        self.symbol = "∨"
         super().__init__(*formula, **kwds)
 
 
@@ -140,7 +140,7 @@ class Xor(_NAryNeuron):
     """
 
     def __init__(self, *formula, **kwds):
-        self.connective_str = "∧"
+        self.symbol = "∧"
         kwds.setdefault("activation", {})
         conjunction_activation = copy.copy(kwds["activation"])
         conjunction_activation.setdefault("bias_learning", False)

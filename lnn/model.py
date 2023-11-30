@@ -105,7 +105,7 @@ class Model(nn.Module):
         self.graph = nx.DiGraph()
         self.nodes = dict()
         self.node_names = dict()
-        self.node_structures = dict()
+        self.node_syntax = dict()
         self.num_formulae = 0
         self.name = name
         self.query = None
@@ -120,33 +120,27 @@ class Model(nn.Module):
         self.logger = _utils.get_logger(flush=True)
         self.logger.info(f" {name} {datetime.datetime.now()} ".join(["*" * 22] * 2))
 
-    def __getitem__(
-        self, formula: Union[Formula, int]
-    ) -> Union[Formula, List[Formula]]:
+    def __getitem__(self, key: Union[Formula, int]) -> Union[Formula, List[Formula]]:
         r"""Returns a formula object from the model.
 
         If the formula is in the model, return the formula
             - for backward compatibility
-        if multiple formula exists in the model with the same structure,
+        if multiple formula exists in the model with the same syntax,
             return a list of all the relevant nodes
 
         """
-        if isinstance(formula, int):
-            return self.nodes[formula]
-        if formula.formula_number is not None and formula.formula_number in self.nodes:
-            return self.nodes[formula.formula_number]
-        if formula.structure in self.node_structures:
-            result = self.node_structures[formula.structure]
-            return (
-                result
-                if len(self.node_structures[formula.structure]) > 1
-                else result[0]
-            )
+        if isinstance(key, int):
+            return self.nodes[key]
+        if key.formula_number is not None and key.formula_number in self.nodes:
+            return self.nodes[key.formula_number]
+        if key.syntax in self.node_syntax:
+            return self.node_syntax[key.syntax]
 
     def __contains__(self, formula: Formula):
-        if formula.formula_number and formula.formula_number in self.nodes:
-            return True
-        return formula.structure in self.node_structures
+        if hasattr(formula, "formula_number"):
+            if formula.formula_number and formula.formula_number in self.nodes:
+                return True
+        return formula.syntax in self.node_syntax
 
     def set_query(self, formula: Formula, world=World.OPEN, converge=False):
         r"""Inserts a query node into the model and maintains a handle on the node.
@@ -267,18 +261,9 @@ class Model(nn.Module):
             self.graph.add_node(f)
             self.graph.add_edges_from(f.edge_list)
             self.num_formulae = f.set_formula_number(self.num_formulae) + 1
-        for node in self.graph.nodes:
-            if node.structure in self.node_structures:
-                if node not in self.node_structures[node.structure]:
-                    self.node_structures[node.structure].append(node)
-            else:
-                self.node_structures.update({node.structure: [node]})
-            if node.name in self.node_names:
-                if node not in self.node_names[node.name]:
-                    self.node_names[node.name].append(node)
-            else:
-                self.node_names.update({node.name: [node]})
-            self.nodes[node.formula_number] = node
+            self.node_syntax.update({f.syntax: f})
+            self.node_names.update({f.name: f})
+            self.nodes[f.formula_number] = f
 
         if world:
             for f in formulae:
@@ -746,8 +731,8 @@ class Model(nn.Module):
                 [
                     (node, node.formula_number)
                     if formula_number
-                    else (node, node.connective_str)
-                    if hasattr(node, "connective_str")
+                    else (node, node.symbol)
+                    if hasattr(node, "symbol")
                     else (node, node.name)
                     for node in self.graph
                 ]

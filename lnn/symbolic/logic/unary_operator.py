@@ -363,7 +363,7 @@ class Not(_UnaryOperator):
     """
 
     def __init__(self, formula: Formula, **kwds):
-        self.connective_str = "¬"
+        self.symbol = "¬"
         super().__init__(formula, **kwds)
         kwds.setdefault("propositional", self.propositional)
         self.neuron = _NodeActivation()(**kwds.get("activation", {}), **kwds)
@@ -475,7 +475,7 @@ class Exists(_Quantifier):
         if len(variables) > 1:
             args = [a, Exists(*variables[1:], formula, **kwds)]
 
-        self.connective_str = "∃"
+        self.symbol = "∃"
         super().__init__(*args, **kwds)
 
 
@@ -523,5 +523,5 @@ class Forall(_Quantifier):
             formula = args[-1]
             args = [a, Forall(*variables[1:], formula, **kwds)]
 
-        self.connective_str = "∀"
+        self.symbol = "∀"
         super().__init__(*args, **kwds)

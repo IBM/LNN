@@ -6,15 +6,13 @@
 
 # flake8: noqa: E501
 
-from typing import Union
+from typing import Union, TypeVar
 
 from .formula import Formula
 from .node_activation import _NodeActivation
 from .variable import Variable
-from ... import _utils, utils
+from ... import utils
 from ...constants import Fact
-
-_utils.logger_setup()
 
 
 class _LeafFormula(Formula):
@@ -25,10 +23,14 @@ class _LeafFormula(Formula):
 
     """
 
-    def __init__(self, *args, **kwds):
-        super().__init__(*args, **kwds)
+    def __init__(self, name, **kwds):
+        self.model = kwds.get("model")
+        super().__init__(name, syntax=name, **kwds)
         kwds.setdefault("propositional", self.propositional)
-        self.neuron = _NodeActivation()(**kwds.get("activation", {}), **kwds)
+        self.neuron = _NodeActivation()(**kwds)
+
+
+Model = TypeVar("lnn.Model")
 
 
 class Predicate(_LeafFormula):
@@ -40,23 +42,28 @@ class Predicate(_LeafFormula):
     Parameters
     ----------
     name : str
-        name of the predicate
+        Name of the predicate.
+    model : lnn.Model
+        Model that the predicate is inserted into.
     arity : int, optional
-        If unspecified, assumes a unary predicate
+        If unspecified, assumes a unary predicate.
 
     Examples
     --------
     ```python
-    P1 = Predicate('P1')
-    P2 = Predicate('P2', arity=2)
+    model = Model()
+    P1 = Predicate('P1', model)
+    P2 = Predicate('P2', model, arity=2)
     ```
 
     """
 
-    def __init__(self, name: str, arity: int = 1, **kwds):
+    def __init__(self, name: str, model: Model, arity: int = 1, **kwds):
         if arity is None:
             raise Exception(f"arity expected as int > 0, received {arity}")
-        super().__init__(name=name, arity=arity, propositional=False, **kwds)
+        super().__init__(
+            name=name, model=model, arity=arity, propositional=False, **kwds
+        )
         self._update_variables(tuple(Variable(f"?{i}") for i in range(self.arity)))
 
     def add_data(self, facts: Union[dict, set]):
@@ -92,17 +99,19 @@ class Predicate(_LeafFormula):
         return super().__call__(*args, **kwds)
 
 
-def Predicates(*predicates: str, **kwds):
-    r"""Instantiates multiple predicates.
+def Predicates(*predicates: str, model: Model, arity=1, **kwds):
+    r"""Instantiates multiple predicates and adds it to the model.
 
     Examples
     --------
     ```python
-    P1, P2 = Predicates("P1", "P2", arity=2)
+    P1, P2 = Predicates("P1", "P2", model=model, arity=2)
     ```
 
     """
-    return utils.return1([Predicate(p, **kwds) for p in predicates])
+    return utils.return1(
+        [Predicate(p, model=model, arity=arity, **kwds) for p in predicates]
+    )
 
 
 class Proposition(_LeafFormula):
@@ -113,18 +122,21 @@ class Proposition(_LeafFormula):
     Parameters
     ----------
     name : str
-        name of the proposition
+        name of the proposition.
+    model : lnn.Model
+        Model that the proposition is inserted into.
 
     Examples
     --------
     ```python
-    P = Proposition('Person')
+    model = Model()
+    P = Proposition('Person', model)
     ```
 
     """
 
-    def __init__(self, name: str, **kwds):
-        super().__init__(name=name, arity=1, propositional=True, **kwds)
+    def __init__(self, name: str, model: Model, **kwds):
+        super().__init__(name=name, model=model, arity=1, propositional=True, **kwds)
 
     def add_data(self, fact: Union[Fact, bool]):
         """Populate proposition with facts
@@ -143,7 +155,8 @@ def Propositions(*propositions: str, **kwds):
     Examples
     --------
     ```python
-    P1, P2 = Propositions("P1", "P2")
+    model = Model()
+    P1, P2 = Propositions("P1", "P2", model=model)
     ```
 
     """

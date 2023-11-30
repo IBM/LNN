@@ -37,7 +37,7 @@ class Equal(_NAryOperator):
     """
 
     def __init__(self, *formulae: Formula, **kwds):
-        self.connective_str = "≅"
+        self.symbol = "="
         super().__init__(*formulae, **kwds)
         kwds.setdefault("propositional", self.propositional)
         self.neuron = _NodeActivation()(**kwds.get("activation", {}), **kwds)

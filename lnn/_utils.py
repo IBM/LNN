@@ -4,8 +4,11 @@
 # SPDX-License-Identifier: Apache-2.0
 ##
 
-import time
+import importlib.resources
 import logging
+import logging.config
+import time
+import yaml
 from typing import Union, TypeVar, Tuple, List, Iterable
 
 from . import _exceptions
@@ -134,7 +137,7 @@ def unpack_checkpoints():
     result = list()
     for t in range(len(checkpoints) - 1):
         result.append(
-            (f"{checkpoints[t+1][1]}", checkpoints[t + 1][0] - checkpoints[t][0])
+            (f"{checkpoints[t + 1][1]}", checkpoints[t + 1][0] - checkpoints[t][0])
         )
     return result
 
