@@ -1,0 +1,36 @@
+version: 1
+
+formatters:
+  simple:
+    style: "{"
+    format: '{asctime} - {name} - {levelname} - {message}'
+  stamped:
+    style: "{"
+    format: '{asctime} - {levelname} - {message}'
+  clean:
+    style: '{'
+    format: '{message}'
+handlers:
+  console:
+    class: logging.StreamHandler
+    level: INFO
+    formatter: simple
+    stream: ext://sys.stdout
+  file:
+    class: logging.FileHandler
+    formatter: clean
+    filename: 'lnn_info.log'
+
+
+loggers:
+  consoleLogger:
+    level: DEBUG
+    handlers: [console]
+    propagate: no
+  lnn_info:
+    level: INFO
+    handlers: [file]
+    propagate: no
+root:
+  level: DEBUG
+  handlers: [console]

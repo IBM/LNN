@@ -7,3 +7,4 @@ setuptools>=65.5.1
 tabulate
 torch==1.13.1
 tqdm==4.50.2
+pyyaml
