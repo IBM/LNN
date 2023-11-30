@@ -28,7 +28,7 @@ class _NAryOperator(_ConnectiveFormula):
         super().__init__(*formula, arity=len(formula), **kwds)
 
 
-class Congruent(_NAryOperator):
+class Equal(_NAryOperator):
     r"""Symbolic Congruency
 
     This is used to define nodes that are symbolically equivalent to one another

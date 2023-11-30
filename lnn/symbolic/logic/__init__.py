@@ -3,8 +3,8 @@ from .connective_formula import _ConnectiveFormula
 from .connective_neuron import _ConnectiveNeuron
 from .formula import Formula
 from .leaf_formula import _LeafFormula, Predicate, Predicates, Proposition, Propositions
-from .n_ary_neuron import And, Or, XOr
-from .n_ary_operator import Congruent
+from .n_ary_neuron import And, Or, Xor
+from .n_ary_operator import Equal
 from .neural_activation import NeuralActivation
 from .unary_operator import _Quantifier, Exists, Forall, Not
 from .variable import Variable, Variables
@@ -22,7 +22,7 @@ _formula.subclasses = {
     "_Quantifier": _Quantifier,
     "_LeafFormula": _LeafFormula,
     "And": And,
-    "Congruent": Congruent,
+    "Equal": Equal,
     "Iff": Iff,
     "Exists": Exists,
     "Forall": Forall,
@@ -31,7 +31,7 @@ _formula.subclasses = {
     "Or": Or,
     "Predicate": Predicate,
     "Proposition": Proposition,
-    "XOr": XOr,
+    "Xor": Xor,
 }
 
 _connective_neuron.subclasses = {
@@ -39,7 +39,7 @@ _connective_neuron.subclasses = {
     "Iff": Iff,
     "Implies": Implies,
     "Or": Or,
-    "XOr": XOr,
+    "Xor": Xor,
 }
 
 __all__ = [
@@ -47,7 +47,7 @@ __all__ = [
     "_ConnectiveNeuron",
     "_Quantifier",
     "And",
-    "Congruent",
+    "Equal",
     "Iff",
     "Exists",
     "Forall",
@@ -62,5 +62,5 @@ __all__ = [
     "Predicates",
     "Variable",
     "Variables",
-    "XOr",
+    "Xor",
 ]

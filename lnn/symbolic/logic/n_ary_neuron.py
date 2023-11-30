@@ -127,14 +127,14 @@ class Xor(_NAryNeuron):
     ```python
     # Propositional
     A, B, C = Propositions('A', 'B', 'C')
-    XOr(A, B, C)
+    Xor(A, B, C)
     ```
     ```python
     # First-order logic
     x, y = Variables('x', 'y')
     A, C = Predicates('A', 'C')
     B = Predicate('B', arity=2)
-    XOr(A(x), B(x, y), C(y)))
+    Xor(A(x), B(x, y), C(y)))
     ```
 
     """
