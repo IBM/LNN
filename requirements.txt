@@ -6,4 +6,4 @@ pandas>=1.3.4
 setuptools>=65.5.1
 tabulate
 torch==2.7.1
-tqdm==4.50.2
+tqdm==4.66.3
