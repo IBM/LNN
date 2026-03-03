@@ -132,7 +132,8 @@ The API follows a hierarchy of interacting components, allowing designers to con
 3. Tables of Data <a name="data"></a>
    ```python
    from lnn import Fact
-   
+   # NOTE: Using .name returns a string, but add_data() expects a Formula object.
+   # This causes: TypeError: formula expected of type Formula, received str
    # add data to the model
    model.add_data({
        Friends: {
@@ -143,12 +144,12 @@ The API follows a hierarchy of interacting components, allowing designers to con
            ('Anna', 'Frank'): Fact.TRUE,
            ('Frank', 'Anna'): Fact.TRUE,
            ('Bob', 'Chris'): Fact.TRUE},
-       Smokes.name: {
+       Smokes: {
            'Anna': Fact.TRUE,
            'Edward': Fact.TRUE,
            'Frank': Fact.TRUE,
            'Gary': Fact.TRUE},
-       Cancer.name: {
+       Cancer: {
            'Anna': Fact.TRUE,
            'Edward': Fact.TRUE}
        })
