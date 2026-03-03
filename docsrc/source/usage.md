@@ -93,7 +93,7 @@ The API follows a hierarchy of interacting components, allowing designers to con
             from lnn import World
 
             formulae = [
-                Smoking_causes_Cancer
+                Smoking_causes_Cancer,
                 Smokers_befriend_Smokers
             ]
             model.add_knowledge(*formulae, world=World.AXIOM)
