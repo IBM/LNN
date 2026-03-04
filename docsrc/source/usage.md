@@ -93,7 +93,7 @@ The API follows a hierarchy of interacting components, allowing designers to con
             from lnn import World
 
             formulae = [
-                Smoking_causes_Cancer
+                Smoking_causes_Cancer,
                 Smokers_befriend_Smokers
             ]
             model.add_knowledge(*formulae, world=World.AXIOM)
@@ -143,12 +143,12 @@ The API follows a hierarchy of interacting components, allowing designers to con
            ('Anna', 'Frank'): Fact.TRUE,
            ('Frank', 'Anna'): Fact.TRUE,
            ('Bob', 'Chris'): Fact.TRUE},
-       Smokes.name: {
+       Smokes: {
            'Anna': Fact.TRUE,
            'Edward': Fact.TRUE,
            'Frank': Fact.TRUE,
            'Gary': Fact.TRUE},
-       Cancer.name: {
+       Cancer: {
            'Anna': Fact.TRUE,
            'Edward': Fact.TRUE}
        })
@@ -211,7 +211,7 @@ The API follows a hierarchy of interacting components, allowing designers to con
      
        # add supervisory targets
        model.add_labels({
-           'Smokes': {
+            Smokes: {
                'Ivan': Fact.TRUE,
                'Nick': Fact.TRUE}
            })
