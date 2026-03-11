@@ -213,12 +213,46 @@ class _NodeActivation(_NodeParameters):
         return result
 
 
-def tensorise(t: Union[bool, torch.Tensor]) -> torch.Tensor:
-    return (
-        t.clone().detach()
-        if isinstance(t, torch.Tensor)
-        else (torch.tensor(t).detach())
-    )
+def tensorise(t: Union[bool, torch.Tensor, np.ndarray]) -> torch.Tensor:
+    """Convert various types to torch.Tensor with NumPy 2.0 compatibility.
+    
+    Handles:
+    - torch.Tensor: clone and detach
+    - np.ndarray: convert boolean arrays
+    - np.bool_ (NumPy 2.0): convert scalar bool
+    - np.bool (NumPy < 2.0): convert scalar bool  
+    - Python bool: direct conversion
+    
+    Args:
+        t: Input to convert to tensor
+        
+    Returns:
+        torch.Tensor: Detached tensor
+        
+    Note:
+        NumPy 2.0 removed np.bool in favor of np.bool_.
+        This function maintains backward compatibility.
+    """
+    if isinstance(t, torch.Tensor):
+        return t.clone().detach()
+    
+    # Handle numpy boolean arrays
+    if isinstance(t, np.ndarray):
+        # Ensure boolean dtype for compatibility
+        return torch.from_numpy(t.astype(bool)).detach()
+    
+    # Handle NumPy scalar boolean types
+    # NumPy 2.0: np.bool_ (new)
+    # NumPy < 2.0: np.bool (deprecated/removed)
+    if hasattr(np, 'bool_') and isinstance(t, np.bool_):
+        return torch.tensor(bool(t)).detach()
+    
+    # Backward compatibility with NumPy < 2.0
+    if hasattr(np, 'bool') and isinstance(t, np.bool):
+        return torch.tensor(bool(t)).detach()
+    
+    # Handle regular Python bool and other types
+    return torch.tensor(t).detach()
 
 
 def bool_and(*args: bool) -> torch.BoolTensor:
