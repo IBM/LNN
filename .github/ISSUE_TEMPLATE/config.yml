@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 General Questions
+    url: https://github.com/IBM/LNN/discussions
+    about: For general questions, please use GitHub Discussions
+  - name: 📚 Documentation
+    url: https://ibm.github.io/LNN/introduction.html
+    about: Read the full documentation
+  - name: ⚠️ Repository Archived
+    url: https://github.com/IBM/LNN
+    about: This repository is archived. Only security/critical bugs are accepted.

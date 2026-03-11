@@ -1,0 +1,76 @@
+name: 🔒 Security Vulnerability
+description: Report a security vulnerability (reviewed with priority)
+title: "[Security]: "
+labels: ["security"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 🔒 Security Report
+        
+        Thank you for helping keep LNN secure!
+        
+        **This repository is archived but we actively maintain security.**
+        
+        Security reports are reviewed with **HIGH PRIORITY**.
+        
+        ---
+        
+  - type: textarea
+    id: vulnerability
+    attributes:
+      label: Vulnerability Description
+      description: Describe the security vulnerability
+      placeholder: What is the security issue?
+    validations:
+      required: true
+      
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      description: How severe is this vulnerability?
+      options:
+        - Critical
+        - High
+        - Medium
+        - Low
+    validations:
+      required: true
+      
+  - type: textarea
+    id: impact
+    attributes:
+      label: Impact
+      description: What is the potential impact?
+      placeholder: What could an attacker do?
+    validations:
+      required: true
+      
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction Steps
+      description: How to reproduce the vulnerability
+      placeholder: |
+        1. Set up environment
+        2. Run exploit code
+        3. Observe vulnerability
+    validations:
+      required: true
+      
+  - type: textarea
+    id: affected
+    attributes:
+      label: Affected Versions
+      description: Which versions are affected?
+      placeholder: All versions / v1.0+ / etc.
+    validations:
+      required: true
+      
+  - type: textarea
+    id: cve
+    attributes:
+      label: CVE or Advisory
+      description: Is there an existing CVE or security advisory?
+      placeholder: CVE-2024-XXXXX or link to advisory

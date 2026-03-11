@@ -1,0 +1,54 @@
+name: 📝 Documentation Fix
+description: Report a documentation error or typo
+title: "[Docs]: "
+labels: ["documentation"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 📝 Documentation Fix
+        
+        **This repository is archived and in maintenance mode.**
+        
+        We accept documentation corrections and clarifications.
+        
+        ---
+        
+  - type: textarea
+    id: location
+    attributes:
+      label: Documentation Location
+      description: Where is the documentation error?
+      placeholder: |
+        File: README.md
+        Line: 42
+        Section: Installation
+    validations:
+      required: true
+      
+  - type: textarea
+    id: current
+    attributes:
+      label: Current Documentation
+      description: What does the documentation currently say?
+      placeholder: Paste the incorrect text
+    validations:
+      required: true
+      
+  - type: textarea
+    id: correct
+    attributes:
+      label: Suggested Correction
+      description: What should it say instead?
+      placeholder: Paste the corrected text
+    validations:
+      required: true
+      
+  - type: textarea
+    id: why
+    attributes:
+      label: Why This Change
+      description: Explain why this is incorrect
+      placeholder: This is wrong because...
+    validations:
+      required: true
