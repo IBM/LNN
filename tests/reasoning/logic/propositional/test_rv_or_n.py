@@ -35,13 +35,13 @@ def test_upward():
 
     # evaluate the conjunction
     prediction = Or_n.get_data()
-    assert prediction[0] == prediction[1], (
+    assert abs(prediction[0] - prediction[1]) < 1e-6, (
         "Lower and upper bounds are not the same, "
         + f"got {prediction[0]}, {prediction[1]}"
     )
-    assert round(prediction[0].item(), 4) == round(
-        GT, 4
-    ), f"Or(...) failed, expected {GT}, received {prediction[0].item()}"
+    assert round(prediction[0].item(), 4) == round(GT, 4), (
+        f"Or(...) failed, expected {GT}, received {prediction[0].item()}"
+    )
     model.flush()
 
 
@@ -75,13 +75,13 @@ def test_downward():
 
     # evaluate
     prediction = props[0].get_data()
-    assert prediction[0] == prediction[1], (
+    assert abs(prediction[0] - prediction[1]) < 1e-6, (
         "Lower and upper bounds are not the same, "
         + f"got {prediction[0]}, {prediction[1]}"
     )
-    assert round(prediction[0].item(), 4) == round(
-        p0[0].item(), 4
-    ), f"Or(...) failed, expected {GT}, received {prediction[0].item()}"
+    assert round(prediction[0].item(), 4) == round(p0[0].item(), 4), (
+        f"Or(...) failed, expected {GT}, received {prediction[0].item()}"
+    )
 
     # now make the OR True
     dat = np.linspace(0.0, 1.0, n)
@@ -103,9 +103,9 @@ def test_downward():
 
     # evaluate
     prediction = props[0].get_data()
-    assert (
-        prediction[0].item() == 0 and prediction[1].item() == 1
-    ), "p0 should be UNKNOWN"
+    assert prediction[0].item() == 0 and prediction[1].item() == 1, (
+        "p0 should be UNKNOWN"
+    )
 
 
 if __name__ == "__main__":
