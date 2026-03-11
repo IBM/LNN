@@ -1,0 +1,70 @@
+name: Stale Issue and PR Management
+
+on:
+  schedule:
+    # Run daily at 00:00 UTC
+    - cron: '0 0 * * *'
+  workflow_dispatch: # Allow manual trigger
+
+permissions:
+  issues: write
+  pull-requests: write
+
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Mark stale issues and PRs
+        uses: actions/stale@v9
+        with:
+          # Stale issue configuration
+          days-before-issue-stale: 90
+          days-before-issue-close: 14
+          stale-issue-label: 'stale'
+          exempt-issue-labels: 'pinned,security,bug,enhancement'
+          stale-issue-message: |
+            This issue has been automatically marked as stale because it has not had recent activity in the past 90 days.
+            
+            **Note:** This repository is archived and in maintenance mode. We are only accepting:
+            - Security fixes
+            - Critical bug fixes
+            - Documentation corrections
+            
+            If this issue is still relevant, please comment to keep it open. Otherwise, it will be closed in 14 days.
+            
+            Thank you for your contributions to LNN!
+          close-issue-message: |
+            This issue has been automatically closed due to inactivity.
+            
+            If you believe this issue should remain open, please reopen it with updated information or context.
+            
+            As this repository is archived, we are only maintaining security and critical fixes.
+          
+          # Stale PR configuration  
+          days-before-pr-stale: 60
+          days-before-pr-close: 14
+          stale-pr-label: 'stale'
+          exempt-pr-labels: 'pinned,security,work-in-progress'
+          stale-pr-message: |
+            This pull request has been automatically marked as stale because it has not had recent activity in the past 60 days.
+            
+            **Note:** This repository is archived and in maintenance mode. We are only accepting:
+            - Security fixes
+            - Critical bug fixes
+            - Documentation corrections
+            
+            Please update this PR if it addresses one of the above categories. Otherwise, it will be closed in 14 days.
+            
+            Thank you for your contribution!
+          close-pr-message: |
+            This pull request has been automatically closed due to inactivity.
+            
+            If this PR addresses a security issue or critical bug, please reopen it with updated information.
+          
+          # Operations configuration
+          operations-per-run: 30
+          remove-stale-when-updated: true
+          ascending: false # Process newest first
+          
+          # Debugging
+          debug-only: false
