@@ -2,5 +2,44 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:recommended"
-  ]
+  ],
+  "packageRules": [
+    {
+      "matchPackagePatterns": ["*"],
+      "matchUpdateTypes": ["major"],
+      "groupName": "major-dependencies",
+      "schedule": ["before 9am on Monday"],
+      "labels": ["dependencies", "major-update"]
+    },
+    {
+      "matchPackagePatterns": ["torch", "numpy", "pandas", "matplotlib"],
+      "groupName": "ml-frameworks",
+      "schedule": ["before 9am on Monday"],
+      "labels": ["ml-dependencies"],
+      "reviewers": ["@maintainers"]
+    },
+    {
+      "matchPackagePatterns": ["pytest", "black", "flake8", "pre-commit"],
+      "groupName": "dev-tools",
+      "automerge": true,
+      "automergeType": "pr"
+    },
+    {
+      "matchDepTypes": ["action"],
+      "groupName": "github-actions",
+      "automerge": true
+    }
+  ],
+  "vulnerabilityAlerts": {
+    "enabled": true,
+    "labels": ["security", "priority-high"],
+    "assignees": ["@maintainers"]
+  },
+  "python": {
+    "additionalBranchPrefix": "py/"
+  },
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": ["before 9am on Monday"]
+  }
 }
