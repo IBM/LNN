@@ -152,6 +152,8 @@ def _operational_bounds(
         joined = operand_dfs[0]
     else:
         joined = ft.reduce(_full_outer_join, operand_dfs)
+        if hasattr(operator, 'filter_valid_groundings'):
+            joined = operator.filter_valid_groundings(joined)
 
     operator_groundings = _operator_groundings(joined, operator)
     ground_objects = _operand_groundings(joined, operator, bindings)
