@@ -1,5 +1,5 @@
 jupyter
-matplotlib==3.10.8
+matplotlib==3.10.9
 networkx==3.6.1
 numpy==2.4.4
 pandas>=1.3.4
