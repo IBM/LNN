@@ -26,6 +26,7 @@ from .symbolic.logic import (
     NeuralActivation,
     Not,
     Or,
+    ProductAnd,
     Proposition,
     Propositions,
     Predicate,
@@ -68,4 +69,5 @@ __all__ = [
     "World",
     "Loss",
     "XOr",
+    "ProductAnd"
 ]

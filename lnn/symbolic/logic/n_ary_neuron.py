@@ -202,3 +202,25 @@ class XOr(_NAryNeuron):
         [node.downward(**kwds) for node in self.conjunctions]
         self.disjunction.downward(**kwds)
         return result
+
+class ProductAnd(And):
+    """
+    Product T-norm AND operator.
+    Uses the Product activation method instead of Łukasiewicz.
+    """
+    def __init__(self, *formula: Formula, **kwds):
+        # Ensure activation is set to Product BEFORE calling super
+        if "activation" not in kwds:
+            kwds["activation"] = {}
+        kwds["activation"]["type"] = NeuralActivation.Product
+
+        # CRITICAL: Call super() with the formula arguments
+        # This registers A and B as operands of this node
+        super().__init__(*formula, **kwds)
+
+        # After super() is called, the neuron is created.
+        # We need to ensure the neuron knows about the operands.
+        # The neuron should have been created with num_inputs = len(formula)
+        # But if not, we force it here.
+        if not hasattr(self.neuron, 'weights') or self.neuron.weights is None:
+            self.neuron.weights = torch.nn.Parameter(torch.ones(len(formula)))
