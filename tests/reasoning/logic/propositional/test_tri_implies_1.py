@@ -6,7 +6,6 @@
 
 from lnn import Proposition, Implies, Model, Fact
 
-
 TRUE = Fact.TRUE
 FALSE = Fact.FALSE
 UNKNOWN = Fact.UNKNOWN

@@ -7,7 +7,6 @@
 from lnn import Proposition, Or, Model, Fact
 import numpy as np
 
-
 TRUE = Fact.TRUE
 FALSE = Fact.FALSE
 UNKNOWN = Fact.UNKNOWN

@@ -13,32 +13,23 @@ Implies(Contributions(x), Growth)
 ## Software Setup
 
 * Due to the complex inference pattern of LNNs upward and downward reasoning strategy, [Pycharm](https://www.jetbrains.com/pycharm/download/) is our recommended IDE of choice for development and debugging.
-1. Make sure that the python version you are using corresponds with the [setup](https://github.com/IBM/LNN/blob/master/setup.py) file, using a fresh [conda]() environment is recommended:
-    ```commandline
-    conda create -n lnn-contrib python=3.9 -y
-    conda activate lnn-contrib
-    ```
-2. Clone the `master` branch to keep up to date with the latest supported features:
+1. LNN requires Python 3.11 or newer. Install [uv](https://docs.astral.sh/uv/) and clone the `master` branch:
     ```commandline
     git clone https://github.com/IBM/LNN
-    ```
-3. Install the LNN module as editable
-    ```commandline
     cd LNN
-    pip install -e .
     ```
-ℹ️ Alternatively to install steps 2+3 above in one step:
-   ```commandline
-   pip install -e git+https://github.com/IBM/LNN#egg=lnn
-   ```
-* Install [Black](https://black.readthedocs.io/en/stable/integrations/editors.html) as an external tool/keyboard shortcut to keep to our code style - this automates our pep8 compliance so that you can code without the styling overhead
-* Install and run pytest to ensure that the build is working correctly:
+2. Create the locked development environment and run the test suite:
     ```commandline
-    pip install pytest
-    pytest
+    uv sync --locked --extra dev
+    uv run pytest -v
+    ```
+3. Run Black from the same environment before submitting changes:
+    ```commandline
+    uv run black --check .
     ```
 
-You are now ready to contribute changes to the codebase
+You are now ready to contribute changes to the codebase.
+
 
 ##  Developing in LNN
 

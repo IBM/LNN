@@ -37,6 +37,7 @@ class _AutoName(Enum):
 
 class _Fact(_AutoName):
     r"""An enumeration for facts used in state printing."""
+
     APPROX_FALSE = auto()
     APPROX_TRUE = auto()
     APPROX_UNKNOWN = auto()
@@ -56,6 +57,7 @@ class Bound(_AutoName):
         Evaluation of the upper bound of the range, or maximum possible value that truth can take wihtin the given range
 
     """
+
     LOWER = auto()
     UPPER = auto()
 
@@ -73,6 +75,7 @@ class Direction(_AutoName):
         Evaluation of the operator given the operands
 
     """
+
     DOWNWARD = auto()
     UPWARD = auto()
 
@@ -92,6 +95,7 @@ class Fact(Enum):
         A classical interpretation of what would be an unknown input, this is represented by LNN bounds with complete uncertainty
 
     """
+
     CONTRADICTION = (1.0, 0.0)
     FALSE = (0.0, 0.0)
     TRUE = (1.0, 1.0)
@@ -111,6 +115,7 @@ class Join(_AutoName):
         A reduced outer join
 
     """
+
     INNER = auto()
     INNER_EXTENDED = auto()
     OUTER = auto()
@@ -134,6 +139,7 @@ class Loss(_AutoName):
         Reduces the uncertainty of bounds.
 
     """
+
     CONTRADICTION = auto()
     CUSTOM = auto()
     LOGICAL = auto()
@@ -160,6 +166,7 @@ class NeuralActivation(_AutoName):
         Unweighted [Product](https://en.wikipedia.org/wiki/Product_fuzzy_logic) - only implemented for propositional logic.
 
     """
+
     Frechet = auto()
     Godel = auto()
     LukasiewiczTransparent = auto()
@@ -186,6 +193,7 @@ class World(Enum):
         Formulae that follow the open world assumption
 
     """
+
     AXIOM = (1.0, 1.0)
     CONTRADICTION = (1.0, 0.0)
     CLOSED = (0.0, 0.0)

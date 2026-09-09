@@ -8,7 +8,6 @@ import itertools
 import random
 from lnn import Model, World, And, Iff, Forall, Variable, Fact, Direction, Loss
 
-
 TRUE = Fact.TRUE
 FALSE = Fact.FALSE
 

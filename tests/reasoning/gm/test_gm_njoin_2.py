@@ -6,7 +6,6 @@
 
 from lnn import Model, And, Variable, Predicate, Fact
 
-
 TRUE = Fact.TRUE
 FALSE = Fact.FALSE
 UNKNOWN = Fact.UNKNOWN

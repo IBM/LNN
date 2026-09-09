@@ -15,7 +15,6 @@ from lnn import (
 )
 import numpy as np
 
-
 TRUE = Fact.TRUE
 FALSE = Fact.FALSE
 UNKNOWN = Fact.UNKNOWN

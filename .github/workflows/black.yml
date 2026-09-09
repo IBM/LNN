@@ -1,6 +1,9 @@
 name: Lint
 
 on: [push, pull_request]
+permissions:
+  contents: read
+
 
 jobs:
   lint:
@@ -14,5 +17,13 @@ jobs:
         with:
           python-version: "3.14"
           
+      - name: Install uv
+        uses: astral-sh/setup-uv@v8.1.0
+        with:
+          enable-cache: true
+
+      - name: Sync development environment
+        run: uv sync --locked --extra dev
+
       - name: Run Black
-        uses: psf/black@stable
+        run: uv run black --check .

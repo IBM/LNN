@@ -6,7 +6,6 @@
 
 from lnn import Fact
 
-
 TRUE = Fact.TRUE
 FALSE = Fact.FALSE
 

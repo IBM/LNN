@@ -15,7 +15,6 @@ from lnn import (
     Loss,
 )
 
-
 TRUE = Fact.TRUE
 FALSE = Fact.FALSE
 
