@@ -60,9 +60,11 @@ class _Quantifier(_UnaryOperator):
         variables = (
             args[:-1]
             if len(args) > 1
-            else args[-1][0].unique_vars
-            if isinstance(args[-1], tuple)
-            else args[-1].unique_vars
+            else (
+                args[-1][0].unique_vars
+                if isinstance(args[-1], tuple)
+                else args[-1].unique_vars
+            )
         )
         super().__init__(args[-1], variables=variables, **kwds)
         self.fully_grounded = kwds.get("fully_grounded", False)
@@ -464,9 +466,11 @@ class Exists(_Quantifier):
         variables = (
             args[:-1]
             if len(args) > 1
-            else args[-1][0].unique_vars
-            if isinstance(args[-1], tuple)
-            else args[-1].unique_vars
+            else (
+                args[-1][0].unique_vars
+                if isinstance(args[-1], tuple)
+                else args[-1].unique_vars
+            )
         )
 
         a = variables[0]
@@ -513,9 +517,11 @@ class Forall(_Quantifier):
         variables = (
             args[:-1]
             if len(args) > 1
-            else args[-1][0].unique_vars
-            if isinstance(args[-1], tuple)
-            else args[-1].unique_vars
+            else (
+                args[-1][0].unique_vars
+                if isinstance(args[-1], tuple)
+                else args[-1].unique_vars
+            )
         )
 
         if len(variables) > 1:

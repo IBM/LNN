@@ -113,11 +113,13 @@ def is_grounding_in_bindings(
     operand_grounding: tuple[str],
 ) -> bool:
     return all(
-        True
-        if operator.bindings[operand_idx][slot] == [None]
-        else (
-            operand_grounding.partial_grounding[slot]
-            in operator.bindings[operand_idx][slot]
+        (
+            True
+            if operator.bindings[operand_idx][slot] == [None]
+            else (
+                operand_grounding.partial_grounding[slot]
+                in operator.bindings[operand_idx][slot]
+            )
         )
         for slot in range(len(operator.bindings[operand_idx]))
     )

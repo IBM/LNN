@@ -14,7 +14,6 @@ from lnn import (
     Direction,
 )
 
-
 TRUE = Fact.TRUE
 FALSE = Fact.FALSE
 UNKNOWN = Fact.UNKNOWN

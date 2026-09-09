@@ -1,7 +1,6 @@
 from lnn import Fact, Predicate
 import torch
 
-
 P = Predicate("P")
 P.add_data({"x1": Fact.TRUE, "x2": Fact.FALSE})
 

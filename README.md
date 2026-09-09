@@ -20,17 +20,20 @@ properties of both neural nets (learning) and symbolic logic (knowledge and reas
   knowledge.
 
 ## Quickstart
-To install the LNN:
+LNN requires Python 3.11 or newer. For a local checkout, install the locked runtime environment with [uv](https://docs.astral.sh/uv/):
 
-1. Make sure that the python version you use in line with our [setup](https://github.com/IBM/LNN/blob/master/setup.py) file, using a fresh environment is always a good idea:
-    ```commandline
-    conda create -n lnn python=3.9 -y
-    conda activate lnn
-    ```
-2. Install the `master` branch to keep up to date with the latest supported features:
-    ```commandline
-    pip install git+https://github.com/IBM/LNN
-    ```
+```commandline
+git clone https://github.com/IBM/LNN
+cd LNN
+uv sync --locked
+```
+
+For development and tests, use the declared development tools:
+
+```commandline
+uv sync --locked --extra dev
+uv run pytest -v
+```
 
 ## Contribution
 Contributions to the LNN codebase are welcome!

@@ -95,9 +95,11 @@ class _NodeParameters(nn.Module):
         if isinstance(grounding_rows, list):
             return torch.stack(
                 [
-                    torch.tensor(self.world)
-                    if row is None and default
-                    else self.bounds_table[row]
+                    (
+                        torch.tensor(self.world)
+                        if row is None and default
+                        else self.bounds_table[row]
+                    )
                     for row in grounding_rows
                 ]
             )

@@ -7,7 +7,6 @@
 from lnn import Predicate, And, Model, Variable, Fact, World
 import random
 
-
 TRUE = Fact.TRUE
 
 

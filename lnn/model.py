@@ -743,11 +743,15 @@ class Model(nn.Module):
             pos,
             dict(
                 [
-                    (node, node.formula_number)
-                    if formula_number
-                    else (node, node.connective_str)
-                    if hasattr(node, "connective_str")
-                    else (node, node.name)
+                    (
+                        (node, node.formula_number)
+                        if formula_number
+                        else (
+                            (node, node.connective_str)
+                            if hasattr(node, "connective_str")
+                            else (node, node.name)
+                        )
+                    )
                     for node in self.graph
                 ]
             ),

@@ -6,7 +6,6 @@
 
 from lnn import Proposition, Not, Model, Fact, fact_to_bool
 
-
 TRUE = Fact.TRUE
 FALSE = Fact.FALSE
 UNKNOWN = Fact.UNKNOWN
